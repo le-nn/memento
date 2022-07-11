@@ -1,0 +1,38 @@
+{
+    "name": "@memento/demo",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Demo for Memento",
+    "keywords": [
+        "gatsby"
+    ],
+    "scripts": {
+        "develop": "gatsby develop",
+        "start": "gatsby develop",
+        "build": "gatsby build",
+        "serve": "gatsby serve",
+        "clean": "gatsby clean",
+        "deploy": "gatsby build --prefix-paths && gh-pages -d public -b demo"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "@emotion/react": "^11.9.0",
+        "@emotion/styled": "^11.8.1",
+        "gatsby": "^4.7.2",
+        "gatsby-plugin-emotion": "^7.7.0",
+        "gatsby-plugin-mdx": "^3.7.1",
+        "gatsby-source-filesystem": "^4.7.0",
+        "@memento/react": "link:../packages/node/react",
+        "normalize.css": "^8.0.1",
+        "react": "^18.1.0",
+        "react-dom": "^18.1.0",
+        "react-redux": "^8.0.2"
+    },
+    "devDependencies": {
+        "@babel/plugin-proposal-decorators": "^7.17.2",
+        "@babel/plugin-transform-typescript": "^7.16.8",
+        "babel-plugin-transform-typescript-metadata": "^0.3.1",
+        "gatsby-plugin-typescript": "^4.7.0",
+        "gh-pages": "^4.0.0"
+    }
+}

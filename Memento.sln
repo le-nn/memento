@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32611.2
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9B9FF1D5-F476-4658-B7EF-98A24BC9BB4A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{AD16691B-0034-4F49-8F90-0932C029DA3C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.Sample", "samples\dotnet\Blazor.Sample\Blazor.Sample.csproj", "{7AFD1558-7A5B-44A3-8D40-5BF0BC7ECA54}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E9CA5D2D-621D-408E-AB95-E602DD3CA8FA}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.Blazor", "lib\dotnet\Memento.Blazor\Memento.Blazor.csproj", "{78657E9C-2580-4384-BDE1-1E54FCCAE0C7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.Core", "lib\dotnet\Memento.Core\Memento.Core.csproj", "{3B691AE8-0F54-4061-B5E8-71EE2663F80B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memento.Sample.ConsoleApp", "samples\dotnet\Memento.Sample.ConsoleApp\Memento.Sample.ConsoleApp.csproj", "{8A4A4F8A-2334-4ACC-B2B0-32DE36B1D7EC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7AFD1558-7A5B-44A3-8D40-5BF0BC7ECA54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AFD1558-7A5B-44A3-8D40-5BF0BC7ECA54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AFD1558-7A5B-44A3-8D40-5BF0BC7ECA54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AFD1558-7A5B-44A3-8D40-5BF0BC7ECA54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78657E9C-2580-4384-BDE1-1E54FCCAE0C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78657E9C-2580-4384-BDE1-1E54FCCAE0C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78657E9C-2580-4384-BDE1-1E54FCCAE0C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78657E9C-2580-4384-BDE1-1E54FCCAE0C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B691AE8-0F54-4061-B5E8-71EE2663F80B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B691AE8-0F54-4061-B5E8-71EE2663F80B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B691AE8-0F54-4061-B5E8-71EE2663F80B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B691AE8-0F54-4061-B5E8-71EE2663F80B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A4A4F8A-2334-4ACC-B2B0-32DE36B1D7EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A4A4F8A-2334-4ACC-B2B0-32DE36B1D7EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A4A4F8A-2334-4ACC-B2B0-32DE36B1D7EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A4A4F8A-2334-4ACC-B2B0-32DE36B1D7EC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7AFD1558-7A5B-44A3-8D40-5BF0BC7ECA54} = {AD16691B-0034-4F49-8F90-0932C029DA3C}
+		{78657E9C-2580-4384-BDE1-1E54FCCAE0C7} = {9B9FF1D5-F476-4658-B7EF-98A24BC9BB4A}
+		{3B691AE8-0F54-4061-B5E8-71EE2663F80B} = {9B9FF1D5-F476-4658-B7EF-98A24BC9BB4A}
+		{8A4A4F8A-2334-4ACC-B2B0-32DE36B1D7EC} = {AD16691B-0034-4F49-8F90-0932C029DA3C}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {52122159-362B-41B0-BE89-5FC9BF19BE01}
+	EndGlobalSection
+EndGlobal
