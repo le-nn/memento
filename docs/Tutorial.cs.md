@@ -17,99 +17,73 @@ Blazor is provided by ```Microsoft.Extensions.DependencyInjection``` as a standa
 
 ## Define store, state and messages.
 
-```ts
-import {
-    meta,
-    FluxStore,
-    State,
-    Message,
-    createProvider
-} from "memento.js"
+```cs
+using System.Collections.Immutable;
+using System.Text.Json;
+using Memento;
+using Microsoft.Extensions.DependencyInjection;
 
-const delay = (timeout: number) =>
-    new Promise(resolve => setTimeout(resolve, timeout))
+using static AsyncCounterMessages;
 
 // Define state to manage in store
-class FluxAsyncCounterState extends State<FluxAsyncCounterState> {
-    count = 0
-    history: number[] = []
-    isLoading = false
+public record AsyncCounterState {
+    public int Count { get; init; } = 0;
+    public ImmutableArray<int> History { get; init; } = ImmutableArray.Create<int>();
+    public bool IsLoading { get; init; } = false;
 }
 
 // Define messages to mutate state and observe state change event in detail.
-class Increment extends Message { }
-class BeginLoading extends Message { }
-class EndLoading extends Message { }
-class ModifyCount extends Message<{ count: number }> { }
+public record AsyncCounterMessages : Message {
+    public record Increment : AsyncCounterMessages;
+    public record BeginLoading : AsyncCounterMessages;
+    public record EndLoading : AsyncCounterMessages;
+    public record ModifyCount(int Value) : AsyncCounterMessages;
+}
 
-type FluxAsyncCounterMessages =
-    Increment
-    | BeginLoading
-    | EndLoading
-    | ModifyCount
-
-
-// can be omitted this.
-// if you want to omit, you should be following 
-// "class FluxAsyncCounterStore extends FluxStore<FluxAsyncCounterState>"
-
-/**
- * 
- */
-@meta({ name: "FluxAsyncCounterStore" }) // Specify store name
-export class FluxAsyncCounterStore extends FluxStore<FluxAsyncCounterState, FluxAsyncCounterMessages> {
-    constructor() {
-        super(new FluxAsyncCounterState(), FluxAsyncCounterStore.mutation)
+public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterMessages> {
+    public AsyncCounterStore() : base(() => new(), Mutation) {
     }
 
     // State can change via mutation and easy to observe state from message
     // Mutation generate new state from message and current state
-    static mutation(
-        state: FluxAsyncCounterState,
-        message: FluxAsyncCounterMessages
-        ) :FluxAsyncCounterState {
-        switch (message.comparer) {
-            case BeginLoading: {
-                return state.clone({
-                    isLoading: true
-                })
-            }
-            case EndLoading: {
-                return state.clone({
-                    isLoading: false
-                })
-            }
-            case Increment: {
-                const count = state.count + 1
-                return state.clone({
-                    count,
-                    history: [...state.history, count]
-                })
-            }
-            case ModifyCount: {
-                const { payload } = message as ModifyCount
-                return state.clone({
-                    count: payload.count,
-                    history: [...state.history, payload.count]
-                })
-            }
-            default: throw new Error("Message is not handled")
-        }
+    static AsyncCounterState Mutation(AsyncCounterState state, AsyncCounterMessages message) {
+        return message switch {
+            BeginLoading => state with {
+                IsLoading = true
+            },
+            EndLoading => state with {
+                IsLoading = false
+            },
+            Increment => HandleIncrement(state),
+            ModifyCount payload => state with {
+                Count = payload.Value,
+                History = state.History.Add(payload.Value),
+            },
+            _ => throw new Exception("Message is not handled"),
+        };
     }
 
-    // "mutate" method can called outside of store via action (pub lic method)
+    static AsyncCounterState HandleIncrement(AsyncCounterState state) {
+        var count = state.Count + 1;
+        return state with {
+            Count = count,
+            History = state.History.Add(count),
+        };
+    }
+
+    // "Mutate" method can called outside of store via action (public method)
     // Action can be async method.
-    async countUpAsync() {
-        this.mutate(new BeginLoading())
+    public async Task CountUpAsync() {
+        this.Mutate(new BeginLoading());
 
-        await delay(500)
+        await Task.Delay(500);
 
-        this.mutate(new Increment())
-        this.mutate(new EndLoading())
+        this.Mutate(new Increment());
+        this.Mutate(new EndLoading());
     }
 
-    setCount(num: number) {
-        this.mutate(new ModifyCount({ count: num, }))
+    public void SetCount(int num) {
+        this.Mutate(new ModifyCount(num));
     }
 }
 
