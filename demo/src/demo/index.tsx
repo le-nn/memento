@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { StoreProvider } from "@memento/react";
+import { StoreProvider } from "memento.react";
 import { provider } from "../demo/stores";
 import { History } from "./views/History";
 import { FluxCounterStoreView } from "./views/usecases/FluxCounterStoreView";

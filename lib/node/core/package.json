@@ -1,7 +1,7 @@
 {
-  "name": "@memento/core",
+  "name": "memento.js",
   "version": "1.0.0",
-  "description": "@memento/core is easy unidirectional store-pattern container for state management with DI for frontend app on JS/TS.",
+  "description": "memento.js is easy unidirectional store-pattern container for state management with DI for frontend app on JS/TS.",
   "main": "build/index.esm.js",
   "module": "build/index.esm.js",
   "types": "build/index.d.ts",

@@ -1,4 +1,4 @@
-import { constructor, FluxStore } from "@memento/core";
+import { constructor, FluxStore } from "memento.js";
 import { useProvider } from "./useProvider";
 
 class StateGetter {

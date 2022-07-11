@@ -24,7 +24,7 @@ Details and Docs on [Github](https://github.com/le-nn/memento)
 Image of stores and mutate state.
 
 ```ts
-import { meta, FluxStore, Message } from "@memento/react";
+import { meta, FluxStore, Message } from "memento.react";
 
 const simpleState = {
     count: 0,

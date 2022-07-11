@@ -1,4 +1,4 @@
-import { meta, LiteStore } from "@memento/react";
+import { meta, LiteStore } from "memento.react";
 
 const delay = (timeout: number) =>
     new Promise(resolve => setTimeout(resolve, timeout))

@@ -1,4 +1,4 @@
-import { useProvider } from "@memento/react";
+import { useProvider } from "memento.react";
 import React, { useEffect, useRef, useState } from "react";
 
 export const History = () => {

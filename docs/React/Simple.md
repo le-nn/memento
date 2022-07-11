@@ -11,7 +11,7 @@ Let's take a look at the completed store first.
 Dig into step by step from there.
 
 ```ts
-import { LiteStore } from "@memento/react"
+import { LiteStore } from "memento.react"
 
 const delay = (timeout: number) =>
     new Promise(resolve => setTimeout(resolve, timeout))
@@ -81,7 +81,7 @@ const simpleState = {
 ### Extendsd state 
 
 ```ts
-import { State } from "@memento/core"
+import { State } from "memento.js"
 
 /**
  * State for counter.
@@ -222,13 +222,13 @@ export const provider = () => createProvider({
 
 ## With React App
 
-@memento/react includes a ```<StoreProvider />``` component, which makes the store available to the rest of your app.
+memento.react includes a ```<StoreProvider />``` component, which makes the store available to the rest of your app.
 Specify provider context to ```StoreProvider``` as react context provider. 
 
 ```tsx
 import { 
     StoreProvider,
-} from "@memento/react"
+} from "memento.react"
 import React,  {useState } from "react"
 import {SimpleStoreView} from "./SimpleStoreView"
 
@@ -246,7 +246,7 @@ const App = () => {
 
 ### Hooks​
 
-@memento/react provides a pair of custom React hooks that allow your React components to interact with the store.
+memento.react provides a pair of custom React hooks that allow your React components to interact with the store.
 class api is not supported.
 
 ```useObserver``` reads a value from the store state and subscribes to updates,
@@ -256,7 +256,7 @@ class api is not supported.
 import { 
     useObserver,
     useDispatch,
-} from "@memento/react"
+} from "memento.react"
 import React,  {useState } from "react"
 
 export const SimpleStoreView = () => {dedux

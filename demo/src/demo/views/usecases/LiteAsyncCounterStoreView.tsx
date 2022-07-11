@@ -1,4 +1,4 @@
-import { useDispatch, useObserver } from "@memento/react";
+import { useDispatch, useObserver } from "memento.react";
 import React from "react"
 import { useState } from "react";
 import { LiteAsyncCounterStore } from "../../stores/LiteAsyncCounterStore";

@@ -1,4 +1,4 @@
-import { meta, FluxStore, Message } from "@memento/react";
+import { meta, FluxStore, Message } from "memento.react";
 
 const simpleState = {
     count: 0,

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { constructor, Provider } from "@memento/core";
+import { constructor, Provider } from "memento.js";
 import { StoreContext } from "./StoreContext";
 import { useProvider } from "./useProvider";
 

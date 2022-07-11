@@ -6,13 +6,13 @@ This tutorials is for React in Typescript, but can be used in Javascript as well
 # Install
 
 ```
-yarn add @memento/react
+yarn add memento.react
 ```
 
 or
 
 ```
-npm install --save @memento/react
+npm install --save memento.react
 ```
 
 ## Use Typescript Decorator Setup on React

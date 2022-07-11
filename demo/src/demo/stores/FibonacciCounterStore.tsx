@@ -1,4 +1,4 @@
-import { FluxStore, service, Message, meta, State, createProvider } from "@memento/core"
+import { FluxStore, service, Message, meta, State, createProvider } from "memento.js"
 
 type History = {
     value: number,

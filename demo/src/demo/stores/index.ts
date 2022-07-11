@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { createProvider, devToolMiddleware } from "@memento/react";
+import { createProvider, devToolMiddleware } from "memento.react";
 import { LiteAsyncCounterStore } from "./LiteAsyncCounterStore";
 import { FluxCounterStore } from "./FluxCounterStore";
 import { FluxAsyncCounterStore } from "./FluxAsyncCounterStore";

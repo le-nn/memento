@@ -1,7 +1,7 @@
 module.exports = {
   assetPrefix: `/memento.js`,
   siteMetadata: {
-    title: "@memento/core Documents",
+    title: "memento.js Documents",
   },
   plugins: [
     "gatsby-plugin-emotion",

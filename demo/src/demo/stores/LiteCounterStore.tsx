@@ -1,4 +1,4 @@
-import { meta, LiteStore, Message } from "@memento/react";
+import { meta, LiteStore, Message } from "memento.react";
 
 const simpleState = {
     count: 0,

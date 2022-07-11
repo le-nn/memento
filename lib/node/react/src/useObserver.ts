@@ -1,6 +1,6 @@
 import { useEffect, useReducer, useRef } from "react";
 import { useProvider } from "./useProvider";
-import { constructor, FluxStore } from "@memento/core";
+import { constructor, FluxStore } from "memento.js";
 
 export const useObserver = <
     TState,
