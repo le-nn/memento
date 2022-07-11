@@ -4,12 +4,20 @@ This tutorials is for [BlazorWeb](https://docs.microsoft.com/ja-jp/aspnet/core/b
 
 # Install
 
-Blazor Project
+### Blazor Project
+
+Memento.Blazor includes helpers and DI support for use with Blazor.
+It depends on Memento.Core.
+
 ```
 dotnet add package Memento.Blazor
 ```
 
-.NET Project
+### .NET Project
+
+Memento.Core is a core library that consists of pure .NET code only.
+Install this for the .NET Class library or Console App.
+
 ```
 dotnet add package Memento.Core
 ```
