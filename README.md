@@ -36,6 +36,8 @@ Note the concept is a bit different from Flux and Redux
 * Every mutation that processes in the action will create new state to reflect the old state combined with the changes expected for the action.
 * The UI then uses the new state to render its display.
 
+<img width="800px" src="./overview.png"/>
+
 # Compatibility and bindings
 
 ### The currently supported framework bindings are as follows
