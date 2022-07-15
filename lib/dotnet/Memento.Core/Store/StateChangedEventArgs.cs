@@ -4,8 +4,11 @@ public abstract record StateChangedEventArgs {
     protected object? sender;
 
     public Message? Message { get; init; }
+
     public object? LastState { get; init; }
+
     public object? State { get; init; }
+
     public Store<object, Message>? Sender {
         get {
             return (Store<object, Message>)this.sender;
@@ -23,7 +26,6 @@ public record StateChangedEventArgs<TState, TMessage> : StateChangedEventArgs
         get => (TMessage)base.Message!;
         init => base.Message = value;
     }
-
 
     public new required TState LastState {
         get => (TState)base.LastState!;

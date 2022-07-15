@@ -1,3 +1,4 @@
+using Memento.Core.Store.Internals;
 using System.Collections.Immutable;
 
 namespace Memento;

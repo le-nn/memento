@@ -1,3 +1,5 @@
+using Memento.Core.Store.Internals;
+
 namespace Memento;
 
 public abstract class Store<TState, TMessages>
@@ -10,7 +12,7 @@ public abstract class Store<TState, TMessages>
 
     private List<IObserver<StateChangedEventArgs>> Observers { get; } = new();
 
-    public TState State { get; private set; }
+    public TState State { get; internal set; }
 
     object IStore.State => this.State;
 
@@ -42,30 +44,17 @@ public abstract class Store<TState, TMessages>
         throw new InvalidCastException();
     }
 
-    protected void Mutate(TMessages message) {
-        var previous = this.State;
+    internal virtual (TState? NewState, StateChangedEventArgs<TState, TMessages>? Event) ComputeNewState(
+        TState state,
+        TMessages message
+    ) {
+        var previous = state;
         var postState = this.OnBeforeMutate(this.State, message);
 
-
-        // process middlewares
-        var middlewares = this.Provider?.ResolveAllMiddlewares()
-            ?? Array.Empty<Middleware>();
-
-        var middlewareProcessedState = middlewares.Aggregate(
-            (object s, Message m) => {
-                if ((s, m) is not (TState _s, TMessages _m)) {
-                    throw new Exception();
-                }
-
-                return (object)this.Mutation.Invoke(_s, _m);
-            },
-            (before, middleware) => (object s, Message m) => middleware.Handle(s, m, (_s, _m) => before(_s, m))
-        )(postState, message);
+        var middlewareProcessedState = this.GetMiddlewareInvokeHandler()(postState, message);
 
         if (middlewareProcessedState is TState s) {
-            this.State = s;
-            this.State = this.OnAfterMutate(s, message);
-
+            var newState = this.OnAfterMutate(s, message);
             var e = new StateChangedEventArgs<TState, TMessages> {
                 LastState = previous,
                 Message = message,
@@ -73,11 +62,25 @@ public abstract class Store<TState, TMessages>
                 Sender = this,
             };
 
+            return (newState, e);
+        }
+
+        return (null, null);
+    }
+
+    internal void ApplyState(TState state, TMessages message) {
+        var (newstate, e) = this.ComputeNewState(state, message);
+        if (state is not null && e is not null) {
+            this.State = newstate;
             this.InvokeObserver(e);
         }
         else {
             throw new Exception("State is invalid.");
         }
+    }
+
+    protected void Mutate(TMessages message) {
+        this.ApplyState(this.State, message);
     }
 
     public IDisposable Subscribe(IObserver<StateChangedEventArgs<TState, TMessages>> observer) {
@@ -117,6 +120,28 @@ public abstract class Store<TState, TMessages>
     void IStore.OnInitialized(StoreProvider provider) {
         this.Provider = provider;
         this.OnInitialized(provider);
+    }
+
+    internal Func<TState, TMessages, object?> GetMiddlewareInvokeHandler() {
+        // process middlewares
+        var middlewares = this.Provider?.ResolveAllMiddlewares()
+            ?? Array.Empty<Middleware>();
+        return middlewares.Aggregate(
+            (object s, Message m) => {
+                if ((s, m) is not (TState _s, TMessages _m)) {
+                    throw new Exception();
+                }
+
+                return (object)this.Mutation.Invoke(_s, _m);
+            },
+            (before, middleware) =>
+                (object s, Message m) =>
+                    middleware.Handle(
+                        s,
+                        m,
+                        (_s, _m) => before(_s, m)
+                    )
+        );
     }
 
     protected virtual void OnInitialized(StoreProvider provider) {

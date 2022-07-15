@@ -4,7 +4,7 @@ using static Blazor.Sample.Stores.AsyncCounterMessage;
 
 namespace Blazor.Sample.Stores;
 
-public record AsyncCounterState : State {
+public record AsyncCounterState {
     public int Count { get; init; } = 0;
 
     public bool IsLoading { get; init; } = false;
@@ -18,7 +18,7 @@ public record AsyncCounterMessage : Message {
     public record BeginLoading : AsyncCounterMessage;
 }
 
-public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterMessage> {
+public class AsyncCounterStore : MementoStore<AsyncCounterState, AsyncCounterMessage> {
     public AsyncCounterStore() : base(() => new(), Mutation) { }
 
     static AsyncCounterState Mutation(AsyncCounterState state, AsyncCounterMessage message) {
@@ -42,6 +42,8 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterMessage> {
         this.Mutate(new BeginLoading());
         await Task.Delay(800);
         this.Mutate(new CountUp());
+
+        await this.CommitAsync();
     }
 
     public void SetCount(int c) {

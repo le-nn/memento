@@ -23,8 +23,34 @@
 
 <button class="mt-3 btn btn-primary" @onclick="IncrementCount">Click me</button>
 
+<button class="mt-3 btn btn-primary" @onclick="Undo">Undo</button>
+
+<button class="mt-3 btn btn-primary" @onclick="Redo">Redo</button>
+
+<div>
+    <h4>History Stack</h4>
+
+    <ul>
+        @foreach (var item in AsyncCounterStore.FutureHistories) {
+            <li>Future : @item.State</li>
+        }
+
+        @foreach (var item in AsyncCounterStore.PastHistories) {
+            <li>Past : @item.State</li>
+        }
+    </ul>
+</div>
+
 @code {
     async Task IncrementCount() {
         await this.AsyncCounterStore.CountUpAsync();
+    }
+
+    async Task Redo() {
+        await this.AsyncCounterStore.ReooAsync();
+    }
+
+    async Task Undo() {
+        await this.AsyncCounterStore.UndoAsync();
     }
 }
