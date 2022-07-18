@@ -3,8 +3,7 @@ using System.Reflection;
 
 namespace Memento.Blazor;
 
-using GetStateChangedPropertyDelegate = System.Func<object, IStore>;
-
+using GetStateChangedPropertyDelegate = Func<object, IStore>;
 
 /// <summary>
 /// A utility class that automaticaly subscribes to all <see cref="IStateChangedNotifier"/> properties
@@ -24,8 +23,6 @@ public static class StateSubscriber {
         _ = subject ?? throw new ArgumentNullException(nameof(subject));
         _ = callback ?? throw new ArgumentNullException(nameof(callback));
 
-        var s = GetStateChangedNotifierPropertyDelegatesForType(subject.GetType());
-
         var subscriptions = (
             from getStateChangedNotifierPropertyValue in GetStateChangedNotifierPropertyDelegatesForType(subject.GetType())
             let store = getStateChangedNotifierPropertyValue(subject)
@@ -38,7 +35,8 @@ public static class StateSubscriber {
                 foreach (var subscription in subscriptions) {
                     subscription.Dispose();
                 }
-            });
+            }
+        );
     }
 
     private static IEnumerable<PropertyInfo> GetStateChangedNotifierProperties(Type t)

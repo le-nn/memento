@@ -9,6 +9,5 @@ public interface IMementoCommand : IDisposable, IMementoState {
 }
 
 
-public interface IMementoCommand<T> : IMementoCommand {
-    new T? State { get; set; }
+public interface IMementoCommand<T> : IMementoCommand, IMementoState<T> {
 }
