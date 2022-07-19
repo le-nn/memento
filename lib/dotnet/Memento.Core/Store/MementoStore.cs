@@ -14,9 +14,23 @@ public abstract class MementoStore<TState, TMessages>
 
     HistoryManager HistoryManager { get; } = new();
 
-    public IReadOnlyCollection<IMementoState> FutureHistories => this.HistoryManager.FutureHistories;
+    public IReadOnlyCollection<IMementoState<TState>> FutureHistories => this.HistoryManager
+        .FutureHistories
+        .Select(x => x as IMementoState<TState>)
+        .Where(x => x is not null)
+        .Select(x => x!)
+        .ToList()
+        .AsReadOnly();
 
-    public IReadOnlyCollection<IMementoState> PastHistories => this.HistoryManager.PastHistories;
+    public IReadOnlyCollection<IMementoState<TState>> PastHistories => this.HistoryManager
+        .PastHistories
+        .Select(x => x as IMementoState<TState>)
+        .Where(x => x is not null)
+        .Select(x => x!)
+        .ToList()
+        .AsReadOnly();
+
+    public IMementoState<TState>? Present => this.HistoryManager.Present as IMementoState<TState>;
 
     public MementoStore(
         StateInitializer<TState> initializer,

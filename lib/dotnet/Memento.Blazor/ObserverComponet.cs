@@ -1,3 +1,4 @@
+using Memento.Core.Invokers;
 using Microsoft.AspNetCore.Components;
 
 namespace Memento.Blazor;
@@ -5,15 +6,17 @@ namespace Memento.Blazor;
 public class ObserverComponet : ComponentBase, IDisposable {
     private bool IsDisposed;
     private IDisposable? StateSubscription;
+    private IDisposable InvokerSubscription;
     private readonly ThrottledInvoker StateHasChangedThrottler;
 
     /// <summary>
     /// Creates a new instance
     /// </summary>
     public ObserverComponet() {
-        this.StateHasChangedThrottler = new ThrottledInvoker(() => {
+        this.StateHasChangedThrottler = new ThrottledInvoker();
+        this.InvokerSubscription = this.StateHasChangedThrottler.Subscribe(() => {
             if (this.IsDisposed is false) {
-                InvokeAsync(StateHasChanged);
+                base.InvokeAsync(StateHasChanged);
             }
         });
     }
@@ -21,10 +24,10 @@ public class ObserverComponet : ComponentBase, IDisposable {
     /// <summary>
     /// If greater than 0, the feature will not execute state changes
     /// more often than this many times per second. Additional notifications
-    /// will be surpressed, and observers will be notified of the latest
+    /// will be surpressed, and observers will be notified of the last.
     /// state when the time window has elapsed to allow another notification.
     /// </summary>
-    protected byte MaximumStateChangedNotificationsPerSecond { get; set; }
+    protected byte MaximumStateChangedNotificationsPerSecond { get; set; } = 30;
 
     /// <summary>
     /// Disposes of the component and unsubscribes from any state

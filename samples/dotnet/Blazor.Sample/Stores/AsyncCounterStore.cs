@@ -14,6 +14,7 @@ public record AsyncCounterState {
 
 public record AsyncCounterMessage : Message {
     public record CountUp : AsyncCounterMessage;
+    public record Increment : AsyncCounterMessage;
     public record SetCount(int Count) : AsyncCounterMessage;
     public record BeginLoading : AsyncCounterMessage;
 }
@@ -31,6 +32,9 @@ public class AsyncCounterStore : MementoStore<AsyncCounterState, AsyncCounterMes
             SetCount payload => state with {
                 Count = payload.Count,
             },
+            Increment => state with {
+                Count = state.Count + 1,
+            },
             BeginLoading => state with {
                 IsLoading = true,
             },
@@ -44,6 +48,12 @@ public class AsyncCounterStore : MementoStore<AsyncCounterState, AsyncCounterMes
         this.Mutate(new CountUp());
 
         await this.CommitAsync();
+    }
+
+    public void CountUpManyTimes(int count) {
+        for (int i = 0; i < count; i++) {
+            this.Mutate(new Increment());
+        }
     }
 
     public void SetCount(int c) {

@@ -7,21 +7,20 @@ using System.Threading.Tasks;
 namespace Memento;
 
 public class HistoryManager {
-    private int maxHistoryCount = 20;
+    private int maxHistoryCount = 8;
     private FutureHistoryStack<IMementoCommand> Future = new();
     private PastHistoryStack<IMementoCommand> Past = new();
 
-    public IMementoCommand? Present => this.Past.Peek();
+    public IMementoCommand? Present { get; private set; }
 
     public IReadOnlyCollection<IMementoState> FutureHistories => this.Future.AsReadOnly();
 
     public IReadOnlyCollection<IMementoState> PastHistories => this.Past.AsReadOnly();
 
-    public bool IsCanReDo => this.Future.Count is not 0;
+    public bool CanReDo => this.Future.Count is not 0;
 
-    public bool IsCanUnDo => this.Past.Count is not 0;
+    public bool CanUnDo => this.Past.Count is not 0;
 
-    public int PresentIndex => this.Past.Count - 1;
 
     public int MaxHistoryCount {
         get => maxHistoryCount;
@@ -53,45 +52,56 @@ public class HistoryManager {
     }
 
     public async ValueTask ExcuteAsync<T>(IMementoCommand<T> command) {
-        if (this.IsCanReDo) {
+        if (this.CanReDo) {
             this.ClearFutureHistoriesAsync();
         }
 
         if (this.Present is not null) {
             await this.Present.SaveAsync();
+            this.Past.Push(this.Present);
         }
 
         command.Execute();
-        this.Past.Push(command);
+        this.Present = command;
+
         this.ReduceIfPastHistoriesOverflow();
     }
 
-    public async ValueTask ReExecuteAsync() {
-        if (this.IsCanReDo) {
-            var item = this.Future.Pop()!;
-            await item.LoadAsync();
-            item.Execute();
-
-            if (this.Present is not null) {
-                await this.Present.SaveAsync();
-            }
-
-            this.Past.Push(item);
+    public async ValueTask<bool> RedoAsync() {
+        if (this.CanReDo is false || this.Future.Count <= 0) {
+            return false;
         }
+
+        if (this.Present is not null) {
+            await this.Present.SaveAsync();
+            this.Past.Push(this.Present);
+        }
+
+        var item = this.Future.Pop()!;
+        await item.LoadAsync();
+        item.Execute();
+        this.Present = item;
+
+        return true;
     }
 
-    public async ValueTask UnExecuteAsync() {
-        if (this.IsCanUnDo) {
-            var item = this.Past.Pop()!;
-            await item.LoadAsync();
-            item.Execute();
-
-            if (this.Present is not null) {
-                await this.Present.SaveAsync();
-            }
-
-            this.Future.Push(item);
+    public async ValueTask<bool> UndoAsync() {
+        if (this.CanUnDo is false || this.Past.Count <= 0) {
+            return false;
         }
+
+        if (this.Present is not null) {
+            await this.Present.SaveAsync();
+            this.Future.Push(this.Present);
+        }
+
+        var item = this.Past.Pop()!;
+        await item.LoadAsync();
+        item.Execute();
+        this.Present = item;
+
+        return true;
+
     }
 
     private void ClearFutureHistoriesAsync() {

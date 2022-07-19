@@ -10,6 +10,5 @@ public interface IMementoCommand : IDisposable, IMementoState {
     ValueTask LoadAsync();
 }
 
-public interface IMementoCommand<T> : IMementoCommand {
-    new T? State { get; set; }
+public interface IMementoCommand<T> : IMementoCommand, IMementoState<T> {
 }
