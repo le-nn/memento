@@ -66,7 +66,7 @@ public class HistoryManager {
         this.ReduceIfPastHistoriesOverflow();
     }
 
-    public async ValueTask RedoAsync() {
+    public async ValueTask ReExecuteAsync() {
         if (this.IsCanReDo) {
             var item = this.Future.Pop()!;
             await item.LoadAsync();
@@ -80,7 +80,7 @@ public class HistoryManager {
         }
     }
 
-    public async ValueTask UndoAsync() {
+    public async ValueTask UnExecuteAsync() {
         if (this.IsCanUnDo) {
             var item = this.Past.Pop()!;
             await item.LoadAsync();

@@ -36,7 +36,7 @@ public abstract class MementoStore<TState, TMessages>
     public virtual void OnStateDisposed(IMementoCommand<TState?> command) {
     }
 
-    public async ValueTask CommitAsync(string? name =null) {
+    public async ValueTask CommitAsync(Func<ValueTask> onExecute,Func<ValueTask> onUnExecute,string? name = null) {
         await this.HistoryManager.ExcuteAsync(
             this.State,
             context => {

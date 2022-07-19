@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.Blazor", "lib\dotne
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.Core", "lib\dotnet\Memento.Core\Memento.Core.csproj", "{3B691AE8-0F54-4061-B5E8-71EE2663F80B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memento.Sample.ConsoleApp", "samples\dotnet\Memento.Sample.ConsoleApp\Memento.Sample.ConsoleApp.csproj", "{8A4A4F8A-2334-4ACC-B2B0-32DE36B1D7EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.Sample.ConsoleApp", "samples\dotnet\Memento.Sample.ConsoleApp\Memento.Sample.ConsoleApp.csproj", "{8A4A4F8A-2334-4ACC-B2B0-32DE36B1D7EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
