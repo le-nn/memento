@@ -41,7 +41,7 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs> {
                 middleware.OnInitialized(this);
             }
             catch (Exception ex) {
-                throw new Exception(@"Failed to initalize memento middleware ""{ex.message}""");
+                throw new Exception(@"Failed to initalize memento middleware ""{ex.message}""", ex);
             }
         }
 

@@ -1,6 +1,6 @@
 using Blazor.Sample;
 using Blazor.Sample.Stores;
-using Blazor.Sample.Todo;
+using Blazor.Sample.Todos;
 using Memento.Blazor;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;

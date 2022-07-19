@@ -11,7 +11,7 @@ public abstract record StateChangedEventArgs {
 
     public Store<object, Message>? Sender {
         get {
-            return (Store<object, Message>)this.sender;
+            return (Store<object, Message>?)this.sender;
         }
         init {
             this.sender = value;

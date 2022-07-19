@@ -8,14 +8,14 @@ namespace Memento;
 
 public class HistoryManager {
     private int maxHistoryCount = 8;
-    private FutureHistoryStack<IMementoCommand> Future = new();
-    private PastHistoryStack<IMementoCommand> Past = new();
+    private FutureHistoryStack<IMementoCommandContext> Future = new();
+    private PastHistoryStack<IMementoCommandContext> Past = new();
 
-    public IMementoCommand? Present { get; private set; }
+    public IMementoCommandContext? Present { get; private set; }
 
-    public IReadOnlyCollection<IMementoState> FutureHistories => this.Future.AsReadOnly();
+    public IReadOnlyCollection<IMementoStateContext> FutureHistories => this.Future.AsReadOnly();
 
-    public IReadOnlyCollection<IMementoState> PastHistories => this.Past.AsReadOnly();
+    public IReadOnlyCollection<IMementoStateContext> PastHistories => this.Past.AsReadOnly();
 
     public bool CanReDo => this.Future.Count is not 0;
 
@@ -32,72 +32,75 @@ public class HistoryManager {
 
     public async ValueTask ExcuteAsync<T>(
         T state,
-        Action<IMementoCommand<T?>> loader,
+        Func<IMementoStateContext<T>,ValueTask> dataloader,
         string? name = null,
-        Func<IMementoCommand<T?>, ValueTask>? onSave = null,
-        Func<IMementoCommand<T?>, ValueTask>? onLoad = null,
-        Action<IMementoCommand<T?>>? onDispose = null
+        Func<IMementoStateContext<T>, ValueTask>? unExecuted = null,
+        Func<IMementoStateContext<T?>, ValueTask>? saved = null,
+        Func<IMementoStateContext<T?>, ValueTask>? loaded = null,
+        Action<IMementoStateContext<T?>>? onDispose = null
     ) where T : class {
         await this.ExcuteAsync(
-            new MementoCommand<T>(
+            new MementoCommandContext<T>(
                 state,
-                loader,
+                dataloader,
                 name ?? Guid.NewGuid().ToString()
             ) {
-                OnSave = onSave,
-                OnLoad = onLoad,
-                OnDispose = onDispose,
+                UnExecuted = unExecuted,
+                ContextLoaded = loaded,
+                ContextSaved = saved,
+                Disposed = onDispose,
             }
         );
     }
 
-    public async ValueTask ExcuteAsync<T>(IMementoCommand<T> command) {
+    public async ValueTask ExcuteAsync<T>(IMementoCommandContext<T> command) {
         if (this.CanReDo) {
             this.ClearFutureHistoriesAsync();
         }
 
         if (this.Present is not null) {
-            await this.Present.SaveAsync();
+            await this.Present.InvokeContextSavedAsync();
             this.Past.Push(this.Present);
         }
 
-        command.Execute();
+        await command.ExecuteLoaderAsync();
         this.Present = command;
 
         this.ReduceIfPastHistoriesOverflow();
     }
 
-    public async ValueTask<bool> RedoAsync() {
+    public async ValueTask<bool> ReExecuteAsync() {
         if (this.CanReDo is false || this.Future.Count <= 0) {
             return false;
         }
 
         if (this.Present is not null) {
-            await this.Present.SaveAsync();
+            await this.Present.InvokeContextSavedAsync();
             this.Past.Push(this.Present);
         }
 
         var item = this.Future.Pop()!;
-        await item.LoadAsync();
-        item.Execute();
+        await item.InvokeContextLoadedAsync();
+       await item.ExecuteLoaderAsync();
         this.Present = item;
 
         return true;
     }
 
-    public async ValueTask<bool> UndoAsync() {
+    public async ValueTask<bool> UnExecuteAsync() {
         if (this.CanUnDo is false || this.Past.Count <= 0) {
             return false;
         }
 
         if (this.Present is not null) {
-            await this.Present.SaveAsync();
+            await this.Present.InvokeContextSavedAsync();
             this.Future.Push(this.Present);
         }
 
         var item = this.Past.Pop()!;
-        await item.LoadAsync();
-        item.Execute();
+        await item.InvokeContextLoadedAsync();
+        await item.InvokeUnExecutedAsync();
+        await item.ExecuteLoaderAsync();
         this.Present = item;
 
         return true;

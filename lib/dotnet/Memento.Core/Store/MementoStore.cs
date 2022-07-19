@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Memento;
 
+
 public abstract class MementoStore<TState, TMessages>
     : Store<TState, TMessages>
         where TState : class
@@ -14,23 +15,24 @@ public abstract class MementoStore<TState, TMessages>
 
     HistoryManager HistoryManager { get; } = new();
 
-    public IReadOnlyCollection<IMementoState<TState>> FutureHistories => this.HistoryManager
+    public IReadOnlyCollection<IMementoStateContext<TState>> FutureHistories => this.HistoryManager
         .FutureHistories
-        .Select(x => x as IMementoState<TState>)
+        .Select(x => x as IMementoStateContext<TState>)
         .Where(x => x is not null)
         .Select(x => x!)
         .ToList()
         .AsReadOnly();
 
-    public IReadOnlyCollection<IMementoState<TState>> PastHistories => this.HistoryManager
+    public IReadOnlyCollection<IMementoStateContext<TState>> PastHistories => this.HistoryManager
         .PastHistories
-        .Select(x => x as IMementoState<TState>)
+        .Select(x => x as IMementoStateContext<TState>)
         .Where(x => x is not null)
         .Select(x => x!)
         .ToList()
         .AsReadOnly();
 
-    public IMementoState<TState>? Present => this.HistoryManager.Present as IMementoState<TState>;
+    public IMementoCommandContext<TState>? Present =>
+        this.HistoryManager.Present as IMementoCommandContext<TState>;
 
     public MementoStore(
         StateInitializer<TState> initializer,
@@ -39,39 +41,51 @@ public abstract class MementoStore<TState, TMessages>
 
     }
 
-    public virtual ValueTask OnStateSavedAsync(IMementoCommand<TState?> command) {
+    public virtual ValueTask OnContextSavedAsync(IMementoStateContext<TState?> command) {
         return ValueTask.CompletedTask;
     }
 
-    public virtual ValueTask OnStateLoadAsync(IMementoCommand<TState?> command) {
+    public virtual ValueTask OnContextLoadedAsync(IMementoStateContext<TState?> command) {
         return ValueTask.CompletedTask;
     }
 
-    public virtual void OnStateDisposed(IMementoCommand<TState?> command) {
+    public virtual void OnContextDisposed(IMementoStateContext<TState?> command) {
     }
 
-    public async ValueTask CommitAsync(Func<ValueTask> onExecute,Func<ValueTask> onUnExecute,string? name = null) {
+    public async ValueTask CommitAsync<TMessage>(
+        TMessage message,
+        string? name = null,
+        Func<TState, ValueTask> dataloader,
+        Func<TState, ValueTask>? onUnexecuted = null
+    ) where TMessage : TMessages {
         await this.HistoryManager.ExcuteAsync(
-            this.State,
-            context => {
-                if (context.State is null) {
-                    throw new Exception("State is not set in IMementoCommand<T>");
-                }
-
-                this.State = context.State;
+            new {
+                State = this.State,
+                Message = message,
+            },
+            async context => {
+                await dataloader.Invoke(context.State.State);
             },
             name ?? Guid.NewGuid().ToString(),
-            context => this.OnStateSavedAsync(context),
-            context => this.OnStateLoadAsync(context),
-            context => this.OnStateDisposed(context)
+            context => onUnexecuted?.Invoke(context.State) ?? ValueTask.CompletedTask,
+            context => this.OnContextSavedAsync(context.State.State),
+            context => this.OnContextLoadedAsync(context.State.State),
+            context => this.OnContextDisposed(context)
         );
     }
 
-    public async ValueTask UndoAsync() {
-        await this.HistoryManager.UndoAsync();
+    public async ValueTask CommitAsync(TMessages message) {
+        await this.CommitAsync(state => {
+            this.Mutate(message);
+            return ValueTask.CompletedTask;
+        });
     }
 
-    public async ValueTask ReooAsync() {
-        await this.HistoryManager.RedoAsync();
+    public async ValueTask UnExecuteAsync() {
+        await this.HistoryManager.UnExecuteAsync();
+    }
+
+    public async ValueTask ReExecuteAsync() {
+        await this.HistoryManager.ReExecuteAsync();
     }
 }
