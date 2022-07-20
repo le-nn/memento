@@ -59,11 +59,11 @@
     }
 
     async Task Redo() {
-        await this.AsyncCounterStore.ReooAsync();
+        await this.AsyncCounterStore.ReExecuteAsync();
     }
 
     async Task Undo() {
        
-        await this.AsyncCounterStore.UndoAsync();
+        await this.AsyncCounterStore.UnExecuteAsync();
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Memento;
 
+public record Restores : Message;
 
 public abstract class MementoStore<TState, TMessages>
     : Store<TState, TMessages>
@@ -53,32 +54,32 @@ public abstract class MementoStore<TState, TMessages>
     }
 
     public async ValueTask CommitAsync<TMessage>(
-        TMessage message,
         string? name = null,
-        Func<TState, ValueTask> dataloader,
+        Func<TState, ValueTask<TMessage>>? onExcecuted = null,
         Func<TState, ValueTask>? onUnexecuted = null
-    ) where TMessage : TMessages {
+    ) where TMessage : Message {
         await this.HistoryManager.ExcuteAsync(
-            new {
-                State = this.State,
-                Message = message,
-            },
+            this.State,
             async context => {
-                await dataloader.Invoke(context.State.State);
+                var last = this.State;
+                this.State = context.State;
+                this.InvokeObserver(new StateChangedEventArgs {
+                    LastState = last,
+                    State = context.State,
+                    Message = new Restores(),
+                    Sender = this,
+                });
+
+                if (onExcecuted is not null) {
+                    await onExcecuted.Invoke(context.State);
+                }
             },
             name ?? Guid.NewGuid().ToString(),
             context => onUnexecuted?.Invoke(context.State) ?? ValueTask.CompletedTask,
-            context => this.OnContextSavedAsync(context.State.State),
-            context => this.OnContextLoadedAsync(context.State.State),
+            context => this.OnContextSavedAsync(context),
+            context => this.OnContextLoadedAsync(context),
             context => this.OnContextDisposed(context)
         );
-    }
-
-    public async ValueTask CommitAsync(TMessages message) {
-        await this.CommitAsync(state => {
-            this.Mutate(message);
-            return ValueTask.CompletedTask;
-        });
     }
 
     public async ValueTask UnExecuteAsync() {

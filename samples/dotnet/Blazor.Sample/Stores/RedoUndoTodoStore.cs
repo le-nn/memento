@@ -8,12 +8,13 @@ public record RedoUndoTodoState {
     public ImmutableArray<Todo> Todos { get; init; } = ImmutableArray.Create<Todo>();
 }
 
-public record RedoUndoTodoMessages : Message {
+public abstract record RedoUndoTodoMessages : Message {
     public record SetItems(ImmutableArray<Todo> Items) : RedoUndoTodoMessages;
     public record Append(Todo Item) : RedoUndoTodoMessages;
     public record Replace(Guid Id, Todo Item) : RedoUndoTodoMessages;
     public record BeginLoading : RedoUndoTodoMessages;
     public record EndLoading : RedoUndoTodoMessages;
+    public record Commit : RedoUndoTodoMessages;
 }
 
 public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState, RedoUndoTodoMessages> {
@@ -42,19 +43,19 @@ public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState, RedoUndoTodoMes
     }
 
     public async Task CreateNewAsync(string text) {
-        await this.TodoService.CreateItemAsync(text);
+
+        await this.CommitAsync("create/todo", async (_) => {
+            var item = await this.TodoService.CreateItemAsync(text);
+            this.Mutate(new RedoUndoTodoMessages.Append(item));
+        });
     }
 
     public async Task FetchAsync() {
-        await this.CommitAsync(async context => {
-            this.Mutate(new RedoUndoTodoMessages.BeginLoading());
-            var items = await this.TodoService.FetchItemsAsync();
-            this.Mutate(new RedoUndoTodoMessages.SetItems(items));
-            this.Mutate(new RedoUndoTodoMessages.EndLoading());
-        }, "initialize");
-    }
+        this.Mutate(new RedoUndoTodoMessages.BeginLoading());
+        var items = await this.TodoService.FetchItemsAsync();
+        this.Mutate(new RedoUndoTodoMessages.SetItems(items));
+        this.Mutate(new RedoUndoTodoMessages.EndLoading());
 
-    public async Task CreateNew(string text) {
-
+        //await this.CommitAsync(new RedoUndoTodoMessages.Commit(), "initialize/store");
     }
 }

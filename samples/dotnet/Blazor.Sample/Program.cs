@@ -16,6 +16,7 @@ builder.Services.AddScoped<ITodoService, MockTodoService>();
 builder.Services.AddMemento()
     .AddMiddleware<LoggerMiddleware>()
     .AddStore<AsyncCounterStore>()
+    .AddStore<RedoUndoTodoStore>()
     .AddStore<FetchDataStore>();
 
 var app = builder.Build();

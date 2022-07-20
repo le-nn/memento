@@ -169,6 +169,14 @@ public abstract class Store<TState, TMessages>
     }
 
     internal void InvokeObserver(StateChangedEventArgs<TState, TMessages> e) {
-        this.InvokeObserver(e);
+        foreach (var obs in this.Observers) {
+            obs.OnNext(e);
+        }
+    }
+
+    internal void InvokeObserver(StateChangedEventArgs e) {
+        foreach (var obs in this.Observers) {
+            obs.OnNext(e);
+        }
     }
 }

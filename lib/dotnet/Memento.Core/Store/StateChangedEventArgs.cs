@@ -1,6 +1,6 @@
 namespace Memento;
 
-public abstract record StateChangedEventArgs {
+public record StateChangedEventArgs {
     protected object? sender;
 
     public Message? Message { get; init; }
@@ -9,9 +9,9 @@ public abstract record StateChangedEventArgs {
 
     public object? State { get; init; }
 
-    public Store<object, Message>? Sender {
+    public IStore? Sender {
         get {
-            return (Store<object, Message>?)this.sender;
+            return (IStore?)this.sender;
         }
         init {
             this.sender = value;

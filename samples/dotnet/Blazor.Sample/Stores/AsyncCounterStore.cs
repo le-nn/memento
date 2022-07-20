@@ -47,7 +47,7 @@ public class AsyncCounterStore : MementoStore<AsyncCounterState, AsyncCounterMes
         await Task.Delay(800);
         this.Mutate(new CountUp());
 
-        await this.CommitAsync();
+        //await this.CommitAsync();
     }
 
     public void CountUpManyTimes(int count) {
