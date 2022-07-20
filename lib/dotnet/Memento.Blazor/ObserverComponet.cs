@@ -7,14 +7,13 @@ public class ObserverComponet : ComponentBase, IDisposable {
     private bool IsDisposed;
     private IDisposable? StateSubscription;
     private IDisposable InvokerSubscription;
-    private readonly ThrottledInvoker StateHasChangedThrottler;
+    private readonly ThrottledExecutor<StateChangedEventArgs> StateHasChangedThrottler = new();
 
     /// <summary>
     /// Creates a new instance
     /// </summary>
     public ObserverComponet() {
-        this.StateHasChangedThrottler = new ThrottledInvoker();
-        this.InvokerSubscription = this.StateHasChangedThrottler.Subscribe(() => {
+        this.InvokerSubscription = this.StateHasChangedThrottler.Subscribe(e => {
             if (this.IsDisposed is false) {
                 base.InvokeAsync(StateHasChanged);
             }
@@ -45,7 +44,7 @@ public class ObserverComponet : ComponentBase, IDisposable {
     /// </summary>
     protected override void OnInitialized() {
         base.OnInitialized();
-        StateSubscription = StateSubscriber.Subscribe(this, _ => {
+        this.StateSubscription = StateSubscriber.Subscribe(this, _ => {
             StateHasChangedThrottler.Invoke(this.MaximumStateChangedNotificationsPerSecond);
         });
     }
@@ -56,7 +55,8 @@ public class ObserverComponet : ComponentBase, IDisposable {
                 throw new NullReferenceException("Have you forgotten to call base.OnInitialized() in your component?");
             }
 
-            StateSubscription.Dispose();
+            this.InvokerSubscription.Dispose();
+            this.StateSubscription.Dispose();
         }
     }
 }

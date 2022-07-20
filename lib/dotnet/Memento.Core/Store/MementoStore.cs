@@ -16,6 +16,12 @@ public abstract class MementoStore<TState, TMessages>
 
     HistoryManager HistoryManager { get; } = new();
 
+    public bool CanReDo => this.HistoryManager.CanReDo;
+
+    public bool CanUnDo => this.HistoryManager.CanUnDo;
+
+    public IMementoStateContext<TState>? Present => this.HistoryManager.Present as IMementoStateContext<TState>;
+
     public IReadOnlyCollection<IMementoStateContext<TState>> FutureHistories => this.HistoryManager
         .FutureHistories
         .Select(x => x as IMementoStateContext<TState>)
@@ -31,9 +37,6 @@ public abstract class MementoStore<TState, TMessages>
         .Select(x => x!)
         .ToList()
         .AsReadOnly();
-
-    public IMementoCommandContext<TState>? Present =>
-        this.HistoryManager.Present as IMementoCommandContext<TState>;
 
     public MementoStore(
         StateInitializer<TState> initializer,
@@ -54,28 +57,23 @@ public abstract class MementoStore<TState, TMessages>
     }
 
     public async ValueTask CommitAsync<TMessage>(
-        string? name = null,
-        Func<TState, ValueTask<TMessage>>? onExcecuted = null,
-        Func<TState, ValueTask>? onUnexecuted = null
-    ) where TMessage : Message {
-        await this.HistoryManager.ExcuteAsync(
-            this.State,
-            async context => {
-                var last = this.State;
-                this.State = context.State;
-                this.InvokeObserver(new StateChangedEventArgs {
-                    LastState = last,
-                    State = context.State,
-                    Message = new Restores(),
-                    Sender = this,
-                });
+        Func<TState, ValueTask<TMessage>> onExcecuted,
+        Func<TState, ValueTask> onUnexecuted,
+        string? name = null
+    ) where TMessage : TMessages {
+        await this.HistoryManager.ExcuteCommitAsync(
+            async () => {
+                var lastState = this.State;
+                var message = await onExcecuted.Invoke(lastState);
+                this.Mutate(message);
 
-                if (onExcecuted is not null) {
-                    await onExcecuted.Invoke(context.State);
-                }
+                return message;
+            },
+            async state => {
+                await onUnexecuted(this.State);
+                this.Mutate(state);
             },
             name ?? Guid.NewGuid().ToString(),
-            context => onUnexecuted?.Invoke(context.State) ?? ValueTask.CompletedTask,
             context => this.OnContextSavedAsync(context),
             context => this.OnContextLoadedAsync(context),
             context => this.OnContextDisposed(context)

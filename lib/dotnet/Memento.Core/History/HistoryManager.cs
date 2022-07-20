@@ -30,22 +30,20 @@ public class HistoryManager {
         }
     }
 
-    public async ValueTask ExcuteAsync<T>(
-        T state,
-        Func<IMementoStateContext<T>,ValueTask> dataloader,
+    public async ValueTask ExcuteCommitAsync<T>(
+        Func<ValueTask<T>> execute,
+        Func<T, ValueTask> unexecute,
         string? name = null,
-        Func<IMementoStateContext<T>, ValueTask>? unExecuted = null,
         Func<IMementoStateContext<T?>, ValueTask>? saved = null,
         Func<IMementoStateContext<T?>, ValueTask>? loaded = null,
         Action<IMementoStateContext<T?>>? onDispose = null
     ) where T : class {
         await this.ExcuteAsync(
             new MementoCommandContext<T>(
-                state,
-                dataloader,
+                execute,
+                unexecute,
                 name ?? Guid.NewGuid().ToString()
             ) {
-                UnExecuted = unExecuted,
                 ContextLoaded = loaded,
                 ContextSaved = saved,
                 Disposed = onDispose,
@@ -63,7 +61,7 @@ public class HistoryManager {
             this.Past.Push(this.Present);
         }
 
-        await command.ExecuteLoaderAsync();
+        await command.CommitAsync();
         this.Present = command;
 
         this.ReduceIfPastHistoriesOverflow();
@@ -81,7 +79,7 @@ public class HistoryManager {
 
         var item = this.Future.Pop()!;
         await item.InvokeContextLoadedAsync();
-       await item.ExecuteLoaderAsync();
+        await item.CommitAsync();
         this.Present = item;
 
         return true;
@@ -99,8 +97,7 @@ public class HistoryManager {
 
         var item = this.Past.Pop()!;
         await item.InvokeContextLoadedAsync();
-        await item.InvokeUnExecutedAsync();
-        await item.ExecuteLoaderAsync();
+        await item.RestoreAsync();
         this.Present = item;
 
         return true;

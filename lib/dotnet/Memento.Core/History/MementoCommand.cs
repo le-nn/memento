@@ -2,12 +2,10 @@ namespace Memento;
 
 public record MementoCommandContext<T> : IMementoCommandContext<T>
     where T : class {
-    private Func<IMementoCommandContext<T>, ValueTask> OnDataLoaded { get; }
-
 
     public bool IsDisposed { get; private set; }
 
-    public T? State { get; set; }
+    public T? State { get; set; } = null;
 
     object? IMementoStateContext.State {
         get => this.State;
@@ -16,39 +14,36 @@ public record MementoCommandContext<T> : IMementoCommandContext<T>
 
     public string Name { get; }
 
-    public Func<IMementoCommandContext<T>, ValueTask>? UnExecuted { get; init; }
+    private Func<ValueTask<T>> Executed { get; }
 
-    public Func<IMementoCommandContext<T?>, ValueTask>? ContextSaved { get; init; }
+    private Func<T, ValueTask> UnExecuted { get; init; }
 
-    public Func<IMementoCommandContext<T?>, ValueTask>? ContextLoaded { get; init; }
+    public Func<IMementoStateContext<T?>, ValueTask>? ContextSaved { get; init; }
+
+    public Func<IMementoStateContext<T?>, ValueTask>? ContextLoaded { get; init; }
 
     public Action<IMementoCommandContext<T?>>? Disposed { get; init; }
 
     public MementoCommandContext(
-        T state,
-        Func<IMementoCommandContext<T>, ValueTask> dataLoader,
+        Func<ValueTask<T>> executed,
+        Func<T, ValueTask> unexecuted,
         string name
     ) {
-        this.State = state;
-        this.OnDataLoaded = dataLoader;
+        this.UnExecuted = unexecuted;
+        this.Executed = executed;
         this.Name = name;
     }
 
-    public async ValueTask ExecuteLoaderAsync() {
-        if (this.State is null) {
-            throw new NullReferenceException("State is null.");
-        }
-
-        await this.OnDataLoaded(this);
+    public async ValueTask CommitAsync() {
+        this.State = await this.Executed();
     }
 
-    public async ValueTask InvokeUnExecutedAsync() {
+    public async ValueTask RestoreAsync() {
         if (this.State is null) {
             throw new NullReferenceException("State is null.");
         }
 
-        await this.OnDataLoaded(this!);
-        await (this.UnExecuted?.Invoke(this!) ?? ValueTask.CompletedTask);
+        await this.UnExecuted.Invoke(this.State);
     }
 
     public async ValueTask InvokeContextSavedAsync() {

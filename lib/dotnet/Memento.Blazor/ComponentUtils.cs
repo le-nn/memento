@@ -19,14 +19,14 @@ public static class StateSubscriber {
     /// <param name="subject">The object to scan for <see cref="IStateChangedNotifier"/> properties.</param>
     /// <param name="callback">The action to execute when one of the states are modified</param>
     /// <returns></returns>
-    public static IDisposable Subscribe(object subject, Action<IStore> callback) {
+    public static IDisposable Subscribe(object subject, Action<StateChangedEventArgs> callback) {
         _ = subject ?? throw new ArgumentNullException(nameof(subject));
         _ = callback ?? throw new ArgumentNullException(nameof(callback));
 
         var subscriptions = (
             from getStateChangedNotifierPropertyValue in GetStateChangedNotifierPropertyDelegatesForType(subject.GetType())
             let store = getStateChangedNotifierPropertyValue(subject)
-            select store.Subscribe(new StoreObeserver(e => callback(store)))
+            select store.Subscribe(new StoreObeserver(e => callback(e)))
         ).ToArray();
 
         return new StoreSubscription(

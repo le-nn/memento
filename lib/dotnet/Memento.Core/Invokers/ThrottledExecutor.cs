@@ -1,32 +1,44 @@
+using Memento.Core.Internals;
 using Memento.Core.Store.Internals;
 
 namespace Memento.Core.Invokers;
 
-// TODO: IObservable
-
-public class ThrottledInvoker {
+public class ThrottledExecutor<T> : IObservable<T> {
     volatile int LockFlag;
     volatile bool InvokingSuspended;
     DateTime LastInvokeTime;
     Timer? ThrottleTimer;
 
-    readonly List<Action> observers = new();
+    readonly List<IObserver<T>> observers = new();
     readonly object locker = new();
 
     public ushort ThrottleWindowMs { get; private set; }
 
-    public ThrottledInvoker() {
+    public ThrottledExecutor() {
         LastInvokeTime = DateTime.UtcNow - TimeSpan.FromMilliseconds(ushort.MaxValue);
     }
 
-    public IDisposable Subscribe(Action action) {
+    public IDisposable Subscribe(IObserver<T> action) {
         lock (this.locker) {
             this.observers.Add(action);
         }
 
-        return new StoreSubscription(nameof(ThrottledInvoker), () => {
+        return new StoreSubscription(nameof(ThrottledExecutor<T>), () => {
             lock (this.locker) {
                 this.observers.Remove(action);
+            }
+        });
+    }
+
+    public IDisposable Subscribe(Action<T> action) {
+        var observer = new GeneralObeserver<T>(action);
+        lock (this.locker) {
+            this.observers.Add(observer);
+        }
+
+        return new StoreSubscription(nameof(ThrottledExecutor<T>), () => {
+            lock (this.locker) {
+                this.observers.Remove(observer);
             }
         });
     }
@@ -40,10 +52,10 @@ public class ThrottledInvoker {
         Invoke();
     }
 
-    public void Invoke() {
+    public void Invoke(T value) {
         // If no throttle window then bypass throttling
         if (ThrottleWindowMs is 0) {
-            this.InvokeObservers();
+            this.InvokeObservers(value);
             return;
         }
 
@@ -58,7 +70,7 @@ public class ThrottledInvoker {
 
             // If last execute was outside the throttle window then execute immediately
             if (millisecondsSinceLastInvoke >= ThrottleWindowMs) {
-                ExecuteThrottledAction(this.InvokeObservers);
+                ExecuteThrottledAction(value, this.InvokeObservers);
                 return;
             }
 
@@ -68,7 +80,7 @@ public class ThrottledInvoker {
             // the timer has triggered
             InvokingSuspended = true;
             ThrottleTimer = new Timer(
-                callback: _ => ExecuteThrottledAction(this.InvokeObservers),
+                callback: _ => ExecuteThrottledAction(value, this.InvokeObservers),
                 state: null,
                 dueTime: ThrottleWindowMs - millisecondsSinceLastInvoke,
                 period: 0
@@ -87,9 +99,9 @@ public class ThrottledInvoker {
         }
     }
 
-    private void ExecuteThrottledAction(Action action) {
+    private void ExecuteThrottledAction(T value, Action<T> action) {
         try {
-            action();
+            action(value);
         }
         finally {
             ThrottleTimer?.Dispose();
@@ -100,9 +112,9 @@ public class ThrottledInvoker {
         }
     }
 
-    void InvokeObservers() {
-        foreach(var o in this.observers) {
-            o();
+    void InvokeObservers(T value) {
+        foreach (var o in this.observers) {
+            o.OnNext(value);
         }
     }
 }
