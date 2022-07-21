@@ -1,11 +1,10 @@
 namespace Memento;
 
-public record MementoCommandContext<T> : IMementoCommandContext<T>
-    where T : class {
+public record MementoCommandContext<T> : IMementoCommandContext<T> {
 
     public bool IsDisposed { get; private set; }
 
-    public T? State { get; set; } = null;
+    public T? State { get; set; } = default(T?);
 
     object? IMementoStateContext.State {
         get => this.State;
@@ -13,6 +12,8 @@ public record MementoCommandContext<T> : IMementoCommandContext<T>
     }
 
     public string Name { get; }
+
+    private Func<T, ValueTask> Dataloader { get; }
 
     private Func<ValueTask<T>> Executed { get; }
 
@@ -25,10 +26,12 @@ public record MementoCommandContext<T> : IMementoCommandContext<T>
     public Action<IMementoCommandContext<T?>>? Disposed { get; init; }
 
     public MementoCommandContext(
+        Func<T, ValueTask> dataloader,
         Func<ValueTask<T>> executed,
         Func<T, ValueTask> unexecuted,
         string name
     ) {
+        this.Dataloader = dataloader;
         this.UnExecuted = unexecuted;
         this.Executed = executed;
         this.Name = name;
@@ -69,5 +72,9 @@ public record MementoCommandContext<T> : IMementoCommandContext<T>
 
         this.IsDisposed = true;
         this.ContextLoaded?.Invoke(this!);
+    }
+
+    public ValueTask LoadDataAsync() {
+        return Dataloader.Invoke(this.State!);
     }
 }

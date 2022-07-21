@@ -21,7 +21,6 @@ public class HistoryManager {
 
     public bool CanUnDo => this.Past.Count is not 0;
 
-
     public int MaxHistoryCount {
         get => maxHistoryCount;
         set {
@@ -29,17 +28,19 @@ public class HistoryManager {
             this.ReduceIfPastHistoriesOverflow();
         }
     }
-
+    
     public async ValueTask ExcuteCommitAsync<T>(
         Func<ValueTask<T>> execute,
         Func<T, ValueTask> unexecute,
+        Func<T, ValueTask> dataloader,
         string? name = null,
         Func<IMementoStateContext<T?>, ValueTask>? saved = null,
         Func<IMementoStateContext<T?>, ValueTask>? loaded = null,
         Action<IMementoStateContext<T?>>? onDispose = null
-    ) where T : class {
+    ) {
         await this.ExcuteAsync(
             new MementoCommandContext<T>(
+                dataloader,
                 execute,
                 unexecute,
                 name ?? Guid.NewGuid().ToString()
@@ -62,6 +63,8 @@ public class HistoryManager {
         }
 
         await command.CommitAsync();
+        await command.LoadDataAsync();
+
         this.Present = command;
 
         this.ReduceIfPastHistoriesOverflow();
@@ -80,6 +83,7 @@ public class HistoryManager {
         var item = this.Future.Pop()!;
         await item.InvokeContextLoadedAsync();
         await item.CommitAsync();
+        await item.LoadDataAsync();
         this.Present = item;
 
         return true;
@@ -91,13 +95,14 @@ public class HistoryManager {
         }
 
         if (this.Present is not null) {
+            await this.Present.RestoreAsync();
             await this.Present.InvokeContextSavedAsync();
             this.Future.Push(this.Present);
         }
 
         var item = this.Past.Pop()!;
         await item.InvokeContextLoadedAsync();
-        await item.RestoreAsync();
+        await item.LoadDataAsync();
         this.Present = item;
 
         return true;

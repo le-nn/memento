@@ -8,6 +8,8 @@ public interface IMementoCommandContext : IDisposable, IMementoStateContext {
     ValueTask CommitAsync();
 
     ValueTask RestoreAsync();
+
+    ValueTask LoadDataAsync();
 }
 
 public interface IMementoCommandContext<T> : IMementoCommandContext, IMementoStateContext<T> {

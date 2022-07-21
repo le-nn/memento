@@ -44,8 +44,8 @@ public class ObserverComponet : ComponentBase, IDisposable {
     /// </summary>
     protected override void OnInitialized() {
         base.OnInitialized();
-        this.StateSubscription = StateSubscriber.Subscribe(this, _ => {
-            StateHasChangedThrottler.Invoke(this.MaximumStateChangedNotificationsPerSecond);
+        this.StateSubscription = StateSubscriber.Subscribe(this, e => {
+            StateHasChangedThrottler.Invoke(e, this.MaximumStateChangedNotificationsPerSecond);
         });
     }
 

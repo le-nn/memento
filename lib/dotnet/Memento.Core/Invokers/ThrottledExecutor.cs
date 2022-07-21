@@ -32,24 +32,16 @@ public class ThrottledExecutor<T> : IObservable<T> {
 
     public IDisposable Subscribe(Action<T> action) {
         var observer = new GeneralObeserver<T>(action);
-        lock (this.locker) {
-            this.observers.Add(observer);
-        }
-
-        return new StoreSubscription(nameof(ThrottledExecutor<T>), () => {
-            lock (this.locker) {
-                this.observers.Remove(observer);
-            }
-        });
+        return this.Subscribe(observer);
     }
 
-    public void Invoke(byte maximumInvokesPerSecond = 0) {
+    public void Invoke(T value, byte maximumInvokesPerSecond = 0) {
         ThrottleWindowMs = maximumInvokesPerSecond switch {
             0 => 0,
             _ => (ushort)(1000 / maximumInvokesPerSecond),
         };
 
-        Invoke();
+        this.Invoke(value);
     }
 
     public void Invoke(T value) {

@@ -3,11 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Memento;
 
 public record Restores : Message;
+
+public record Context<TState, TMessage>(TState State, TMessage Message);
 
 public abstract class MementoStore<TState, TMessages>
     : Store<TState, TMessages>
@@ -45,39 +48,47 @@ public abstract class MementoStore<TState, TMessages>
 
     }
 
-    public virtual ValueTask OnContextSavedAsync(IMementoStateContext<TState?> command) {
+    public virtual ValueTask OnContextSavedAsync(IMementoStateContext<Context<TState, TMessages>> command) {
         return ValueTask.CompletedTask;
     }
 
-    public virtual ValueTask OnContextLoadedAsync(IMementoStateContext<TState?> command) {
+    public virtual ValueTask OnContextLoadedAsync(IMementoStateContext<Context<TState, TMessages>> command) {
         return ValueTask.CompletedTask;
     }
 
-    public virtual void OnContextDisposed(IMementoStateContext<TState?> command) {
+    public virtual void OnContextDisposed(IMementoStateContext<Context<TState, TMessages>> command) {
     }
 
-    public async ValueTask CommitAsync<TMessage>(
-        Func<TState, ValueTask<TMessage>> onExcecuted,
-        Func<TState, ValueTask> onUnexecuted,
+    public async ValueTask CommitAsync(
+        Func<ValueTask<TMessages>> messageCreator,
+        Func<TMessages, ValueTask> onUnexecuted,
         string? name = null
-    ) where TMessage : TMessages {
-        await this.HistoryManager.ExcuteCommitAsync(
+    ) {
+        await this.HistoryManager.ExcuteCommitAsync<Context<TState, TMessages>>(
             async () => {
-                var lastState = this.State;
-                var message = await onExcecuted.Invoke(lastState);
-                this.Mutate(message);
-
-                return message;
+                var message = await messageCreator.Invoke();
+                return new Context<TState, TMessages>(this.State, message);
             },
             async state => {
-                await onUnexecuted(this.State);
-                this.Mutate(state);
+                await onUnexecuted(state.Message);
+            },
+            async (state) => {
+                this.ApplyComputedState(state.State, state.Message);
             },
             name ?? Guid.NewGuid().ToString(),
             context => this.OnContextSavedAsync(context),
             context => this.OnContextLoadedAsync(context),
             context => this.OnContextDisposed(context)
         );
+    }
+
+    public async ValueTask CommitAsync(TMessages message, string? name = null) {
+        await this.CommitAsync(async () => message, async (s) => { }, name);
+    }
+
+    static Context<TState, TMessages> UpCast<TMessage>(Context<TState, TMessage> ctx)
+        where TMessage : TMessages {
+        return new Context<TState, TMessages>(ctx.State, ctx.Message);
     }
 
     public async ValueTask UnExecuteAsync() {

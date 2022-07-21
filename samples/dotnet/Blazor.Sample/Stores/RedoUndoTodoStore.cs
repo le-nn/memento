@@ -43,13 +43,15 @@ public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState, RedoUndoTodoMes
     }
 
     public async Task CreateNewAsync(string text) {
-
         await this.CommitAsync(
-            "create/todo",
-            async (_) => {
-            var item = await this.TodoService.CreateItemAsync(text);
-            this.Mutate(new RedoUndoTodoMessages.Append(item));
-        });
+            async () => {
+                var item = await this.TodoService.CreateItemAsync(text);
+                return new RedoUndoTodoMessages.Append(item);
+            },
+            async message => {
+                var m = message as RedoUndoTodoMessages.Append;
+                await this.TodoService.RemoveAsync(m.Item.TodoId);
+            });
     }
 
     public async Task FetchAsync() {

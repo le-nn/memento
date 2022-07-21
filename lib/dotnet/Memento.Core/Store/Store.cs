@@ -46,7 +46,7 @@ public abstract class Store<TState, TMessages>
         TMessages message
     ) {
         var previous = state;
-        var postState = this.OnBeforeMutate(this.State, message);
+        var postState = this.OnBeforeMutate(previous, message);
 
         var middlewareProcessedState = this.GetMiddlewareInvokeHandler()(postState, message);
         if (middlewareProcessedState is TState s) {
@@ -54,7 +54,7 @@ public abstract class Store<TState, TMessages>
             var e = new StateChangedEventArgs<TState, TMessages> {
                 LastState = previous,
                 Message = message,
-                State = this.State,
+                State = newState,
                 Sender = this,
             };
 
