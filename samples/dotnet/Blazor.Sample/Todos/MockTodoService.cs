@@ -5,9 +5,9 @@ namespace Blazor.Sample.Todos;
 public class MockTodoService : ITodoService {
     List<Todo> Items = new();
 
-    public async Task<Todo> CreateItemAsync(string text) {
+    public async Task<Todo> CreateItemAsync(Guid id, string text) {
         await Task.Delay(600);
-        var todo = Todo.CreateNew(text);
+        var todo = Todo.CreateNew(id, text);
         this.Items.Add(todo);
         return todo;
     }
@@ -48,9 +48,12 @@ public class MockTodoService : ITodoService {
     }
 
     public async Task<Todo?> ToggleCompleteAsync(Guid id) {
-        return await this.Replace(id, todo => todo with {
-            IsCompleted = !todo.IsCompleted,
-        });
+        return await this.Replace(
+            id,
+            todo => todo with {
+                IsCompleted = !todo.IsCompleted,
+            }
+        );
     }
 
     private async Task<Todo?> Replace(Guid id, Func<Todo, Todo> func) {
@@ -59,12 +62,17 @@ public class MockTodoService : ITodoService {
             return null;
         }
 
-        var newItem = func(item);
         var index = this.Items.IndexOf(item);
+        var newItem = func(item);
         if (index is not -1) {
-            this.Items[index] = func(newItem);
+            this.Items[index] = newItem;
+        }
+        else {
+            return null;
         }
 
         return newItem;
     }
+
+
 }

@@ -20,7 +20,7 @@ public record AsyncCounterMessage : Message {
 }
 
 public class AsyncCounterStore : MementoStore<AsyncCounterState, AsyncCounterMessage> {
-    public AsyncCounterStore() : base(() => new(), Mutation) { }
+    public AsyncCounterStore() : base(() => new(), Mutation, new()) { }
 
     static AsyncCounterState Mutation(AsyncCounterState state, AsyncCounterMessage message) {
         return message switch {

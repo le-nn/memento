@@ -8,7 +8,12 @@
 <div class="px-4 container">
     <div class="d-flex flex-column">
         @foreach (var todo in RedoUndoTodoStore.State.Todos) {
-            <div>@todo.IsCompleted @todo.Text</div>
+            <div class="d-flex">
+                <input type="checkbox"
+                   checked="@todo.IsCompleted"
+                   onchange="@(() => HandleCheckChanged(todo.TodoId))" />
+                <div>@todo.IsCompleted @todo.Text</div>
+            </div>
         }
     </div>
 
@@ -18,9 +23,8 @@
     </div>
 
     <div class="d-flex mt-3">
-        <button class="mt-3 btn btn-primary" @onclick="Undo">Undo</button>
-
-        <button class="mt-3 btn btn-primary" @onclick="Redo">Redo</button>
+        <button class="mt-3 btn btn-primary" disabled="@(!RedoUndoTodoStore.CanUnDo)" @onclick="Undo">Undo</button>
+        <button class="mt-3 btn btn-primary" disabled="@(!RedoUndoTodoStore.CanReDo)" @onclick="Redo">Redo</button>
     </div>
 </div>
 
@@ -28,8 +32,10 @@
     string text = "";
 
     async Task AddTodo() {
-        await RedoUndoTodoStore.CreateNewAsync(text);
+        var _text = text;
         text = "";
+
+        await RedoUndoTodoStore.CreateNewAsync(_text);
     }
 
     async Task Redo() {
@@ -38,5 +44,9 @@
 
     async Task Undo() {
         await this.RedoUndoTodoStore.UnExecuteAsync();
+    }
+
+    async Task HandleCheckChanged(Guid id) {
+        await this.RedoUndoTodoStore.ToggleIsCompletedAsync(id);
     }
 }

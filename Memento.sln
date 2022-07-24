@@ -21,6 +21,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.Core", "lib\dotnet\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.Sample.ConsoleApp", "samples\dotnet\Memento.Sample.ConsoleApp\Memento.Sample.ConsoleApp.csproj", "{8A4A4F8A-2334-4ACC-B2B0-32DE36B1D7EC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{4EBD97E1-0380-4F7F-A7EF-92FD6B82FAE6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memento.Test", "test\dotnet\Memento.Test\Memento.Test.csproj", "{5A41BE22-FB3C-4D85-AE63-7D578A1A8922}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +47,10 @@ Global
 		{8A4A4F8A-2334-4ACC-B2B0-32DE36B1D7EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A4A4F8A-2334-4ACC-B2B0-32DE36B1D7EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A4A4F8A-2334-4ACC-B2B0-32DE36B1D7EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A41BE22-FB3C-4D85-AE63-7D578A1A8922}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A41BE22-FB3C-4D85-AE63-7D578A1A8922}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A41BE22-FB3C-4D85-AE63-7D578A1A8922}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A41BE22-FB3C-4D85-AE63-7D578A1A8922}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,6 +60,7 @@ Global
 		{78657E9C-2580-4384-BDE1-1E54FCCAE0C7} = {9B9FF1D5-F476-4658-B7EF-98A24BC9BB4A}
 		{3B691AE8-0F54-4061-B5E8-71EE2663F80B} = {9B9FF1D5-F476-4658-B7EF-98A24BC9BB4A}
 		{8A4A4F8A-2334-4ACC-B2B0-32DE36B1D7EC} = {AD16691B-0034-4F49-8F90-0932C029DA3C}
+		{5A41BE22-FB3C-4D85-AE63-7D578A1A8922} = {4EBD97E1-0380-4F7F-A7EF-92FD6B82FAE6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52122159-362B-41B0-BE89-5FC9BF19BE01}

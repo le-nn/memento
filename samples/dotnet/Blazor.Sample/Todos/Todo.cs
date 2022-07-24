@@ -14,9 +14,9 @@ public record Todo {
 
     public DateTime? CompletedAt { get; init; }
 
-    public static Todo CreateNew(string text) {
+    public static Todo CreateNew(Guid id, string text) {
         return new Todo {
-            TodoId = Guid.NewGuid(),
+            TodoId = id,
             Text = text,
             IsCompleted = false,
             CreatedAt = DateTime.UtcNow,

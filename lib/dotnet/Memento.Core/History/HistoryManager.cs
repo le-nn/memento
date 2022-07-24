@@ -1,3 +1,4 @@
+using Memento.Core.Executors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ public class HistoryManager {
     private int maxHistoryCount = 8;
     private FutureHistoryStack<IMementoCommandContext> Future = new();
     private PastHistoryStack<IMementoCommandContext> Past = new();
+    SortedAsyncOperationExecutor SortedOperationExecutor { get; } = new();
 
     public IMementoCommandContext? Present { get; private set; }
 
@@ -19,7 +21,7 @@ public class HistoryManager {
 
     public bool CanReDo => this.Future.Count is not 0;
 
-    public bool CanUnDo => this.Past.Count is not 0;
+    public bool CanUnDo => this.Past.Count is not 0 || this.Present is not null;
 
     public int MaxHistoryCount {
         get => maxHistoryCount;
@@ -28,7 +30,7 @@ public class HistoryManager {
             this.ReduceIfPastHistoriesOverflow();
         }
     }
-    
+
     public async ValueTask ExcuteCommitAsync<T>(
         Func<ValueTask<T>> execute,
         Func<T, ValueTask> unexecute,
@@ -53,68 +55,78 @@ public class HistoryManager {
     }
 
     public async ValueTask ExcuteAsync<T>(IMementoCommandContext<T> command) {
-        if (this.CanReDo) {
-            this.ClearFutureHistoriesAsync();
-        }
+        await this.SortedOperationExecutor.ExecuteAsync(async () => {
+            if (this.CanReDo) {
+                this.ClearFutureHistoriesAsync();
+            }
 
-        if (this.Present is not null) {
-            await this.Present.InvokeContextSavedAsync();
-            this.Past.Push(this.Present);
-        }
+            if (this.Present is not null) {
+                await this.Present.InvokeContextSavedAsync();
+                this.Past.Push(this.Present);
+            }
 
-        await command.CommitAsync();
-        await command.LoadDataAsync();
+            await command.CommitAsync();
+            await command.LoadDataAsync();
 
-        this.Present = command;
+            this.Present = command;
 
-        this.ReduceIfPastHistoriesOverflow();
+            this.ReduceIfPastHistoriesOverflow();
+        });
     }
 
     public async ValueTask<bool> ReExecuteAsync() {
-        if (this.CanReDo is false || this.Future.Count <= 0) {
-            return false;
-        }
+        return await this.SortedOperationExecutor.ExecuteAsync(async () => {
+            if (this.CanReDo is false) {
+                return false;
+            }
 
-        if (this.Present is not null) {
-            await this.Present.InvokeContextSavedAsync();
-            this.Past.Push(this.Present);
-        }
+            if (this.Present is not null) {
+                await this.Present.InvokeContextSavedAsync();
+                this.Past.Push(this.Present);
+            }
 
-        var item = this.Future.Pop()!;
-        await item.InvokeContextLoadedAsync();
-        await item.CommitAsync();
-        await item.LoadDataAsync();
-        this.Present = item;
+            var item = this.Future.Pop()!;
+            await item.InvokeContextLoadedAsync();
+            await item.CommitAsync();
+            await item.LoadDataAsync();
+            this.Present = item;
 
-        return true;
+            return true;
+        });
     }
 
     public async ValueTask<bool> UnExecuteAsync() {
-        if (this.CanUnDo is false || this.Past.Count <= 0) {
-            return false;
-        }
+        return await this.SortedOperationExecutor.ExecuteAsync(async () => {
+            if (this.CanUnDo is false) {
+                return false;
+            }
 
-        if (this.Present is not null) {
-            await this.Present.RestoreAsync();
-            await this.Present.InvokeContextSavedAsync();
-            this.Future.Push(this.Present);
-        }
+            if (this.Present is not null) {
+                await this.Present.RestoreAsync();
+                await this.Present.InvokeContextSavedAsync();
+                this.Future.Push(this.Present);
+            }
 
-        var item = this.Past.Pop()!;
-        await item.InvokeContextLoadedAsync();
-        await item.LoadDataAsync();
-        this.Present = item;
+            if (this.Past.Count is not 0) {
+                var item = this.Past.Pop()!;
+                await item.InvokeContextLoadedAsync();
+                await item.LoadDataAsync();
+                this.Present = item;
+            }
+            else {
+                this.Present = null;
+            }
 
-        return true;
-
+            return true;
+        });
     }
 
     private void ClearFutureHistoriesAsync() {
-        foreach (var item in this.Future) {
+        var items = this.Future.ToArray();
+        this.Future.Clear();
+        foreach (var item in items) {
             item.Dispose();
         }
-
-        this.Future.Clear();
     }
 
     private void ReduceIfPastHistoriesOverflow() {

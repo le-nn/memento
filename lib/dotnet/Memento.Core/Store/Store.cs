@@ -18,6 +18,8 @@ public abstract class Store<TState, TMessages>
 
     object IStore.State => this.State;
 
+    public bool IsInitialized { get; private set; }
+
     private StoreProvider? Provider { get; set; }
     object locker = new();
 
@@ -146,7 +148,7 @@ public abstract class Store<TState, TMessages>
     }
 
     protected virtual void OnInitialized(StoreProvider provider) {
-
+        this.IsInitialized = true;
     }
 
     /// <summary>

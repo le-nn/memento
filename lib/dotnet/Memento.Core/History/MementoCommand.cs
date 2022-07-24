@@ -67,7 +67,7 @@ public record MementoCommandContext<T> : IMementoCommandContext<T> {
 
     public void Dispose() {
         if (this.IsDisposed) {
-            throw new Exception("Command has been disposed.");
+            throw new Exception("This Command has been disposed.");
         }
 
         this.IsDisposed = true;
