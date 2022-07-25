@@ -49,12 +49,12 @@ Note the concept is a bit different from Flux and Redux
 
 ### Current packages and status
 
-| Package Name    | Version | Lang       | Platform            | Package manager | Package provider       |
-| --------------- | ------- | ---------- | ------------------- | --------------- | ---------------------- |
-| memento.core      |         | TS/JS      | node.js 14 or later | npm or yarn     | https://www.npmjs.com/ |
-| memento.react   |         | TS/JS      | node.js 14 or later | npm or yarn     | https://www.npmjs.com/ |
-| Memento.Core    | 0.0.4   | C# or .NET | .NET 7 or later     | Nuget           | [Nuget](https://www.nuget.org/packages/Memento.Core) |
-| Memento.Blazor  | 0.0.4   | Blazor     | .NET 7 or later     | Nuget           | [Nuget](https://www.nuget.org/packages/Memento.Blazor) |
+| Package Name    | Version | Lang       | Platform            | Package manager | Release Notes                      | Package provider                                       |
+| --------------- | ------- | ---------- | ------------------- | --------------- | ---------------------------------- | ------------------------------------------------------ |
+| memento.core    | 1.0.2   | TS/JS      | node.js 14 or later | npm or yarn     | [Notes](./release-notes.node.md)   | [npm](https://www.npmjs.com/package/memento.core)      |
+| memento.react   | 1.0.3   | TS/JS      | node.js 14 or later | npm or yarn     | [Notes](./release-notes.node.md)   | [npm](https://www.npmjs.com/package/memento.react)     |
+| Memento.Core    | 0.0.4   | C# or .NET | .NET 7 or later     | Nuget           | [Notes](./release-notes.dotnet.md) | [Nuget](https://www.nuget.org/packages/Memento.Core)   |
+| Memento.Blazor  | 0.0.4   | Blazor     | .NET 7 or later     | Nuget           | [Notes](./release-notes.dotnet.md) | [Nuget](https://www.nuget.org/packages/Memento.Blazor) |
 
 # Documentation
 
