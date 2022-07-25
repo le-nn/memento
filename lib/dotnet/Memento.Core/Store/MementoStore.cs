@@ -26,17 +26,17 @@ public abstract class MementoStore<TState, TMessages>
 
     public IMementoStateContext<TState>? Present => this.HistoryManager.Present as IMementoStateContext<TState>;
 
-    public IReadOnlyCollection<IMementoStateContext<TState>> FutureHistories => this.HistoryManager
+    public IReadOnlyCollection<IMementoStateContext<Context<TState, TMessages>>> FutureHistories => this.HistoryManager
         .FutureHistories
-        .Select(x => x as IMementoStateContext<TState>)
+        .Select(x => x as IMementoStateContext<Context<TState, TMessages>>)
         .Where(x => x is not null)
         .Select(x => x!)
         .ToList()
         .AsReadOnly();
 
-    public IReadOnlyCollection<IMementoStateContext<TState>> PastHistories => this.HistoryManager
+    public IReadOnlyCollection<IMementoStateContext<Context<TState, TMessages>>> PastHistories => this.HistoryManager
         .PastHistories
-        .Select(x => x as IMementoStateContext<TState>)
+        .Select(x => x as IMementoStateContext<Context<TState, TMessages>>)
         .Where(x => x is not null)
         .Select(x => x!)
         .ToList()
