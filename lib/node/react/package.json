@@ -1,6 +1,6 @@
 {
     "name": "memento.react",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "memento.core binding for react. memento.core is easy unidirectional store-pattern container for state management with DI for frontend app on React.",
     "main": "build/index.js",
     "types": "build/index.d.ts",
