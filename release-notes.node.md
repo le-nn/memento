@@ -2,7 +2,7 @@
 
 ### Memento Core
 
-## v1.0.2
+## v1.0.3
 
 * First release
 
@@ -10,6 +10,6 @@
 
 ### Memento React
 
-## v1.0.3
+## v1.0.4
 
 * First release
