@@ -1,7 +1,7 @@
 # React memento
 
-React bindings for Memento.js.
-It contains Memento.js so you don't need to install it separately.
+React bindings for memento.core.
+It contains memento.core so you don't need to install it separately.
 
 # Memento
 

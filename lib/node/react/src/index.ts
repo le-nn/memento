@@ -6,7 +6,7 @@ import { useStore } from "./useStore";
 import { useDispatch } from "./useDispatch";
 import { useStateRef } from "./useStateRef";
 
-export * from "memento.js";
+export * from "memento.core";
 
 export {
     StoreProvider,

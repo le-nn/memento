@@ -16,7 +16,7 @@ NOTE: ReduxDevTools allows the user to alter the state of your store directly.
 This might be a security flaw, so you should only reference this package in Debug builds.
 
 ```ts
-import { devToolMiddleware,createProvider } from "memento.js"
+import { devToolMiddleware,createProvider } from "memento.core"
 
 export const provider = createProvider({
     stores: [

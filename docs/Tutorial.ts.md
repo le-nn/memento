@@ -7,13 +7,13 @@ Let's take a look at an example of a simple console application to experience th
 Prease install via npm or yarn.
 
 ```
-yarn add memento.js
+yarn add memento.core
 ```
 
 or
 
 ```
-npm install --save memento.js
+npm install --save memento.core
 ```
 
 ### Typescript
@@ -27,7 +27,7 @@ import {
     State,
     Message,
     createProvider
-} from "memento.js"
+} from "memento.core"
 
 const delay = (timeout: number) =>
     new Promise(resolve => setTimeout(resolve, timeout))

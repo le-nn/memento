@@ -1,4 +1,4 @@
-# Memento.js
+# memento.core
 
 Flexible and easy unidirectional store-pattern container for state management with Dependency Injection for Frontend app on JS/TS.
 

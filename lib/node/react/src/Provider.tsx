@@ -1,5 +1,5 @@
 import React from "react";
-import { Provider } from "memento.js";
+import { Provider } from "memento.core";
 import { StoreContext } from "./StoreContext";
 
 interface ProviderProps {

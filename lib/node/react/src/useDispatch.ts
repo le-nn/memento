@@ -1,5 +1,5 @@
 import React from "react";
-import { constructor, FluxStore } from "memento.js";
+import { constructor, FluxStore } from "memento.core";
 import { useProvider } from "./useProvider";
 
 type Dispatcher<TStore> = (store: Omit<TStore, keyof FluxStore>) => Promise<void> | void;

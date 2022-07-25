@@ -51,7 +51,7 @@ Note the concept is a bit different from Flux and Redux
 
 | Package Name    | Version | Lang       | Platform            | Package manager | Package provider       |
 | --------------- | ------- | ---------- | ------------------- | --------------- | ---------------------- |
-| memento.js      |         | TS/JS      | node.js 14 or later | npm or yarn     | https://www.npmjs.com/ |
+| memento.core      |         | TS/JS      | node.js 14 or later | npm or yarn     | https://www.npmjs.com/ |
 | memento.react   |         | TS/JS      | node.js 14 or later | npm or yarn     | https://www.npmjs.com/ |
 | Memento.Core    | 0.0.4   | C# or .NET | .NET 7 or later     | Nuget           | [Nuget](https://www.nuget.org/packages/Memento.Core) |
 | Memento.Blazor  | 0.0.4   | Blazor     | .NET 7 or later     | Nuget           | [Nuget](https://www.nuget.org/packages/Memento.Blazor) |

@@ -52,7 +52,7 @@ const provider = () => createProvider({
 Create a service class that generate fibonacci number.
 
 ```ts
-import { Store, service, Message } from "memento.js"
+import { Store, service, Message } from "memento.core"
 
 const fibState = {
     n: 0,
@@ -119,7 +119,7 @@ export class FibStore extends Store<FibState> {
 ## Nested Service
 
 ```ts
-import { service, meta, FluxStore } from "memento.js"
+import { service, meta, FluxStore } from "memento.core"
 
 @service()
 class FooService {

@@ -10,7 +10,7 @@ State can be specified as plane object, but ```State<T>``` provides useful metho
 The ```State<T>``` behavior is following. 
 
 ```ts
-import { State } from "memento.js"
+import { State } from "memento.core"
 
 /**
  * State for counter.

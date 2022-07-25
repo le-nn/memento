@@ -4,7 +4,7 @@ import {
     State,
     Message,
     createProvider,
-} from "memento.js"
+} from "memento.core"
 
 const delay = (timeout: number) =>
     new Promise(resolve => setTimeout(resolve, timeout))

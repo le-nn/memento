@@ -81,7 +81,7 @@ const simpleState = {
 ### Extendsd state 
 
 ```ts
-import { State } from "memento.js"
+import { State } from "memento.core"
 
 /**
  * State for counter.
