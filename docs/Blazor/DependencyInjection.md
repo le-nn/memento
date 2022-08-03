@@ -52,8 +52,11 @@ public record FibState {
 
 public class FibonacciService {
     public int Fib(int n) {
-        if (n < 3) return 1
-        return this.Fib(n - 1) + this.Fib(n - 2)
+        if (n < 3) {
+            return 1;
+        }
+        
+        return this.Fib(n - 1) + this.Fib(n - 2);
     }
 }
 
