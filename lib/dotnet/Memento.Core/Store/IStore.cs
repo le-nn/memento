@@ -1,4 +1,4 @@
-namespace Memento;
+namespace Memento.Core;
 
 public interface IStore : IObservable<StateChangedEventArgs> {
     object State { get; }

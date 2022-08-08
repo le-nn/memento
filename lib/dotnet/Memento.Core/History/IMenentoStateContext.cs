@@ -1,4 +1,4 @@
-namespace Memento;
+namespace Memento.Core;
 
 public interface IMementoStateContext {
     string Name { get; }

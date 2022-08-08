@@ -2,7 +2,7 @@ using Memento.Core.Internals;
 using Memento.Core.Store.Internals;
 using System.Net.Sockets;
 
-namespace Memento;
+namespace Memento.Core;
 
 public abstract class Store<TState, TMessages>
     : IStore, IObservable<StateChangedEventArgs<TState, TMessages>>

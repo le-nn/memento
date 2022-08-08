@@ -1,4 +1,4 @@
-﻿namespace Memento;
+namespace Memento.Core;
 
 public delegate TState Mutation<TState, TMessages>(TState state, TMessages message)
     where TState : class

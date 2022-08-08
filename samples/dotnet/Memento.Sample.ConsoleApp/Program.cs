@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
 using System.Text.Json;
-using Memento;
+using Memento.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 using static AsyncCounterMessages;

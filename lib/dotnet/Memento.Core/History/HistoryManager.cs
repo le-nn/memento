@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Memento;
+namespace Memento.Core;
 
 public class HistoryManager {
     private int maxHistoryCount = 8;

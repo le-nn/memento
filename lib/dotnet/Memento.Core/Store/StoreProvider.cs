@@ -2,7 +2,7 @@ using Memento.Core.Internals;
 using Memento.Core.Store.Internals;
 using System.Collections.Immutable;
 
-namespace Memento;
+namespace Memento.Core;
 
 public record RootStateChangedEventArgs {
     public required StateChangedEventArgs StateChangedEvent { get; init; }

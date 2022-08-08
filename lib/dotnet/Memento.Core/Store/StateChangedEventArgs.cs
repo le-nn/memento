@@ -1,4 +1,4 @@
-namespace Memento;
+namespace Memento.Core;
 
 public record StateChangedEventArgs {
     protected object? sender;

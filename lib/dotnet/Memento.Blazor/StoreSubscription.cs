@@ -1,4 +1,4 @@
-namespace Memento;
+namespace Memento.Core;
 
 internal sealed class StoreSubscription : IDisposable {
     private readonly string Id;

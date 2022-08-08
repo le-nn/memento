@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Memento;
+namespace Memento.Core;
 
 public static class ServiceProviderExtensions {
     public static IEnumerable<IStore> GetAllStores(this IServiceProvider provider) {

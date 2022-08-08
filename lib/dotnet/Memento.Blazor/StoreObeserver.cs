@@ -1,4 +1,4 @@
-namespace Memento;
+namespace Memento.Core;
 
 internal class StoreObeserver : IObserver<StateChangedEventArgs> {
     readonly Action<StateChangedEventArgs> action;

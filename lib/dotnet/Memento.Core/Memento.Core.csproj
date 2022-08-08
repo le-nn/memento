@@ -1,14 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <LangVersionrsion>Preview</LangVersionrsion>
+        <LangVersion>preview</LangVersion>
         <EnablePreviewFeatures>True</EnablePreviewFeatures>
 
         <!-- package info -->
-        <Version>0.0.4</Version>
+        <Version>0.0.5</Version>
         <Title>Memento.Core</Title>
         <PackageId>Memento.Core</PackageId>
         <Description>Easy unidirectional store-pattern container for state management and redo/undo container for .NET.</Description>

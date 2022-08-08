@@ -8,7 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Memento;
+namespace Memento.Core;
 
 public record Restores : Message;
 

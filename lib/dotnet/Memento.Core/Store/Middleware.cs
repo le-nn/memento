@@ -1,4 +1,4 @@
-namespace Memento;
+namespace Memento.Core;
 
 public delegate object NextMiddlewareHandler(object state, Message message);
 

@@ -8,7 +8,25 @@
 
 3. Add release notes in [Notes](./release-notes.dotnet.md)
 
-## .NET
+Package packing command is following
+
+```
+dotnet pack
+```
+
+Publish command is following
+
+Memento.Core
+```
+dotnet nuget push .\lib\dotnet\Memento.Core\bin\Debug\Memento.Core.x.x.x.nupkg -k [APIKEY] -s https://www.nuget.org/
+```
+
+Memento.Blazor
+```
+dotnet nuget push .\lib\dotnet\Memento.Blazor\bin\Debug\Memento.Blazor.x.x.x.nupkg -k [APIKEY] -s https://www.nuget.org/
+```
+
+##  Node.js
 
 1. Update version in ```lib/node/{react|core}/package.json```
 
