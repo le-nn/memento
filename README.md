@@ -73,4 +73,4 @@ Here is a demo site built with React in Typescript.
 
 
 # License
-Designed with ♥ le-nn. Licensed under the MIT License.
+Designed with ♥ by le-nn. Licensed under the MIT License.
