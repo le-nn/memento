@@ -25,15 +25,21 @@ Since not to be confused with other pattern concepts, we call in Memento's own w
 
 #### Provider
 It is central place that includes and manages all stores.
+
 #### Store
 It has Action and Mutaion on a one-to-one basis with the managed State. There can be multiple stores, please separate according to requirements.
+
 #### Mutation
   Mutation creates a new state from the message. It can be considered Update in MVU pattern, Reducer in Redux or Flux.
+
 #### Message
  Represents something that happened. You think of an Message as an event that describes something that happened in the application. It can be considered Message in MVU pattern, Action in Redux or Flux. Message can have one payload to change the information.
+
 #### Action
 Instead of mutating the state, actions dispatch message and mutate state via mutations.
+
 Actions can contain arbitrary asynchronous operations.
+
 #### State
 The state you want to manage and observe.
 

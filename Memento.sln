@@ -28,6 +28,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{4EBD97E1-0
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.Test", "test\dotnet\Memento.Test\Memento.Test.csproj", "{5A41BE22-FB3C-4D85-AE63-7D578A1A8922}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{95938898-9BDC-4379-BFFF-A70E72877728}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Blazor\DependencyInjection.md = docs\Blazor\DependencyInjection.md
+		docs\Blazor\Flux.md = docs\Blazor\Flux.md
+		docs\Blazor\GettingStandard.md = docs\Blazor\GettingStandard.md
+		docs\Introduce.md = docs\Introduce.md
+		docs\Tutorial.cs.md = docs\Tutorial.cs.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +73,7 @@ Global
 		{3B691AE8-0F54-4061-B5E8-71EE2663F80B} = {9B9FF1D5-F476-4658-B7EF-98A24BC9BB4A}
 		{8A4A4F8A-2334-4ACC-B2B0-32DE36B1D7EC} = {AD16691B-0034-4F49-8F90-0932C029DA3C}
 		{5A41BE22-FB3C-4D85-AE63-7D578A1A8922} = {4EBD97E1-0380-4F7F-A7EF-92FD6B82FAE6}
+		{95938898-9BDC-4379-BFFF-A70E72877728} = {E9CA5D2D-621D-408E-AB95-E602DD3CA8FA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52122159-362B-41B0-BE89-5FC9BF19BE01}
