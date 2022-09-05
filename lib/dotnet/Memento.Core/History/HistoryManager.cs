@@ -9,9 +9,9 @@ namespace Memento.Core;
 
 public class HistoryManager {
     private int maxHistoryCount = 8;
-    private FutureHistoryStack<IMementoCommandContext> Future = new();
-    private PastHistoryStack<IMementoCommandContext> Past = new();
-    SortedAsyncOperationExecutor SortedOperationExecutor { get; } = new();
+    private readonly FutureHistoryStack<IMementoCommandContext> Future = new();
+    private readonly PastHistoryStack<IMementoCommandContext> Past = new();
+    private readonly ConcatAsyncOperationExecutor ConcatAsyncOperationExecutor = new();
 
     public IMementoCommandContext? Present { get; private set; }
 
@@ -55,7 +55,7 @@ public class HistoryManager {
     }
 
     public async ValueTask ExcuteAsync<T>(IMementoCommandContext<T> command) {
-        await this.SortedOperationExecutor.ExecuteAsync(async () => {
+        await this.ConcatAsyncOperationExecutor.ExecuteAsync(async () => {
             if (this.CanReDo) {
                 this.ClearFutureHistoriesAsync();
             }
@@ -75,7 +75,7 @@ public class HistoryManager {
     }
 
     public async ValueTask<bool> ReExecuteAsync() {
-        return await this.SortedOperationExecutor.ExecuteAsync(async () => {
+        return await this.ConcatAsyncOperationExecutor.ExecuteAsync(async () => {
             if (this.CanReDo is false) {
                 return false;
             }
@@ -96,7 +96,7 @@ public class HistoryManager {
     }
 
     public async ValueTask<bool> UnExecuteAsync() {
-        return await this.SortedOperationExecutor.ExecuteAsync(async () => {
+        return await this.ConcatAsyncOperationExecutor.ExecuteAsync(async () => {
             if (this.CanUnDo is false) {
                 return false;
             }

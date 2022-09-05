@@ -7,11 +7,19 @@ using System.Threading.Tasks;
 
 namespace Memento.Core.Executors;
 
-public class SortedAsyncOperationExecutor {
+/// <summary>
+/// Provides a feature to wait for the end of asynchronous processing and connect to the next processing.
+/// </summary>
+public class ConcatAsyncOperationExecutor {
     object locker = new();
     ConcurrentQueue<IOperation> operations = new();
     volatile int processingCount = 0;
 
+    /// <summary>
+    /// Waits for the end of asynchronous processing and cancats to the next processing.
+    /// </summary>
+    /// <param name="operation">The async operation.</param>
+    /// <returns>The async oparation contains a result of processing. </returns>
     public Task<T> ExecuteAsync<T>(Func<Task<T>> operation) {
         var source = new TaskCompletionSource<T>();
         this.operations.Enqueue(new Operation<T>(operation, source));
@@ -21,6 +29,11 @@ public class SortedAsyncOperationExecutor {
         return source.Task;
     }
 
+    /// <summary>
+    /// Waits for the end of asynchronous processing and cancats to the next processing.
+    /// </summary>
+    /// <param name="operation">The async operation.</param>
+    /// <returns>The async oparation contains a result of processing. </returns>
     public Task ExecuteAsync(Func<Task> operation) {
         var source = new TaskCompletionSource<byte>();
         this.operations.Enqueue(new Operation<byte>(async () => {

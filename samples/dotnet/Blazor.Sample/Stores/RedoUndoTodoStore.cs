@@ -54,7 +54,8 @@ public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState, RedoUndoTodoMes
             },
             async id => {
                 await this.TodoService.RemoveAsync(id);
-            });
+            }
+        );
     }
 
     public async Task FetchAsync() {
@@ -76,6 +77,7 @@ public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState, RedoUndoTodoMes
             async () => {
                 var item = await this.TodoService.ToggleCompleteAsync(id)
                     ?? throw new Exception();
-            });
+            }
+        );
     }
 }

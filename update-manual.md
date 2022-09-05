@@ -11,19 +11,19 @@
 Package packing command is following
 
 ```
-dotnet pack
+dotnet pack -c Release --include-symbols
 ```
 
 Publish command is following
 
 Memento.Core
 ```
-dotnet nuget push .\lib\dotnet\Memento.Core\bin\Debug\Memento.Core.x.x.x.nupkg -k [APIKEY] -s https://www.nuget.org/
+dotnet nuget push .\lib\dotnet\Memento.Core\bin\Release\Memento.Core.x.x.x.nupkg -k [APIKEY] -s https://www.nuget.org/
 ```
 
 Memento.Blazor
 ```
-dotnet nuget push .\lib\dotnet\Memento.Blazor\bin\Debug\Memento.Blazor.x.x.x.nupkg -k [APIKEY] -s https://www.nuget.org/
+dotnet nuget push .\lib\dotnet\Memento.Blazor\bin\Release\Memento.Blazor.x.x.x.nupkg -k [APIKEY] -s https://www.nuget.org/
 ```
 
 ##  Node.js

@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Memento.Test.Core.Executors;
 
-public class SortedOperationExecutorTest {
+public class ConcatOperationExecutorTest {
     [Fact]
     public async Task RunTest1() {
-        var executor = new SortedAsyncOperationExecutor();
+        var executor = new ConcatAsyncOperationExecutor();
         var results = new List<int>();
 
         var task1 = executor.ExecuteAsync(async () => {
@@ -61,7 +61,7 @@ public class SortedOperationExecutorTest {
 
     [Fact]
     public async Task RunTest2() {
-        var executor = new SortedAsyncOperationExecutor();
+        var executor = new ConcatAsyncOperationExecutor();
         var results = new List<int>();
 
         var task1 = executor.ExecuteAsync(async () => {

@@ -8,7 +8,7 @@
         <EnablePreviewFeatures>True</EnablePreviewFeatures>
 
         <!-- package info -->
-        <Version>0.0.5</Version>
+        <Version>0.1.0</Version>
         <Title>Memento.Blazor</Title>
         <PackageId>Memento.Blazor</PackageId>
         <Description>Easy unidirectional store-pattern container for state management and redo/undo container for .NET.</Description>
