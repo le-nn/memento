@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Memento.Core;
+using System.Reflection;
 
 namespace Memento.Blazor;
 
@@ -17,6 +18,13 @@ public static class StoreConfigExtension {
         return collection;
     }
 
+    static void ScanAssembyAndAddStores(this IServiceCollection services, Assembly assembly) {
+        foreach (var type in assembly.GetTypes().Where(t => t.IsAssignableTo(typeof(IStore)))) {
+            services.AddScoped(type)
+                .AddScoped(p => (IStore)p.GetRequiredService(type));
+        }
+    }
+
     public static IServiceCollection AddMiddleware<TMiddleware>(this IServiceCollection collection)
         where TMiddleware : Middleware {
         collection.AddScoped<TMiddleware>()
@@ -28,7 +36,7 @@ public static class StoreConfigExtension {
         return provider.GetRequiredService<StoreProvider>();
     }
 
-    public static TMiddleware GetStoreProvider<TMiddleware>(this IServiceProvider provider)
+    public static TMiddleware GetMiddlewarer<TMiddleware>(this IServiceProvider provider)
         where TMiddleware : Middleware {
         return provider.GetRequiredService<TMiddleware>();
     }
