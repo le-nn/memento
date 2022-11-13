@@ -149,7 +149,7 @@ public class FetchDataStore : Store<FetchDataState, FetchDataCommands> {
     public async Task FetchAsync() {
         var forecasts = await this.HttpClient.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json")
             ?? throw new Exception("Failed to fetch data.");
-        this.Mutate(new FetchDataCommands.SetWeatherForecast(forecasts.ToImmutableArray()));
+        this.Dispatch(new FetchDataCommands.SetWeatherForecast(forecasts.ToImmutableArray()));
     }
 }
 
