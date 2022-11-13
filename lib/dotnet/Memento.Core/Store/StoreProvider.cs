@@ -16,19 +16,19 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs> {
     object locker = new();
 
     public ImmutableDictionary<string, object> RootState() {
-        return this.ResolveAllStores().Aggregate(
+        return ResolveAllStores().Aggregate(
             ImmutableDictionary.Create<string, object>(),
             (x, y) => x.Add(y.GetType().Name, y.State)
         );
     }
 
     public StoreProvider(IServiceProvider container) {
-        this.ServiceContainer = container;
+        ServiceContainer = container;
 
         // observe all stores.
-        foreach (var store in this.ResolveAllStores()) {
+        foreach (var store in ResolveAllStores()) {
             var subscription = store.Subscribe(new StoreObeserver(e => {
-                this.InvokeObserver(new RootStateChangedEventArgs() {
+                InvokeObserver(new RootStateChangedEventArgs() {
                     StateChangedEvent = e,
                     Store = store,
                 });
@@ -37,17 +37,17 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs> {
         }
 
         // Initalize all middlewares.
-        foreach (var middleware in this.ResolveAllMiddlewares()) {
+        foreach (var middleware in ResolveAllMiddlewares()) {
             try {
                 middleware.OnInitialized(this);
             }
             catch (Exception ex) {
-                throw new Exception(@"Failed to initalize memento middleware ""{ex.message}""", ex);
+                throw new Exception(@"Failed to initalize memento middleware ""{ex.command}""", ex);
             }
         }
 
         // Initialize all stores.
-        foreach (var store in this.ResolveAllStores()) {
+        foreach (var store in ResolveAllStores()) {
             try {
                 store.OnInitialized(this);
             }
@@ -63,7 +63,7 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs> {
 
     public TStore ResolveStore<TStore>()
         where TStore : IStore {
-        if (this.ServiceContainer.GetService(typeof(TStore)) is TStore store) {
+        if (ServiceContainer.GetService(typeof(TStore)) is TStore store) {
             return store;
         }
 
@@ -71,30 +71,30 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs> {
     }
 
     public IEnumerable<IStore> ResolveAllStores() {
-        return this.ServiceContainer.GetAllStores();
+        return ServiceContainer.GetAllStores();
     }
 
     public IEnumerable<Middleware> ResolveAllMiddlewares() {
-        return this.ServiceContainer.GetAllMiddlewares();
+        return ServiceContainer.GetAllMiddlewares();
     }
 
     public IDisposable Subscribe(IObserver<RootStateChangedEventArgs> observer) {
-        lock (this.locker) {
-            this.Observers.Add(observer);
+        lock (locker) {
+            Observers.Add(observer);
         }
 
         return new StoreSubscription($"Store.Subscribe", () => {
-            lock (this.locker) {
-                this.Observers.Remove(observer);
+            lock (locker) {
+                Observers.Remove(observer);
             }
         });
     }
 
     public IDisposable Subscribe(Action<RootStateChangedEventArgs> observer)
-        => this.Subscribe(new StoreProviderObserver(observer));
+        => Subscribe(new StoreProviderObserver(observer));
 
     private void InvokeObserver(RootStateChangedEventArgs e) {
-        foreach (var observer in this.Observers) {
+        foreach (var observer in Observers) {
             observer.OnNext(e);
         }
     }

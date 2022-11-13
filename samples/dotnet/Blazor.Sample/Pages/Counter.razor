@@ -6,48 +6,17 @@
 @inject AsyncCounterStore AsyncCounterStore
 
 <PageTitle>Counter</PageTitle>
-
 <h1>Async Counter</h1>
-
 <p role="status">Current count: @AsyncCounterStore.State.Count</p>
 <p role="status">Loading: @AsyncCounterStore.State.IsLoading</p>
-
 <p role="status" class="mb-0">History</p>
 <div class="d-flex">
-    [
     @foreach (var item in string.Join(", ", AsyncCounterStore.State.Histories)) {
         @item
     }
-    ]
 </div>
-
-
 <button class="mt-3 btn btn-primary" @onclick="IncrementCount">Count up</button>
-
 <button class="mt-3 btn btn-primary" @onclick="CountupMany">Count up 10000 times</button>
-
-<button class="mt-3 btn btn-primary" @onclick="Undo">Undo</button>
-
-<button class="mt-3 btn btn-primary" @onclick="Redo">Redo</button>
-
-<div>
-    <h4>History Stack</h4>
-
-    <ul>
-        @foreach (var item in AsyncCounterStore.FutureHistories) {
-            <li>Future : @(JsonSerializer.Serialize(item.State, new JsonSerializerOptions { WriteIndented = true }))</li>
-        }
-
-        @if (AsyncCounterStore.Present is not null) {
-            <li>Present : @(JsonSerializer.Serialize(AsyncCounterStore.Present, new JsonSerializerOptions { WriteIndented = true }))</li>
-        }
-
-
-        @foreach (var item in AsyncCounterStore.PastHistories) {
-            <li>Past : @(JsonSerializer.Serialize(item.State, new JsonSerializerOptions { WriteIndented = true }))</li>
-        }
-    </ul>
-</div>
 
 @code {
     async Task IncrementCount() {
@@ -56,14 +25,5 @@
 
     void CountupMany() {
         this.AsyncCounterStore.CountUpManyTimes(10000);
-    }
-
-    async Task Redo() {
-        await this.AsyncCounterStore.ReExecuteAsync();
-    }
-
-    async Task Undo() {
-       
-        await this.AsyncCounterStore.UnExecuteAsync();
     }
 }

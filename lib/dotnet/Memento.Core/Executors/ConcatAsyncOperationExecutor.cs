@@ -11,9 +11,8 @@ namespace Memento.Core.Executors;
 /// Provides a feature to wait for the end of asynchronous processing and connect to the next processing.
 /// </summary>
 public class ConcatAsyncOperationExecutor {
-    object locker = new();
-    ConcurrentQueue<IOperation> operations = new();
-    volatile int processingCount = 0;
+    ConcurrentQueue<IOperation> _operations = new();
+    volatile int _processingCount = 0;
 
     /// <summary>
     /// Waits for the end of asynchronous processing and cancats to the next processing.
@@ -22,9 +21,9 @@ public class ConcatAsyncOperationExecutor {
     /// <returns>The async oparation contains a result of processing. </returns>
     public Task<T> ExecuteAsync<T>(Func<Task<T>> operation) {
         var source = new TaskCompletionSource<T>();
-        this.operations.Enqueue(new Operation<T>(operation, source));
+        _operations.Enqueue(new Operation<T>(operation, source));
 
-        this.Hadle();
+        Hadle();
 
         return source.Task;
     }
@@ -36,30 +35,30 @@ public class ConcatAsyncOperationExecutor {
     /// <returns>The async oparation contains a result of processing. </returns>
     public Task ExecuteAsync(Func<Task> operation) {
         var source = new TaskCompletionSource<byte>();
-        this.operations.Enqueue(new Operation<byte>(async () => {
+        _operations.Enqueue(new Operation<byte>(async () => {
             await operation.Invoke();
             return 0;
         }, source));
 
-        this.Hadle();
+        Hadle();
 
         return source.Task;
     }
 
     async void Hadle() {
-        if (this.processingCount is not 0) {
+        if (_processingCount is not 0) {
             return;
         }
 
-        Interlocked.Increment(ref this.processingCount);
+        Interlocked.Increment(ref _processingCount);
 
         try {
-            while (this.operations.TryDequeue(out var operation)) {
+            while (_operations.TryDequeue(out var operation)) {
                 await operation.HandleAsync();
             }
         }
         finally {
-            Interlocked.Decrement(ref this.processingCount);
+            Interlocked.Decrement(ref _processingCount);
         }
 
     }
@@ -79,11 +78,11 @@ public class ConcatAsyncOperationExecutor {
 
         public async Task HandleAsync() {
             try {
-                var reslut = await this.func.Invoke();
-                this.taskSource.SetResult(reslut);
+                var reslut = await func.Invoke();
+                taskSource.SetResult(reslut);
             }
             catch (Exception ex) {
-                this.taskSource.SetException(ex);
+                taskSource.SetException(ex);
             }
         }
     }

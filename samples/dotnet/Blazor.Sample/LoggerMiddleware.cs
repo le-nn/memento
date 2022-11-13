@@ -1,10 +1,10 @@
-using Memento;
+using Memento.Core;
 
 namespace Blazor.Sample;
 
 public class LoggerMiddleware : Middleware {
-    public override object? Handle(object state, Message message, NextMiddlewareHandler next) {
+    public override object? Handle(object state, Command command, NextMiddlewareHandler next) {
         // Console.WriteLine(state);
-        return next(state, message);
+        return next(state, command);
     }
 }

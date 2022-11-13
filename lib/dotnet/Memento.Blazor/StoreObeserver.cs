@@ -16,16 +16,16 @@ internal class StoreObeserver : IObserver<StateChangedEventArgs> {
     }
 
     public void OnNext(StateChangedEventArgs value) {
-        this.action(value);
+        action(value);
     }
 }
 
-internal class StoreObeserver<TState, TMessages> : IObserver<StateChangedEventArgs<TState, TMessages>>
+internal class StoreObeserver<TState, TConnad> : IObserver<StateChangedEventArgs<TState, TConnad>>
     where TState : class
-    where TMessages : Message {
-    readonly Action<StateChangedEventArgs<TState, TMessages>> action;
+    where TConnad : Command {
+    readonly Action<StateChangedEventArgs<TState, TConnad>> action;
 
-    public StoreObeserver(Action<StateChangedEventArgs<TState, TMessages>> action) {
+    public StoreObeserver(Action<StateChangedEventArgs<TState, TConnad>> action) {
         this.action = action;
     }
 
@@ -37,7 +37,7 @@ internal class StoreObeserver<TState, TMessages> : IObserver<StateChangedEventAr
         throw new NotImplementedException();
     }
 
-    public void OnNext(StateChangedEventArgs<TState, TMessages> value) {
-        this.action(value);
+    public void OnNext(StateChangedEventArgs<TState, TConnad> value) {
+        action(value);
     }
 }

@@ -1,8 +1,8 @@
 # Flux
 
 The standard usecase is as a flux like store container.
-This is supported observe detailed with message pattern.
-To mutate the state, you must dispatch a Message and go through Mutation.
+This is supported observe detailed with command pattern.
+To mutate the state, you must dispatch a Command and go through Reducer.
 So, you can observe state detailed.
 
 # Store Overview
@@ -11,10 +11,10 @@ Let's take a look at the completed store first.
 Dig into step by step from there.
 
 ```cs
-using Memento;
+using Memento.Core;
 using System.Collections.Immutable;
 
-using static Blazor.Sample.Stores.AsyncCounterMessage;
+using static Blazor.Sample.Stores.AsyncCounterCommands;
 
 namespace Blazor.Sample.Stores;
 
@@ -28,17 +28,17 @@ public record AsyncCounterState {
     public ImmutableArray<int> Histories { get; init; } = ImmutableArray.Create<int>();
 }
 
-public record AsyncCounterMessage : Message {
-    public record CountUp : AsyncCounterMessage;
-    public record SetCount(int Count) : AsyncCounterMessage;
-    public record BeginLoading : AsyncCounterMessage;
+public record AsyncCounterCommands : Command {
+    public record CountUp : AsyncCounterCommands;
+    public record SetCount(int Count) : AsyncCounterCommands;
+    public record BeginLoading : AsyncCounterCommands;
 }
 
-public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterMessage> {
-    public AsyncCounterStore() : base(() => new(), Mutation) { }
+public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> {
+    public AsyncCounterStore() : base(() => new(), Reducer) { }
 
-    static AsyncCounterState Mutation(AsyncCounterState state, AsyncCounterMessage message) {
-        return message switch {
+    static AsyncCounterState Reducer(AsyncCounterState state, AsyncCounterCommands command) {
+        return command switch {
             CountUp => state with {
                 Count = state.Count + 1,
                 IsLoading = false,
@@ -50,7 +50,7 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterMessage> {
             BeginLoading => state with {
                 IsLoading = true,
             },
-            _ => throw new Exception("The message is not handled."),
+            _ => throw new Exception("The command is not handled."),
         };
     }
 
@@ -71,7 +71,7 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterMessage> {
 
 You should define state to manage in store before create store.
 T with ```Store<T, M>``` is the state type.
-M with ```Store<T, M>``` is the message type.
+M with ```Store<T, M>``` is the command type.
 
 The State define is following.
 
@@ -106,14 +106,14 @@ var state3 = state2 with {
 Console.WriteLine(state3) // { count: 15, test: "bar" }
 ```
 
-The Message define is following.
-Currently, there is no best way to express a Message in C # syntax. Therefore, we make use of record and polymorphism.
+The Command define is following.
+Currently, there is no best way to express a Command in C # syntax. Therefore, we make use of record and polymorphism.
 
 ```cs
-public record AsyncCounterMessage : Message {
-    public record CountUp : AsyncCounterMessage;
-    public record SetCount(int Count) : AsyncCounterMessage;
-    public record BeginLoading : AsyncCounterMessage;
+public record AsyncCounterCommands : Command {
+    public record CountUp : AsyncCounterCommands;
+    public record SetCount(int Count) : AsyncCounterCommands;
+    public record BeginLoading : AsyncCounterCommands;
 }
 ```
 
@@ -126,13 +126,13 @@ https://github.com/dotnet/csharplang/issues/113
 ```cs
 // Doesn't work in C# 11 
 
-enum class Messages {
+enum class Commands {
     CountUp,
     SetCount(int Count),
     BeginLoading,
 }
 
-message switch {
+return command switch {
     CountUp => ...,
     SetCount payload => ...,
     ...
@@ -144,15 +144,15 @@ this.Mutate(SetCount(1234));
 
 ## Define Store
 
-Create class and extends ```Store<T, M>``` and specify state initializer and mutation to base constructor.
+Create class and extends ```Store<T, M>``` and specify state initializer and Reducer to base constructor.
 Specify state initializer into args of base constructor.
-Specify mutation into args of base constructor.
+Specify Reducer into args of base constructor.
 
 ```cs
-public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterMessage> {
-    public AsyncCounterStore() : base(() => new(), Mutation) { }
+public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> {
+    public AsyncCounterStore() : base(() => new(), Reducer) { }
 
-    static AsyncCounterState Mutation(AsyncCounterState state, AsyncCounterMessage message) {
+    static AsyncCounterState Reducer(AsyncCounterState state, AsyncCounterCommands command) {
         ...
     }
 }
@@ -162,7 +162,7 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterMessage> {
 
 To muate the state, define a method as an action in the store.
 Mutate the state by calling it from the outside.
-And generate new state via mutation with handling message.
+And generate new state via Reducer with handling command.
 
 * Call ```this.Mutate(T state)``` to update store state
 
@@ -184,14 +184,14 @@ public async Task CountUpAsync() {
 
 ```
 
-The mutation is following.
-The mutation should not include side effects such as asynchronous processing.
-The mutation  always be a pure function, so must be the static method in C#.
-In the mutation, describe the process to handle the message and generate a new state.
+The Reducer is following.
+The Reducer should not include side effects such as asynchronous processing.
+The Reducer  always be a pure function, so must be the static method in C#.
+In the Reducer, describe the process to handle the command and generate a new state.
 
 ```cs
-static AsyncCounterState Mutation(AsyncCounterState state, AsyncCounterMessage message) {
-    return message switch {
+static AsyncCounterState Reducer(AsyncCounterState state, AsyncCounterCommands command) {
+    return command switch {
         CountUp => state with {
             Count = state.Count + 1,
             IsLoading = false,
@@ -203,7 +203,7 @@ static AsyncCounterState Mutation(AsyncCounterState state, AsyncCounterMessage m
         BeginLoading => state with {
             IsLoading = true,
         },
-        _ => throw new Exception("The message is not handled."),
+        _ => throw new Exception("The command is not handled."),
     };
 }
 ```
@@ -243,6 +243,7 @@ The injected store that extends ```Store<T, M>``` will be automatically observed
 This is an example of Counter.
 
 ```razor
+
 @using Blazor.Sample.Stores
 
 @page "/counter"

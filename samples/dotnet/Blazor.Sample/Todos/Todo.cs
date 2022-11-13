@@ -24,7 +24,7 @@ public record Todo {
     }
 
     public override string ToString() {
-        return $"{this.Text}";
+        return $"{Text}";
     }
 
     public Todo Complete() => this with {

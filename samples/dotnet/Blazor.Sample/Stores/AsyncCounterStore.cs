@@ -1,6 +1,6 @@
-using Memento;
+using Memento.Core;
 using System.Collections.Immutable;
-using static Blazor.Sample.Stores.AsyncCounterMessage;
+using static Blazor.Sample.Stores.AsyncCounterCommands;
 
 namespace Blazor.Sample.Stores;
 
@@ -12,18 +12,18 @@ public record AsyncCounterState {
     public ImmutableArray<int> Histories { get; init; } = ImmutableArray.Create<int>();
 }
 
-public record AsyncCounterMessage : Message {
-    public record CountUp : AsyncCounterMessage;
-    public record Increment : AsyncCounterMessage;
-    public record SetCount(int Count) : AsyncCounterMessage;
-    public record BeginLoading : AsyncCounterMessage;
+public record AsyncCounterCommands: Command {
+    public record CountUp : AsyncCounterCommands;
+    public record Increment : AsyncCounterCommands;
+    public record SetCount(int Count) : AsyncCounterCommands;
+    public record BeginLoading : AsyncCounterCommands;
 }
 
-public class AsyncCounterStore : MementoStore<AsyncCounterState, AsyncCounterMessage> {
-    public AsyncCounterStore() : base(() => new(), Mutation, new()) { }
+public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> {
+    public AsyncCounterStore() : base(() => new(), Reducer) { }
 
-    static AsyncCounterState Mutation(AsyncCounterState state, AsyncCounterMessage message) {
-        return message switch {
+    static AsyncCounterState Reducer(AsyncCounterState state, AsyncCounterCommands command) {
+        return command switch {
             CountUp => state with {
                 Count = state.Count + 1,
                 IsLoading = false,
@@ -38,25 +38,23 @@ public class AsyncCounterStore : MementoStore<AsyncCounterState, AsyncCounterMes
             BeginLoading => state with {
                 IsLoading = true,
             },
-            _ => throw new Exception("The message is not handled."),
+            _ => throw new CommandNotHandledException(command),
         };
     }
 
     public async Task CountUpAsync() {
-        this.Mutate(new BeginLoading());
+        Mutate(new BeginLoading());
         await Task.Delay(800);
-        this.Mutate(new CountUp());
-
-        //await this.CommitAsync();
+        Mutate(new CountUp());
     }
 
     public void CountUpManyTimes(int count) {
         for (int i = 0; i < count; i++) {
-            this.Mutate(new Increment());
+            Mutate(new Increment());
         }
     }
 
     public void SetCount(int c) {
-        this.Mutate(new SetCount(c));
+        Mutate(new SetCount(c));
     }
 }

@@ -4,34 +4,35 @@ using System.Net.Sockets;
 
 namespace Memento.Core;
 
-public abstract class Store<TState, TMessages>
-    : IStore, IObservable<StateChangedEventArgs<TState, TMessages>>
+public abstract class Store<TState, TCommand>
+    : IStore, IObservable<StateChangedEventArgs<TState, TCommand>>
     where TState : class
-    where TMessages : Message {
+    where TCommand : Command {
+    object _locker = new();
+
+    private StoreProvider? Provider { get; set; }
+
     protected StateInitializer<TState> Initializer { get; }
 
-    private Mutation<TState, TMessages> Mutation { get; }
+    private Reducer<TState, TCommand> Reducer { get; }
 
     private List<IObserver<StateChangedEventArgs>> Observers { get; } = new();
 
     public TState State { get; internal set; }
 
-    object IStore.State => this.State;
+    object IStore.State => State;
 
     public bool IsInitialized { get; private set; }
 
-    private StoreProvider? Provider { get; set; }
-    object locker = new();
-
     public Store(
         StateInitializer<TState> initializer,
-        Mutation<TState, TMessages> mutation) {
-        this.Initializer = initializer;
-        this.State = initializer()
+        Reducer<TState, TCommand> Reducer) {
+        Initializer = initializer;
+        State = initializer()
             ?? throw new ArgumentNullException("initializer must be returned not null.");
 
-        this.Mutation = (state, message) => {
-            return mutation(state, message);
+        this.Reducer = (state, command) => {
+            return Reducer(state, command);
         };
     }
 
@@ -43,19 +44,19 @@ public abstract class Store<TState, TMessages>
         throw new InvalidCastException();
     }
 
-    internal virtual (TState? NewState, StateChangedEventArgs<TState, TMessages>? Event) ComputeNewState(
+    internal virtual (TState? NewState, StateChangedEventArgs<TState, TCommand>? Event) ComputeNewState(
         TState state,
-        TMessages message
+        TCommand command
     ) {
         var previous = state;
-        var postState = this.OnBeforeMutate(previous, message);
+        var postState = OnBeforeMutate(previous, command);
 
-        var middlewareProcessedState = this.GetMiddlewareInvokeHandler()(postState, message);
+        var middlewareProcessedState = GetMiddlewareInvokeHandler()(postState, command);
         if (middlewareProcessedState is TState s) {
-            var newState = this.OnAfterMutate(s, message);
-            var e = new StateChangedEventArgs<TState, TMessages> {
+            var newState = OnAfterMutate(s, command);
+            var e = new StateChangedEventArgs<TState, TCommand> {
                 LastState = previous,
-                Message = message,
+                Command = command,
                 State = newState,
                 Sender = this,
             };
@@ -66,12 +67,12 @@ public abstract class Store<TState, TMessages>
         return (null, null);
     }
 
-    internal void ApplyComputedState(TState state, TMessages message) {
-        var (newstate, e) = this.ComputeNewState(state, message);
+    internal void ApplyComputedState(TState state, TCommand command) {
+        var (newstate, e) = ComputeNewState(state, command);
         if (newstate is not null && e is not null) {
-            lock (this.locker) {
-                this.State = newstate;
-                this.InvokeObserver(e);
+            lock (_locker) {
+                State = newstate;
+                InvokeObserver(e);
             }
         }
         else {
@@ -79,67 +80,67 @@ public abstract class Store<TState, TMessages>
         }
     }
 
-    protected virtual void Mutate(TMessages message) {
-        this.ApplyComputedState(this.State, message);
+    protected virtual void Mutate(TCommand command) {
+        ApplyComputedState(State, command);
     }
 
-    protected virtual void Mutate(Func<TState, TMessages> messageLoader) {
-        this.ApplyComputedState(this.State, messageLoader(this.State));
+    protected virtual void Mutate(Func<TState, TCommand> messageLoader) {
+        ApplyComputedState(State, messageLoader(State));
     }
 
-    public IDisposable Subscribe(IObserver<StateChangedEventArgs<TState, TMessages>> observer) {
+    public IDisposable Subscribe(IObserver<StateChangedEventArgs<TState, TCommand>> observer) {
         var obs = new StoreObeserver(e => {
-            if (e is StateChangedEventArgs<TState, TMessages> o) {
+            if (e is StateChangedEventArgs<TState, TCommand> o) {
                 observer.OnNext(o);
             }
         });
 
-        lock (this.locker) {
-            this.Observers.Add(obs);
+        lock (_locker) {
+            Observers.Add(obs);
         }
 
         return new StoreSubscription($"Store.Subscribe", () => {
-            lock (this.locker) {
-                this.Observers.Remove(obs);
+            lock (_locker) {
+                Observers.Remove(obs);
             }
         });
     }
 
     IDisposable IObservable<StateChangedEventArgs>.Subscribe(IObserver<StateChangedEventArgs> observer) {
-        lock (this.locker) {
-            this.Observers.Add(observer);
+        lock (_locker) {
+            Observers.Add(observer);
         }
 
         return new StoreSubscription($"Store.Subscribe", () => {
-            lock (this.locker) {
-                this.Observers.Remove(observer);
+            lock (_locker) {
+                Observers.Remove(observer);
             }
         });
     }
 
-    public IDisposable Subscribe(Action<StateChangedEventArgs<TState, TMessages>> observer) {
-        return this.Subscribe(new StoreObeserver<TState, TMessages>(observer));
+    public IDisposable Subscribe(Action<StateChangedEventArgs<TState, TCommand>> observer) {
+        return Subscribe(new StoreObeserver<TState, TCommand>(observer));
     }
 
     void IStore.OnInitialized(StoreProvider provider) {
-        this.Provider = provider;
-        this.OnInitialized(provider);
+        Provider = provider;
+        OnInitialized(provider);
     }
 
-    internal Func<TState, TMessages, object?> GetMiddlewareInvokeHandler() {
+    internal Func<TState, TCommand, object?> GetMiddlewareInvokeHandler() {
         // process middlewares
-        var middlewares = this.Provider?.ResolveAllMiddlewares()
+        var middlewares = Provider?.ResolveAllMiddlewares()
             ?? Array.Empty<Middleware>();
         return middlewares.Aggregate(
-            (object s, Message m) => {
-                if ((s, m) is not (TState _s, TMessages _m)) {
+            (object s, Command m) => {
+                if ((s, m) is not (TState _s, TCommand _m)) {
                     throw new Exception();
                 }
 
-                return (object)this.Mutation.Invoke(_s, _m);
+                return (object)Reducer.Invoke(_s, _m);
             },
             (before, middleware) =>
-                (object s, Message m) => middleware.Handle(
+                (object s, Command m) => middleware.Handle(
                     s,
                     m,
                     (_s, _m) => before(_s, m)
@@ -148,37 +149,37 @@ public abstract class Store<TState, TMessages>
     }
 
     protected virtual void OnInitialized(StoreProvider provider) {
-        this.IsInitialized = true;
+        IsInitialized = true;
     }
 
     /// <summary>
-    /// Called before invoke mutation and return value overrides current state.
+    /// Called before invoke Reducer and return value overrides current state.
     /// </summary>
     /// <param name="state"> The current state.</param>
-    /// <param name="message"> The message for mutating the state.</param>
+    /// <param name="command"> The command for mutating the state.</param>
     /// <returns> override state.</returns>
-    protected TState OnBeforeMutate(TState state, TMessages message) {
+    protected TState OnBeforeMutate(TState state, TCommand command) {
         return state;
     }
 
     /// <summary>
-    /// Called before invoke mutation and return value overrides current state.
+    /// Called before invoke Reducer and return value overrides current state.
     /// </summary>
-    /// <param name="state"> The computed state via mutation.</param>
-    /// <param name="message"> The message for mutating the state.</param>
+    /// <param name="state"> The computed state via Reducer.</param>
+    /// <param name="command"> The command for mutating the state.</param>
     /// <returns> override state.</returns>
-    protected TState OnAfterMutate(TState state, TMessages message) {
+    protected TState OnAfterMutate(TState state, TCommand command) {
         return state;
     }
 
-    internal void InvokeObserver(StateChangedEventArgs<TState, TMessages> e) {
-        foreach (var obs in this.Observers) {
+    internal void InvokeObserver(StateChangedEventArgs<TState, TCommand> e) {
+        foreach (var obs in Observers) {
             obs.OnNext(e);
         }
     }
 
     internal void InvokeObserver(StateChangedEventArgs e) {
-        foreach (var obs in this.Observers) {
+        foreach (var obs in Observers) {
             obs.OnNext(e);
         }
     }

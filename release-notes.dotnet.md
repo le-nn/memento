@@ -6,20 +6,6 @@
 
 * First release
 
-
-## v0.0.5
-
-* Change namespace ```Memento``` to ```Memento.Core```
-* Add .NET 6 support
-
----
-
-### Memento Blazor
-
-## v0.0.4
-
-* First release
-
 ## v0.0.5
 
 * Change namespace ```Memento``` to ```Memento.Core```
@@ -90,3 +76,29 @@ It outputs following.
 10
 ```
 
+## v0.2.0
+
+* Add .NET7 support.
+* Change name Message -> Command, Mutation -> Reducer, Mutate -> Dispatch
+
+
+---
+
+### Memento Blazor
+
+## v0.0.4
+
+* First release
+
+## v0.0.5
+
+* Change namespace ```Memento``` to ```Memento.Core```
+* Add .NET 6 support
+
+## v0.1.0
+
+* Update Memento.Core libs
+
+## v0.2.0
+
+* Update Memento.Core libs

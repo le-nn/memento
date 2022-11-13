@@ -7,8 +7,8 @@ public record MementoCommandContext<T> : IMementoCommandContext<T> {
     public T? State { get; set; } = default(T?);
 
     object? IMementoStateContext.State {
-        get => this.State;
-        set => this.State = (T?)value;
+        get => State;
+        set => State = (T?)value;
     }
 
     public string Name { get; }
@@ -31,50 +31,50 @@ public record MementoCommandContext<T> : IMementoCommandContext<T> {
         Func<T, ValueTask> unexecuted,
         string name
     ) {
-        this.Dataloader = dataloader;
-        this.UnExecuted = unexecuted;
-        this.Executed = executed;
-        this.Name = name;
+        Dataloader = dataloader;
+        UnExecuted = unexecuted;
+        Executed = executed;
+        Name = name;
     }
 
     public async ValueTask CommitAsync() {
-        this.State = await this.Executed();
+        State = await Executed();
     }
 
     public async ValueTask RestoreAsync() {
-        if (this.State is null) {
+        if (State is null) {
             throw new NullReferenceException("State is null.");
         }
 
-        await this.UnExecuted.Invoke(this.State);
+        await UnExecuted.Invoke(State);
     }
 
     public async ValueTask InvokeContextSavedAsync() {
-        if (this.ContextSaved is null) {
+        if (ContextSaved is null) {
             return;
         }
 
-        await this.ContextSaved.Invoke(this!);
+        await ContextSaved.Invoke(this!);
     }
 
     public async ValueTask InvokeContextLoadedAsync() {
-        if (this.ContextLoaded is null) {
+        if (ContextLoaded is null) {
             return;
         }
 
-        await this.ContextLoaded.Invoke(this!);
+        await ContextLoaded.Invoke(this!);
     }
 
     public void Dispose() {
-        if (this.IsDisposed) {
+        if (IsDisposed) {
             throw new Exception("This Command has been disposed.");
         }
 
-        this.IsDisposed = true;
-        this.ContextLoaded?.Invoke(this!);
+        IsDisposed = true;
+        ContextLoaded?.Invoke(this!);
     }
 
     public ValueTask LoadDataAsync() {
-        return Dataloader.Invoke(this.State!);
+        return Dataloader.Invoke(State!);
     }
 }

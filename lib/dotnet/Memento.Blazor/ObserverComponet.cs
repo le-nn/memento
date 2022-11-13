@@ -13,8 +13,8 @@ public class ObserverComponet : ComponentBase, IDisposable {
     /// Creates a new instance
     /// </summary>
     public ObserverComponet() {
-        this.InvokerSubscription = this.StateHasChangedThrottler.Subscribe(e => {
-            if (this.IsDisposed is false) {
+        InvokerSubscription = StateHasChangedThrottler.Subscribe(e => {
+            if (IsDisposed is false) {
                 base.InvokeAsync(StateHasChanged);
             }
         });
@@ -32,10 +32,10 @@ public class ObserverComponet : ComponentBase, IDisposable {
     /// Disposes of the component and unsubscribes from any state
     /// </summary>
     public void Dispose() {
-        if (this.IsDisposed is false) {
+        if (IsDisposed is false) {
             Dispose(true);
             GC.SuppressFinalize(this);
-            this.IsDisposed = true;
+            IsDisposed = true;
         }
     }
 
@@ -44,19 +44,19 @@ public class ObserverComponet : ComponentBase, IDisposable {
     /// </summary>
     protected override void OnInitialized() {
         base.OnInitialized();
-        this.StateSubscription = StateSubscriber.Subscribe(this, e => {
-            StateHasChangedThrottler.Invoke(e, this.MaximumStateChangedNotificationsPerSecond);
+        StateSubscription = StateSubscriber.Subscribe(this, e => {
+            StateHasChangedThrottler.Invoke(e, MaximumStateChangedNotificationsPerSecond);
         });
     }
 
     protected virtual void Dispose(bool disposing) {
         if (disposing) {
-            if (this.StateSubscription is null) {
+            if (StateSubscription is null) {
                 throw new NullReferenceException("Have you forgotten to call base.OnInitialized() in your component?");
             }
 
-            this.InvokerSubscription.Dispose();
-            this.StateSubscription.Dispose();
+            InvokerSubscription.Dispose();
+            StateSubscription.Dispose();
         }
     }
 }

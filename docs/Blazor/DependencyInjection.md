@@ -41,7 +41,7 @@ builder.Services.AddScoped<IAnyService, AnyService>();
 Create a service class that generate fibonacci number.
 
 ```cs
-using Memento;
+using Memento.Core;
 using Memento.Blazor;
 
 public record FibState {
@@ -60,21 +60,21 @@ public class FibonacciService {
     }
 }
 
-public record FibMessages : Message {
-    public record SetFib(int Value) : FibMessages;
+public record FibCommands : Command {
+    public record SetFib(int Value) : FibCommands;
 }
 
 
-public class FibStore : Store<FibState, FibMessages> {
+public class FibStore : Store<FibState, FibCommands> {
     FibonacciService FibonacciService { get; }
 
-    public FibStore(FibonacciService fibService) : base(() => new(), Mutation) {
+    public FibStore(FibonacciService fibService) : base(() => new(), Reducer) {
         this.FibonacciService = fibService;
     }
 
-    static FibState Mutation(FibState state, FibMessages message) {
-        return message switch {
-            FibMessages.SetFib payload => state with {
+    static FibState Reducer(FibState state, FibCommands command) {
+        return command switch {
+            FibCommands.SetFib payload => state with {
                 N = state.N + 1,
                 Count = payload.Value,
                 History = state.History.Add(payload.Value),
@@ -88,7 +88,7 @@ public class FibStore : Store<FibState, FibMessages> {
         }
 
         var fib = this.FibonacciService.Fib(this.State.N);
-        this.Mutate(new FibMessages.SetFib(fib));
+        this.Mutate(new FibCommands.SetFib(fib));
     }
 }
 ```
@@ -106,7 +106,7 @@ builder.Services.AddScoped(sp => new HttpClient {
 Define store.
 
 ```cs
-using Memento;
+using Memento.Core;
 using System.Collections.Immutable;
 using System.Net.Http.Json;
 
@@ -114,8 +114,8 @@ public record FetchDataState {
     public ImmutableArray<WeatherForecast>? WeatherForecasts { get; init; }
 }
 
-public record FetchDataMessage : Message {
-    public record SetWeatherForecast(ImmutableArray<WeatherForecast> Items) : FetchDataMessage;
+public record FetchDataCommands : Command {
+    public record SetWeatherForecast(ImmutableArray<WeatherForecast> Items) : FetchDataCommands;
 }
 
 public record WeatherForecast {
@@ -128,7 +128,7 @@ public record WeatherForecast {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
 
-public class FetchDataStore : Store<FetchDataState, FetchDataMessage> {
+public class FetchDataStore : Store<FetchDataState, FetchDataCommands> {
     HttpClient HttpClient { get; }
 
     public FetchDataStore(
@@ -137,19 +137,19 @@ public class FetchDataStore : Store<FetchDataState, FetchDataMessage> {
         this.HttpClient = httpClient;
     }
 
-    static FetchDataState Mutateion(FetchDataState state, FetchDataMessage message) {
-        return message switch {
-            FetchDataMessage.SetWeatherForecast payload => state with {
+    static FetchDataState Mutateion(FetchDataState state, FetchDataCommands command) {
+        return command switch {
+            FetchDataCommands.SetWeatherForecast payload => state with {
                 WeatherForecasts = payload.Items,
             },
-            _ => throw new Exception("The message is not handled."),
+            _ => throw new Exception("The command is not handled."),
         };
     }
 
     public async Task FetchAsync() {
         var forecasts = await this.HttpClient.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json")
             ?? throw new Exception("Failed to fetch data.");
-        this.Mutate(new FetchDataMessage.SetWeatherForecast(forecasts.ToImmutableArray()));
+        this.Mutate(new FetchDataCommands.SetWeatherForecast(forecasts.ToImmutableArray()));
     }
 }
 

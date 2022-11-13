@@ -1,4 +1,4 @@
-using Memento;
+using Memento.Core;
 using System.Collections.Immutable;
 using System.Net.Http.Json;
 
@@ -8,8 +8,8 @@ public record FetchDataState {
     public ImmutableArray<WeatherForecast>? WeatherForecasts { get; init; }
 }
 
-public record FetchDataMessage : Message {
-    public record SetWeatherForecast(ImmutableArray<WeatherForecast> Items) : FetchDataMessage;
+public record FetchDataCommands : Command {
+    public record SetWeatherForecast(ImmutableArray<WeatherForecast> Items) : FetchDataCommands;
 }
 
 public record WeatherForecast {
@@ -22,27 +22,27 @@ public record WeatherForecast {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
 
-public class FetchDataStore : Store<FetchDataState, FetchDataMessage> {
+public class FetchDataStore : Store<FetchDataState, FetchDataCommands> {
     HttpClient HttpClient { get; }
 
     public FetchDataStore(
         HttpClient httpClient
     ) : base(() => new(), Mutateion) {
-        this.HttpClient = httpClient;
+        HttpClient = httpClient;
     }
 
-    static FetchDataState Mutateion(FetchDataState state, FetchDataMessage message) {
-        return message switch {
-            FetchDataMessage.SetWeatherForecast payload => state with {
+    static FetchDataState Mutateion(FetchDataState state, FetchDataCommands command) {
+        return command switch {
+            FetchDataCommands.SetWeatherForecast payload => state with {
                 WeatherForecasts = payload.Items,
             },
-            _ => throw new Exception("The message is not handled."),
+            _ => throw new Exception("The command is not handled."),
         };
     }
 
     public async Task FetchAsync() {
-        var forecasts = await this.HttpClient.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json")
+        var forecasts = await HttpClient.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json")
             ?? throw new Exception("Failed to fetch data.");
-        this.Mutate(new FetchDataMessage.SetWeatherForecast(forecasts.ToImmutableArray()));
+        Mutate(new FetchDataCommands.SetWeatherForecast(forecasts.ToImmutableArray()));
     }
 }

@@ -3,7 +3,7 @@ namespace Memento.Core;
 public record StateChangedEventArgs {
     protected object? sender;
 
-    public Message? Message { get; init; }
+    public Command? Command { get; init; }
 
     public object? LastState { get; init; }
 
@@ -11,20 +11,20 @@ public record StateChangedEventArgs {
 
     public IStore? Sender {
         get {
-            return (IStore?)this.sender;
+            return (IStore?)sender;
         }
         init {
-            this.sender = value;
+            sender = value;
         }
     }
 }
 
-public record StateChangedEventArgs<TState, TMessage> : StateChangedEventArgs
+public record StateChangedEventArgs<TState, TCommand> : StateChangedEventArgs
     where TState : class
-    where TMessage : Message {
-    public new required TMessage Message {
-        get => (TMessage)base.Message!;
-        init => base.Message = value;
+    where TCommand : Command {
+    public new required TCommand Command {
+        get => (TCommand)base.Command!;
+        init => base.Command = value;
     }
 
     public new required TState LastState {
@@ -37,8 +37,8 @@ public record StateChangedEventArgs<TState, TMessage> : StateChangedEventArgs
         init => base.State = value;
     }
 
-    public new required Store<TState, TMessage> Sender {
-        get => (Store<TState, TMessage>)base.sender!;
+    public new required Store<TState, TCommand> Sender {
+        get => (Store<TState, TCommand>)base.sender!;
         init => base.sender = value;
     }
 }

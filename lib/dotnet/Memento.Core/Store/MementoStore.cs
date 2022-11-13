@@ -1,4 +1,4 @@
-using Memento;
+using Memento.Core;
 using Memento.Core.Executors;
 using System;
 using System.Collections.Generic;
@@ -10,23 +10,23 @@ using System.Xml.Linq;
 
 namespace Memento.Core;
 
-public record Restores : Message;
+public record Restores : Command;
 
 public record Context<TState, TMessage>(TState State, TMessage Message);
 
 public abstract class MementoStore<TState, TMessages>
     : Store<TState, TMessages>
         where TState : class
-        where TMessages : Message, new() {
+        where TMessages : Command, new() {
     HistoryManager HistoryManager { get; }
 
-    public bool CanReDo => this.HistoryManager.CanReDo;
+    public bool CanReDo => HistoryManager.CanReDo;
 
-    public bool CanUnDo => this.HistoryManager.CanUnDo;
+    public bool CanUnDo => HistoryManager.CanUnDo;
 
-    public IMementoStateContext<TState>? Present => this.HistoryManager.Present as IMementoStateContext<TState>;
+    public IMementoStateContext<TState>? Present => HistoryManager.Present as IMementoStateContext<TState>;
 
-    public IReadOnlyCollection<IMementoStateContext<Context<TState, TMessages>>> FutureHistories => this.HistoryManager
+    public IReadOnlyCollection<IMementoStateContext<Context<TState, TMessages>>> FutureHistories => HistoryManager
         .FutureHistories
         .Select(x => x as IMementoStateContext<Context<TState, TMessages>>)
         .Where(x => x is not null)
@@ -34,7 +34,7 @@ public abstract class MementoStore<TState, TMessages>
         .ToList()
         .AsReadOnly();
 
-    public IReadOnlyCollection<IMementoStateContext<Context<TState, TMessages>>> PastHistories => this.HistoryManager
+    public IReadOnlyCollection<IMementoStateContext<Context<TState, TMessages>>> PastHistories => HistoryManager
         .PastHistories
         .Select(x => x as IMementoStateContext<Context<TState, TMessages>>)
         .Where(x => x is not null)
@@ -44,20 +44,20 @@ public abstract class MementoStore<TState, TMessages>
 
     public MementoStore(
         StateInitializer<TState> initializer,
-        Mutation<TState, TMessages> mutation,
+        Reducer<TState, TMessages> Reducer,
         HistoryManager historyManager
     ) : base(
         initializer,
-        (state, message) => message switch {
-            TMessages => mutation(state, message),
+        (state, command) => command switch {
+            TMessages => Reducer(state, command),
             _ => state,
         }
     ) {
-        this.HistoryManager = historyManager;
+        HistoryManager = historyManager;
     }
 
     public virtual ValueTask OnContextSavedAsync(IMementoStateContext<Context<TState, TMessages>> command) {
-        if (this.IsInitialized is false) {
+        if (IsInitialized is false) {
             throw new Exception("Store is not initialized.");
         }
 
@@ -65,7 +65,7 @@ public abstract class MementoStore<TState, TMessages>
     }
 
     public virtual ValueTask OnContextLoadedAsync(IMementoStateContext<Context<TState, TMessages>> command) {
-        if (this.IsInitialized is false) {
+        if (IsInitialized is false) {
             throw new Exception("Store is not initialized.");
         }
 
@@ -73,7 +73,7 @@ public abstract class MementoStore<TState, TMessages>
     }
 
     public virtual void OnContextDisposed(IMementoStateContext<Context<TState, TMessages>> command) {
-        if (this.IsInitialized is false) {
+        if (IsInitialized is false) {
             throw new Exception("Store is not initialized.");
         }
     }
@@ -84,36 +84,36 @@ public abstract class MementoStore<TState, TMessages>
         Func<T, ValueTask> onUnexecuted,
         string? name = null
     ) {
-        if(this.IsInitialized is false) {
+        if(IsInitialized is false) {
             throw new Exception("Store is not initialized.");
         }
 
         var data = await dataCreator();
-        await this.HistoryManager.ExcuteCommitAsync(
+        await HistoryManager.ExcuteCommitAsync(
             async () => {
-                var state = this.State;
+                var state = State;
                 await onExecuted(data);
                 return new Context<TState, TMessages>(state, new TMessages());
             },
             async state => {
                 await onUnexecuted(data);
 
-                var lastState = this.State;
-                this.State = state.State;
-                this.InvokeObserver(new StateChangedEventArgs {
+                var lastState = State;
+                State = state.State;
+                InvokeObserver(new StateChangedEventArgs {
                     LastState = lastState,
-                    State = this.State,
-                    Message = new Restores(),
+                    State = State,
+                    Command = new Restores(),
                     Sender = this,
                 });
             },
             async (state) => {
-                //this.ApplyComputedState(state.State, state.Message);
+                //this.ApplyComputedState(state.State, state.Command);
             },
             name ?? Guid.NewGuid().ToString(),
-            context => this.OnContextSavedAsync(context),
-            context => this.OnContextLoadedAsync(context),
-            context => this.OnContextDisposed(context)
+            context => OnContextSavedAsync(context!),
+            context => OnContextLoadedAsync(context!),
+            context => OnContextDisposed(context!)
         );
     }
 
@@ -122,7 +122,7 @@ public abstract class MementoStore<TState, TMessages>
         Func<ValueTask> onUnexecuted,
         string? name = null
     ) {
-        await this.CommitAsync(
+        await CommitAsync(
             async () => {
                 return (byte)0;
             },
@@ -136,27 +136,27 @@ public abstract class MementoStore<TState, TMessages>
         );
     }
 
-    public async ValueTask CommitAsync(TMessages message, string? name = null) {
-        if (this.IsInitialized is false) {
+    public async ValueTask CommitAsync(TMessages command, string? name = null) {
+        if (IsInitialized is false) {
             throw new Exception("Store is not initialized.");
         }
 
-        await this.CommitAsync(async () => message, async (s) => { }, async (s) => { }, name);
+        await CommitAsync(async () => command, async (s) => { }, async (s) => { }, name);
     }
 
     public async ValueTask UnExecuteAsync() {
-        if (this.IsInitialized is false) {
+        if (IsInitialized is false) {
             throw new Exception("Store is not initialized.");
         }
 
-        await this.HistoryManager.UnExecuteAsync();
+        await HistoryManager.UnExecuteAsync();
     }
 
     public async ValueTask ReExecuteAsync() {
-        if (this.IsInitialized is false) {
+        if (IsInitialized is false) {
             throw new Exception("Store is not initialized.");
         }
 
-        await this.HistoryManager.ReExecuteAsync();
+        await HistoryManager.ReExecuteAsync();
     }
 }

@@ -3,7 +3,7 @@ using System.Text.Json;
 using Memento.Core;
 using Microsoft.Extensions.DependencyInjection;
 
-using static AsyncCounterMessages;
+using static AsyncCounterCommands;
 
 var services = new ServiceCollection();
 services.AddScoped<AsyncCounterStore>();
@@ -17,7 +17,7 @@ var provider = new StoreProvider(serviceProvider);
 // Observe all stores state
 provider.Subscribe(e => {
     Console.WriteLine();
-    Console.WriteLine($"// {e.StateChangedEvent.Message?.GetType().Name}");
+    Console.WriteLine($"// {e.StateChangedEvent.Command?.GetType().Name}");
     Console.WriteLine(JsonSerializer.Serialize(
         e.StateChangedEvent.State,
         new JsonSerializerOptions() {
@@ -31,7 +31,7 @@ var store = provider.ResolveStore<AsyncCounterStore>();
 // Observe a store state
 store.Subscribe(e => {
     Console.WriteLine();
-    Console.WriteLine($"// {e.Message.GetType().Name}");
+    Console.WriteLine($"// {e.Command.GetType().Name}");
     Console.WriteLine(JsonSerializer.Serialize(
         e.State,
         new JsonSerializerOptions() {
@@ -60,22 +60,22 @@ public record AsyncCounterState {
     public bool IsLoading { get; init; } = false;
 }
 
-// Define messages to mutate state and observe state change event in detail.
-public record AsyncCounterMessages : Message {
-    public record Increment : AsyncCounterMessages;
-    public record BeginLoading : AsyncCounterMessages;
-    public record EndLoading : AsyncCounterMessages;
-    public record ModifyCount(int Value) : AsyncCounterMessages;
+// Define command to change state and observe state change event in detail.
+public record AsyncCounterCommands : Command {
+    public record Increment : AsyncCounterCommands;
+    public record BeginLoading : AsyncCounterCommands;
+    public record EndLoading : AsyncCounterCommands;
+    public record ModifyCount(int Value) : AsyncCounterCommands;
 }
 
-public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterMessages> {
-    public AsyncCounterStore() : base(() => new(), Mutation) {
+public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> {
+    public AsyncCounterStore() : base(() => new(), Reducer) {
     }
 
-    // State can change via mutation and easy to observe state from message
-    // Mutation generate new state from message and current state
-    static AsyncCounterState Mutation(AsyncCounterState state, AsyncCounterMessages message) {
-        return message switch {
+    // State can change via Reducer and easy to observe state from command
+    // Reducer generate new state from command and current state
+    static AsyncCounterState Reducer(AsyncCounterState state, AsyncCounterCommands command) {
+        return command switch {
             BeginLoading => state with {
                 IsLoading = true
             },
@@ -87,7 +87,7 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterMessages> 
                 Count = payload.Value,
                 History = state.History.Add(payload.Value),
             },
-            _ => throw new Exception("Message is not handled"),
+            _ => throw new CommandNotHandledException(command),
         };
     }
 
@@ -102,15 +102,15 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterMessages> 
     // "Mutate" method can called outside of store via action (public method)
     // Action can be async method.
     public async Task CountUpAsync() {
-        this.Mutate(new BeginLoading());
+        Mutate(new BeginLoading());
 
         await Task.Delay(500);
 
-        this.Mutate(new Increment());
-        this.Mutate(new EndLoading());
+        Mutate(new Increment());
+        Mutate(new EndLoading());
     }
 
     public void SetCount(int num) {
-        this.Mutate(new ModifyCount(num));
+        Mutate(new ModifyCount(num));
     }
 }

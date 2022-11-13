@@ -42,8 +42,8 @@ As a example, implement counters in various patterns.
 ## Usage
 
 The standard usecase is as a flux like store container.
-Memento is supported observe detailed with message pattern.
-To mutate the state, you must dispatch a Message and go through Mutation.
+Memento is supported observe detailed with command pattern.
+To mutate the state, you must dispatch a Message and go through Reducer.
 So, you can observe state detailed.
 
 [See](./Flux.md)

@@ -2,13 +2,13 @@ namespace Memento.Core;
 
 internal class FutureHistoryStack<T> : List<T> {
     public void Push(T item) {
-        this.Insert(0, item);
+        Insert(0, item);
     }
 
     public T? Pop() {
-        if (this.Count > 0) {
+        if (Count > 0) {
             var item = this[0];
-            this.RemoveAt(0);
+            RemoveAt(0);
             return item;
         }
 

@@ -20,7 +20,7 @@ Blazor is provided by ```Microsoft.Extensions.DependencyInjection``` as a standa
 ```cs
 using System.Collections.Immutable;
 using System.Text.Json;
-using Memento;
+using Memento.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 using static AsyncCounterMessages;
@@ -41,13 +41,13 @@ public record AsyncCounterMessages : Message {
 }
 
 public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterMessages> {
-    public AsyncCounterStore() : base(() => new(), Mutation) {
+    public AsyncCounterStore() : base(() => new(), Reducer) {
     }
 
-    // State can change via mutation and easy to observe state from message
-    // Mutation generate new state from message and current state
-    static AsyncCounterState Mutation(AsyncCounterState state, AsyncCounterMessages message) {
-        return message switch {
+    // State can change via Reducer and easy to observe state from command
+    // Reducer generate new state from command and current state
+    static AsyncCounterState Reducer(AsyncCounterState state, AsyncCounterMessages command) {
+        return command switch {
             BeginLoading => state with {
                 IsLoading = true
             },

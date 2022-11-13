@@ -36,7 +36,7 @@ public class ThrottledExecutor<T> : IObservable<T> {
     }
 
     public void Invoke(T value, byte maximumInvokesPerSecond = 0) {
-        this.ThrottleWindowMs = maximumInvokesPerSecond switch {
+        ThrottleWindowMs = maximumInvokesPerSecond switch {
             0 => 0,
             _ => (ushort)(1000 / maximumInvokesPerSecond),
         };

@@ -11,7 +11,7 @@ internal sealed class StoreSubscription : IDisposable
     /// Creates an instance of the class
     /// </summary>
     /// <param name="id">
-    ///		An Id that is included in the message of exceptions that are thrown, this is useful
+    ///		An Id that is included in the command of exceptions that are thrown, this is useful
     ///		for helping to identify the source that created the instance that threw the exception.
     /// </param>
     /// <param name="action">The action to execute when the instance is disposed</param>
