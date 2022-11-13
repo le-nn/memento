@@ -32,7 +32,7 @@ Note the concept is a bit different from Flux and Redux
 ## Rules
 
 * State should always be read-only.
-* To mutate state our app should mutate via Reducer in the action method
+* To change state our app should Dispatch via Reducer in the action method
 * Every Reducer that processes in the action will create new state to reflect the old state combined with the changes expected for the action.
 * The UI then uses the new state to render its display.
 
@@ -87,19 +87,19 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> 
     }
 
     public async Task CountUpAsync() {
-        Mutate(new BeginLoading());
+        Dispatch(new BeginLoading());
         await Task.Delay(800);
-        Mutate(new CountUp());
+        Dispatch(new CountUp());
     }
 
     public void CountUpManyTimes(int count) {
         for (int i = 0; i < count; i++) {
-            Mutate(new Increment());
+            Dispatch(new Increment());
         }
     }
 
     public void SetCount(int c) {
-        Mutate(new SetCount(c));
+        Dispatch(new SetCount(c));
     }
 }
 

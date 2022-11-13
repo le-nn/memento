@@ -49,11 +49,11 @@ public abstract class Store<TState, TCommand>
         TCommand command
     ) {
         var previous = state;
-        var postState = OnBeforeMutate(previous, command);
+        var postState = OnBeforeDispatch(previous, command);
 
         var middlewareProcessedState = GetMiddlewareInvokeHandler()(postState, command);
         if (middlewareProcessedState is TState s) {
-            var newState = OnAfterMutate(s, command);
+            var newState = OnAfterDispatch(s, command);
             var e = new StateChangedEventArgs<TState, TCommand> {
                 LastState = previous,
                 Command = command,
@@ -80,11 +80,11 @@ public abstract class Store<TState, TCommand>
         }
     }
 
-    protected virtual void Mutate(TCommand command) {
+    protected virtual void Dispatch(TCommand command) {
         ApplyComputedState(State, command);
     }
 
-    protected virtual void Mutate(Func<TState, TCommand> messageLoader) {
+    protected virtual void Dispatch(Func<TState, TCommand> messageLoader) {
         ApplyComputedState(State, messageLoader(State));
     }
 
@@ -158,7 +158,7 @@ public abstract class Store<TState, TCommand>
     /// <param name="state"> The current state.</param>
     /// <param name="command"> The command for mutating the state.</param>
     /// <returns> override state.</returns>
-    protected TState OnBeforeMutate(TState state, TCommand command) {
+    protected TState OnBeforeDispatch(TState state, TCommand command) {
         return state;
     }
 
@@ -168,7 +168,7 @@ public abstract class Store<TState, TCommand>
     /// <param name="state"> The computed state via Reducer.</param>
     /// <param name="command"> The command for mutating the state.</param>
     /// <returns> override state.</returns>
-    protected TState OnAfterMutate(TState state, TCommand command) {
+    protected TState OnAfterDispatch(TState state, TCommand command) {
         return state;
     }
 

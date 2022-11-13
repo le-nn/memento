@@ -88,7 +88,7 @@ public class FibStore : Store<FibState, FibCommands> {
         }
 
         var fib = this.FibonacciService.Fib(this.State.N);
-        this.Mutate(new FibCommands.SetFib(fib));
+        this.Dispatch(new FibCommands.SetFib(fib));
     }
 }
 ```
@@ -133,11 +133,11 @@ public class FetchDataStore : Store<FetchDataState, FetchDataCommands> {
 
     public FetchDataStore(
         HttpClient httpClient
-    ) : base(() => new(), Mutateion) {
+    ) : base(() => new(), Reducer) {
         this.HttpClient = httpClient;
     }
 
-    static FetchDataState Mutateion(FetchDataState state, FetchDataCommands command) {
+    static FetchDataState Reducer(FetchDataState state, FetchDataCommands command) {
         return command switch {
             FetchDataCommands.SetWeatherForecast payload => state with {
                 WeatherForecasts = payload.Items,

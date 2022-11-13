@@ -43,18 +43,18 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> 
     }
 
     public async Task CountUpAsync() {
-        Mutate(new BeginLoading());
+        Dispatch(new BeginLoading());
         await Task.Delay(800);
-        Mutate(new CountUp());
+        Dispatch(new CountUp());
     }
 
     public void CountUpManyTimes(int count) {
         for (int i = 0; i < count; i++) {
-            Mutate(new Increment());
+            Dispatch(new Increment());
         }
     }
 
     public void SetCount(int c) {
-        Mutate(new SetCount(c));
+        Dispatch(new SetCount(c));
     }
 }

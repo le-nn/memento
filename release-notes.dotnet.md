@@ -79,7 +79,7 @@ It outputs following.
 ## v0.2.0
 
 * Add .NET7 support.
-* Change name Message -> Command, Mutation -> Reducer, Mutate -> Dispatch
+* Change name Message -> Command, Reducer -> Reducer, Mutate -> Dispatch
 
 
 ---

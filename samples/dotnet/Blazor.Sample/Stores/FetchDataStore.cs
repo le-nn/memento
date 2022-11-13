@@ -27,11 +27,11 @@ public class FetchDataStore : Store<FetchDataState, FetchDataCommands> {
 
     public FetchDataStore(
         HttpClient httpClient
-    ) : base(() => new(), Mutateion) {
+    ) : base(() => new(), Reducer) {
         HttpClient = httpClient;
     }
 
-    static FetchDataState Mutateion(FetchDataState state, FetchDataCommands command) {
+    static FetchDataState Reducer(FetchDataState state, FetchDataCommands command) {
         return command switch {
             FetchDataCommands.SetWeatherForecast payload => state with {
                 WeatherForecasts = payload.Items,
@@ -43,6 +43,6 @@ public class FetchDataStore : Store<FetchDataState, FetchDataCommands> {
     public async Task FetchAsync() {
         var forecasts = await HttpClient.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json")
             ?? throw new Exception("Failed to fetch data.");
-        Mutate(new FetchDataCommands.SetWeatherForecast(forecasts.ToImmutableArray()));
+        Dispatch(new FetchDataCommands.SetWeatherForecast(forecasts.ToImmutableArray()));
     }
 }

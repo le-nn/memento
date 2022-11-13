@@ -2,7 +2,7 @@
 
 The standard usecase is as a flux like store container.
 This is supported observe detailed with command pattern.
-To mutate the state, you must dispatch a Command and go through Reducer.
+To change the state, you must dispatch a Command and go through Reducer.
 So, you can observe state detailed.
 
 # Store Overview
@@ -55,13 +55,13 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> 
     }
 
     public async Task CountUpAsync() {
-        this.Mutate(new BeginLoading());
+        this.Dispatch(new BeginLoading());
         await Task.Delay(800);
-        this.Mutate(new CountUp());
+        this.Dispatch(new CountUp());
     }
 
     public void SetCount(int c) {
-        this.Mutate(new SetCount(c));
+        this.Dispatch(new SetCount(c));
     }
 }
 
@@ -138,8 +138,8 @@ return command switch {
     ...
 };
 
-this.Mutate(CountUp);
-this.Mutate(SetCount(1234));
+this.Dispatch(CountUp);
+this.Dispatch(SetCount(1234));
 ```
 
 ## Define Store
@@ -161,10 +161,10 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> 
 ### State changes
 
 To muate the state, define a method as an action in the store.
-Mutate the state by calling it from the outside.
+Dispatch the state by calling it from the outside.
 And generate new state via Reducer with handling command.
 
-* Call ```this.Mutate(T state)``` to update store state
+* Call ```this.Dispatch(T state)``` to update store state
 
 The following example defines ```CountUpAsync```.
 
@@ -177,9 +177,9 @@ The following example defines ```CountUpAsync```.
 An method as action
 ```cs
 public async Task CountUpAsync() {
-    this.Mutate(new BeginLoading());
+    this.Dispatch(new BeginLoading());
     await Task.Delay(800);
-    this.Mutate(new CountUp());
+    this.Dispatch(new CountUp());
 }
 
 ```

@@ -50,7 +50,7 @@ public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState, RedoUndoTodoCom
             },
             async id => {
                 var item = await TodoService.CreateItemAsync(id, text);
-                Mutate(new RedoUndoTodoCommands.Append(item));
+                Dispatch(new RedoUndoTodoCommands.Append(item));
             },
             async id => {
                 await TodoService.RemoveAsync(id);
@@ -59,10 +59,10 @@ public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState, RedoUndoTodoCom
     }
 
     public async Task FetchAsync() {
-        Mutate(new BeginLoading());
+        Dispatch(new BeginLoading());
         var items = await TodoService.FetchItemsAsync();
-        Mutate(new SetItems(items));
-        Mutate(new EndLoading());
+        Dispatch(new SetItems(items));
+        Dispatch(new EndLoading());
     }
 
     public async Task ToggleIsCompletedAsync(Guid id) {
@@ -70,7 +70,7 @@ public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState, RedoUndoTodoCom
             async () => {
                 var item = await TodoService.ToggleCompleteAsync(id)
                     ?? throw new Exception();
-                Mutate(new Replace(id, item));
+                Dispatch(new Replace(id, item));
             },
             async () => {
                 var item = await TodoService.ToggleCompleteAsync(id)

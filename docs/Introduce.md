@@ -5,7 +5,7 @@ You can define stores inspired by MVU patterns such as Flux and Elm to observe s
 Some are inspired by Elm and MVU.
 And Redux and Flux pattern are same too, but memento is not Redux and Flux.
 
-The state is always mutate via mutaion, which makes it easier to monitor what happened within the application.
+The state is always changed via reducer, which makes it easier to monitor what happened within the application.
 
 Features
 
@@ -36,7 +36,7 @@ It has Action and Mutaion on a one-to-one basis with the managed State. There ca
  Represents something that happened. You think of an Message as an event that describes something that happened in the application. It can be considered Message in MVU pattern, Action in Redux or Flux. Message can have one payload to change the information.
 
 #### Action
-Instead of mutating the state, actions dispatch command and mutate state via Reducers.
+Instead of mutating the state, actions dispatch command and change state via Reducers.
 
 Actions can contain arbitrary asynchronous operations.
 

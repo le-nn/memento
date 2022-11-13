@@ -32,7 +32,7 @@ public record AsyncCounterState {
     public bool IsLoading { get; init; } = false;
 }
 
-// Define messages to mutate state and observe state change event in detail.
+// Define messages to change state and observe state change event in detail.
 public record AsyncCounterMessages : Message {
     public record Increment : AsyncCounterMessages;
     public record BeginLoading : AsyncCounterMessages;
@@ -71,19 +71,19 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterMessages> 
         };
     }
 
-    // "Mutate" method can called outside of store via action (public method)
+    // "Dispatch" method can called outside of store via action (public method)
     // Action can be async method.
     public async Task CountUpAsync() {
-        this.Mutate(new BeginLoading());
+        this.Dispatch(new BeginLoading());
 
         await Task.Delay(500);
 
-        this.Mutate(new Increment());
-        this.Mutate(new EndLoading());
+        this.Dispatch(new Increment());
+        this.Dispatch(new EndLoading());
     }
 
     public void SetCount(int num) {
-        this.Mutate(new ModifyCount(num));
+        this.Dispatch(new ModifyCount(num));
     }
 }
 

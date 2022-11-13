@@ -99,18 +99,18 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> 
         };
     }
 
-    // "Mutate" method can called outside of store via action (public method)
+    // "Dispatch" method can called outside of store via action (public method)
     // Action can be async method.
     public async Task CountUpAsync() {
-        Mutate(new BeginLoading());
+        Dispatch(new BeginLoading());
 
         await Task.Delay(500);
 
-        Mutate(new Increment());
-        Mutate(new EndLoading());
+        Dispatch(new Increment());
+        Dispatch(new EndLoading());
     }
 
     public void SetCount(int num) {
-        Mutate(new ModifyCount(num));
+        Dispatch(new ModifyCount(num));
     }
 }
