@@ -38,7 +38,7 @@ Note the concept is a bit different from Flux and Redux
 
 ## Overview
 
-This is an C# example implements counter.
+This is an C# and Blazor example that implements counter.
 
 Store 
 ```csharp
