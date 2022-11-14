@@ -7,7 +7,7 @@
         <LangVersion>11</LangVersion>
 
         <!-- package info -->
-        <Version>0.1.1</Version>
+        <Version>0.2.0</Version>
         <Title>Memento.Core</Title>
         <PackageId>Memento.Core</PackageId>
         <Description>Easy unidirectional store-pattern container for state management and redo/undo container for .NET.</Description>
