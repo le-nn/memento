@@ -33,7 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{95938898-9
 		docs\Blazor\DependencyInjection.md = docs\Blazor\DependencyInjection.md
 		docs\Blazor\Flux.md = docs\Blazor\Flux.md
 		docs\Blazor\GettingStandard.md = docs\Blazor\GettingStandard.md
-		docs\Introduce.md = docs\Introduce.md
+		docs\README.md = docs\README.md
 		docs\Tutorial.cs.md = docs\Tutorial.cs.md
 	EndProjectSection
 EndProject
