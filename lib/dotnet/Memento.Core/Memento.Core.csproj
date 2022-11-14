@@ -1,23 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
-        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <LangVersion>11</LangVersion>
-
-        <!-- package info -->
-        <Version>0.2.0</Version>
-        <Title>Memento.Core</Title>
-        <PackageId>Memento.Core</PackageId>
-        <Description>Easy unidirectional store-pattern container for state management and redo/undo container for .NET.</Description>
-        <AssemblyName>Memento.Core</AssemblyName>
-        <Authors>le-nn</Authors>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageProjectUrl>https://github.com/le-nn/memento</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/le-nn/memento</RepositoryUrl>
-        <PackageTags>blazor;store;flux;redux</PackageTags>
-        <Copyright>Copyright (c) 2022 le-nn</Copyright>
-        <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 </Project>

@@ -1,29 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
-        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <LangVersion>11</LangVersion>
-
-        <!-- package info -->
-        <Version>0.2.0</Version>
-        <Title>Memento.Blazor</Title>
-        <PackageId>Memento.Blazor</PackageId>
-        <Description>Easy unidirectional store-pattern container for state management and redo/undo container for .NET.</Description>
-        <AssemblyName>Memento.Blazor</AssemblyName>
-        <Authors>le-nn</Authors>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageProjectUrl>https://github.com/le-nn/memento</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/le-nn/memento</RepositoryUrl>
-        <PackageTags>blazor;store;flux;redux</PackageTags>
-        <Copyright>Copyright (c) 2022 le-nn</Copyright>
-        <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.7" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.0" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.7" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.7" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>
