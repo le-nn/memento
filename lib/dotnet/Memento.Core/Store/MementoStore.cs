@@ -84,7 +84,7 @@ public abstract class MementoStore<TState, TMessages>
         Func<T, ValueTask> onUnexecuted,
         string? name = null
     ) {
-        if(IsInitialized is false) {
+        if (IsInitialized is false) {
             throw new Exception("Store is not initialized.");
         }
 

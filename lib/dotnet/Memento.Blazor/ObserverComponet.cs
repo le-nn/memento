@@ -1,12 +1,12 @@
-using Microsoft.AspNetCore.Components;
 using Memento.Core;
+using Microsoft.AspNetCore.Components;
 
 namespace Memento.Blazor;
 
 public class ObserverComponet : ComponentBase, IDisposable {
     private bool IsDisposed;
     private IDisposable? StateSubscription;
-    private IDisposable InvokerSubscription;
+    private readonly IDisposable InvokerSubscription;
     private readonly ThrottledExecutor<StateChangedEventArgs> StateHasChangedThrottler = new();
 
     /// <summary>

@@ -131,7 +131,7 @@ public class HistoryManager {
 
     private void ReduceIfPastHistoriesOverflow() {
         if (Past.Count > MaxHistoryCount) {
-            for (int i = 0; i < Past.Count - MaxHistoryCount; i++) {
+            for (var i = 0; i < Past.Count - MaxHistoryCount; i++) {
                 Past.RemoveLast()
                     ?.Dispose();
             }

@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 namespace Blazor.Sample.Todos;
 
 public class MockTodoService : ITodoService {
-    List<Todo> Items = new();
+    readonly List<Todo> Items = new();
 
     public async Task<Todo> CreateItemAsync(Guid id, string text) {
         await Task.Delay(600);

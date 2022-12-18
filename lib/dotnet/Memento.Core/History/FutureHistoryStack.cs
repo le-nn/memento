@@ -12,6 +12,6 @@ internal class FutureHistoryStack<T> : List<T> {
             return item;
         }
 
-        return default(T?);
+        return default;
     }
 }

@@ -1,8 +1,7 @@
-using System.Collections.Immutable;
-using System.Text.Json;
 using Memento.Core;
 using Microsoft.Extensions.DependencyInjection;
-
+using System.Collections.Immutable;
+using System.Text.Json;
 using static AsyncCounterCommands;
 
 var services = new ServiceCollection();

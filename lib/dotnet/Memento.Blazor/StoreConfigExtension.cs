@@ -1,6 +1,6 @@
+using Memento.Core;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Memento.Core;
 using System.Reflection;
 
 namespace Memento.Blazor;
@@ -51,4 +51,3 @@ public static class StoreConfigExtension {
         return builder;
     }
 }
-

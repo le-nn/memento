@@ -8,7 +8,7 @@ public abstract class Store<TState, TCommand>
     : IStore, IObservable<StateChangedEventArgs<TState, TCommand>>
     where TState : class
     where TCommand : Command {
-    object _locker = new();
+    readonly readonly object _locker = new();
 
     private StoreProvider? Provider { get; set; }
 
