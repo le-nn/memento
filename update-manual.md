@@ -2,11 +2,11 @@
 
 ## .NET
 
-1. Update version in ```lib/dotnet/{Memento.Core|Memento.Blazor}/{Memento.Core|Memento.Blazor}.csproj```
+1. Update the version in ```Directory.Build.props```
 
-2. Update version in [README.md](./README.md)
+2. Update the version in [README.md](./README.md)
 
-3. Add release notes in [Notes](./release-notes.dotnet.md)
+3. Add the release notes in [Notes](./release-notes.dotnet.md)
 
 Package packing command is following
 
@@ -28,8 +28,8 @@ dotnet nuget push .\lib\dotnet\Memento.Blazor\bin\Release\Memento.Blazor.x.x.x.n
 
 ##  Node.js
 
-1. Update version in ```lib/node/{react|core}/package.json```
+1. Update the version contains in ```lib/node/{react|core}/package.json```
 
-2. Update version in [README.md](./README.md)
+2. Update the version in [README.md](./README.md)
 
-3. Add release notes in [Notes](./release-notes.node.md)
+3. Add the release notes in [Notes](./release-notes.node.md)
