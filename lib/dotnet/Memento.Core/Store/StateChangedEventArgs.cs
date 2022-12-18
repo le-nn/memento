@@ -3,11 +3,13 @@ namespace Memento.Core;
 public record StateChangedEventArgs {
     protected object? sender;
 
-    public Command? Command { get; init; }
+    public Command Command { get; init; } = default!;
 
     public object? LastState { get; init; }
 
     public object? State { get; init; }
+
+    public DateTime Timestamp { get; } = DateTime.UtcNow;
 
     public IStore? Sender {
         get {
@@ -22,6 +24,7 @@ public record StateChangedEventArgs {
 public record StateChangedEventArgs<TState, TCommand> : StateChangedEventArgs
     where TState : class
     where TCommand : Command {
+
     public new required TCommand Command {
         get => (TCommand)base.Command!;
         init => base.Command = value;

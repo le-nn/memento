@@ -8,7 +8,7 @@ public abstract class Store<TState, TCommand>
     : IStore, IObservable<StateChangedEventArgs<TState, TCommand>>
     where TState : class
     where TCommand : Command {
-    readonly readonly object _locker = new();
+    readonly object _locker = new();
 
     private StoreProvider? Provider { get; set; }
 
@@ -23,6 +23,8 @@ public abstract class Store<TState, TCommand>
     object IStore.State => State;
 
     public bool IsInitialized { get; private set; }
+
+    Func<object, Command, object> IStore.Reducer => ((o, m) => Reducer((TState)o, (TCommand)m));
 
     public Store(
         StateInitializer<TState> initializer,
@@ -158,7 +160,7 @@ public abstract class Store<TState, TCommand>
     /// <param name="state"> The current state.</param>
     /// <param name="command"> The command for mutating the state.</param>
     /// <returns> override state.</returns>
-    protected TState OnBeforeDispatch(TState state, TCommand command) {
+    protected virtual TState OnBeforeDispatch(TState state, TCommand command) {
         return state;
     }
 
@@ -168,7 +170,7 @@ public abstract class Store<TState, TCommand>
     /// <param name="state"> The computed state via Reducer.</param>
     /// <param name="command"> The command for mutating the state.</param>
     /// <returns> override state.</returns>
-    protected TState OnAfterDispatch(TState state, TCommand command) {
+    protected virtual TState OnAfterDispatch(TState state, TCommand command) {
         return state;
     }
 
@@ -183,4 +185,16 @@ public abstract class Store<TState, TCommand>
             obs.OnNext(e);
         }
     }
+
+    public void __setStateForceSilently(object state) {
+        State = (TState)state;
+    }
+
+    public void __setStateForce(object state) {
+        // var message = new ForceReplace<TState>(state);
+        // var previous = this.State;
+        State = (TState)state;
+        // this._invokeObserver(previous, state, message);
+    }
+
 }
