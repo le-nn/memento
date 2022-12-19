@@ -22,7 +22,7 @@
         "gatsby-plugin-emotion": "^7.7.0",
         "gatsby-plugin-mdx": "^3.7.1",
         "gatsby-source-filesystem": "^4.7.0",
-        "memento.react": "link:../packages/node/react",
+        "memento.react": "link:../lib/node/react",
         "normalize.css": "^8.0.1",
         "react": "^18.1.0",
         "react-dom": "^18.1.0",

@@ -90,7 +90,7 @@ export class Provider<TRootState = { [key: string]: any }> {
         for (const ctor of option.middlewares ?? []) {
             try {
                 const middleware = this._container!.get(ctor) as Middleware;
-                middleware.onInitialized(this);
+                middleware.onInitialized(this as any);
             }
             catch (ex: any) {
                 throw new Error(`Failed to initalize memento middleware "${ex.message}" \n`);
