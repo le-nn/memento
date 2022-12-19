@@ -12,7 +12,7 @@ public record AsyncCounterState {
     public ImmutableArray<int> Histories { get; init; } = ImmutableArray.Create<int>();
 }
 
-public record AsyncCounterCommands: Command {
+public record AsyncCounterCommands : Command {
     public record CountUp : AsyncCounterCommands;
     public record Increment : AsyncCounterCommands;
     public record SetCount(int Count) : AsyncCounterCommands;
@@ -49,7 +49,7 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> 
     }
 
     public void CountUpManyTimes(int count) {
-        for (int i = 0; i < count; i++) {
+        for (var i = 0; i < count; i++) {
             Dispatch(new Increment());
         }
     }

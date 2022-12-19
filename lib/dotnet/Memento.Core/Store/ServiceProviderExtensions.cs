@@ -17,7 +17,7 @@ public static class ServiceProviderExtensions {
     }
 
     public static IEnumerable<T> GetServices<T>(this IServiceProvider provider) {
-        if( provider.GetService(typeof(IEnumerable<T>)) is IEnumerable<T> services) {
+        if (provider.GetService(typeof(IEnumerable<T>)) is IEnumerable<T> services) {
             return services;
         }
 

@@ -11,7 +11,7 @@ namespace Memento.Core.Executors;
 /// Provides a feature to wait for the end of asynchronous processing and connect to the next processing.
 /// </summary>
 public class ConcatAsyncOperationExecutor {
-    ConcurrentQueue<IOperation> _operations = new();
+    readonly ConcurrentQueue<IOperation> _operations = new();
     volatile int _processingCount = 0;
 
     /// <summary>
@@ -68,8 +68,8 @@ public class ConcatAsyncOperationExecutor {
     }
 
     class Operation<T> : IOperation {
-        Func<Task<T>> func;
-        TaskCompletionSource<T> taskSource;
+        readonly Func<Task<T>> func;
+        readonly TaskCompletionSource<T> taskSource;
 
         public Operation(Func<Task<T>> func, TaskCompletionSource<T> taskSource) {
             this.func = func;

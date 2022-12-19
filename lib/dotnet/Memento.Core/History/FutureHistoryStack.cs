@@ -10,8 +10,15 @@ internal class FutureHistoryStack<T> : List<T> {
             var item = this[0];
             RemoveAt(0);
             return item;
+            /* Unmerged change from project 'Memento.Core(net6.0)'
+            Before:
+                    return default(T?);
+            After:
+                    return default;
+            */
+
         }
 
-        return default(T?);
+        return default;
     }
 }

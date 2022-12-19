@@ -4,28 +4,27 @@ using Memento.Core.Store.Internals;
 namespace Memento.Core;
 
 public class ThrottledExecutor<T> : IObservable<T> {
-    volatile int LockFlag;
-    volatile bool InvokingSuspended;
-    DateTime LastInvokeTime;
-    Timer? ThrottleTimer;
+    volatile int _lockFlag;
+    DateTime _lastInvokeTime;
+    Timer? _throttleTimer;
 
-    readonly List<IObserver<T>> observers = new();
-    readonly object locker = new();
+    readonly List<IObserver<T>> _observers = new();
+    readonly object _locker = new();
 
     public ushort ThrottleWindowMs { get; private set; }
 
     public ThrottledExecutor() {
-        LastInvokeTime = DateTime.UtcNow - TimeSpan.FromMilliseconds(ushort.MaxValue);
+        _lastInvokeTime = DateTime.UtcNow - TimeSpan.FromMilliseconds(ushort.MaxValue);
     }
 
     public IDisposable Subscribe(IObserver<T> action) {
-        lock (locker) {
-            observers.Add(action);
+        lock (_locker) {
+            _observers.Add(action);
         }
 
         return new StoreSubscription(nameof(ThrottledExecutor<T>), () => {
-            lock (locker) {
-                observers.Remove(action);
+            lock (_locker) {
+                _observers.Remove(action);
             }
         });
     }
@@ -56,8 +55,8 @@ public class ThrottledExecutor<T> : IObservable<T> {
                 //if (InvokingSuspended)
                 //    return;
 
-                int millisecondsSinceLastInvoke =
-                    (int)(DateTime.UtcNow - LastInvokeTime).TotalMilliseconds;
+                var millisecondsSinceLastInvoke =
+                    (int)(DateTime.UtcNow - _lastInvokeTime).TotalMilliseconds;
 
 
 
@@ -70,8 +69,8 @@ public class ThrottledExecutor<T> : IObservable<T> {
                     // so set a timer that will trigger at the start of the next
                     // time window and prevent further invokes until
                     // the timer has triggered
-                    ThrottleTimer?.Dispose();
-                    ThrottleTimer = new Timer(
+                    _throttleTimer?.Dispose();
+                    _throttleTimer = new Timer(
                         callback: _ => ExecuteThrottledAction(value),
                         state: null,
                         dueTime: ThrottleWindowMs - millisecondsSinceLastInvoke,
@@ -83,28 +82,28 @@ public class ThrottledExecutor<T> : IObservable<T> {
     }
 
     private void LockAndExecuteOnlyIfNotAlreadyLocked(Action action) {
-        if (Interlocked.CompareExchange(ref LockFlag, 1, 0) is 0) {
+        if (Interlocked.CompareExchange(ref _lockFlag, 1, 0) is 0) {
             try {
                 action();
             }
             finally {
-                LockFlag = 0;
+                _lockFlag = 0;
             }
         }
     }
 
     private void ExecuteThrottledAction(T value) {
         try {
-            lock (locker) {
-                foreach (var observer in observers) {
+            lock (_locker) {
+                foreach (var observer in _observers) {
                     observer.OnNext(value);
                 }
             }
         }
         finally {
-            ThrottleTimer?.Dispose();
-            ThrottleTimer = null;
-            LastInvokeTime = DateTime.UtcNow;
+            _throttleTimer?.Dispose();
+            _throttleTimer = null;
+            _lastInvokeTime = DateTime.UtcNow;
         }
     }
 

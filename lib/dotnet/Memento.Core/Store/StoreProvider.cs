@@ -13,7 +13,8 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs> {
     IServiceProvider ServiceContainer { get; }
     List<IDisposable> Subscriptions { get; } = new();
     private List<IObserver<RootStateChangedEventArgs>> Observers { get; } = new();
-    object locker = new();
+
+    readonly object locker = new();
 
     public ImmutableDictionary<string, object> RootState() {
         return ResolveAllStores().Aggregate(

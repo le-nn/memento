@@ -20,5 +20,7 @@ builder.Services.AddMemento()
     .AddStore<FetchDataStore>();
 
 var app = builder.Build();
-app.UseStores()
-    .RunAsync();
+
+app.UseStores();
+
+await app.RunAsync();

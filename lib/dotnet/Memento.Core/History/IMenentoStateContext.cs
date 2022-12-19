@@ -6,6 +6,5 @@ public interface IMementoStateContext {
 }
 
 public interface IMementoStateContext<T> : IMementoStateContext {
-    new T State { get; set; }
+    new T? State { get; set; }
 }
-
