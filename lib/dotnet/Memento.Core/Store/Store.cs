@@ -7,11 +7,19 @@ namespace Memento.Core;
 public abstract class Store<TState, TCommand>
     : IStore, IObservable<StateChangedEventArgs<TState, TCommand>>
     where TState : class
+<<<<<<< HEAD
     where TCommand : Command {
     readonly object _locker = new();
 
     private StoreProvider? Provider { get; set; }
 
+=======
+    where TCommand : Command {
+    readonly object _locker = new();
+
+    private StoreProvider? Provider { get; set; }
+
+>>>>>>> 18ac626468eb66b7e9db74bbbd2fb1a1a313d8e6
     protected StateInitializer<TState> Initializer { get; }
 
     private Reducer<TState, TCommand> Reducer { get; }
@@ -190,6 +198,13 @@ public abstract class Store<TState, TCommand>
         State = (TState)state;
     }
 
+<<<<<<< HEAD
+    internal void InvokeObserver(StateChangedEventArgs e) {
+        foreach (var obs in Observers) {
+            obs.OnNext(e);
+        }
+    }
+=======
     public void __setStateForce(object state) {
         // var message = new ForceReplace<TState>(state);
         // var previous = this.State;
@@ -197,4 +212,5 @@ public abstract class Store<TState, TCommand>
         // this._invokeObserver(previous, state, message);
     }
 
+>>>>>>> 18ac626468eb66b7e9db74bbbd2fb1a1a313d8e6
 }
