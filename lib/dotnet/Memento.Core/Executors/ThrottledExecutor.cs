@@ -35,7 +35,14 @@ public class ThrottledExecutor<T> : IObservable<T> {
     }
 
     public void Invoke(T value, byte maximumInvokesPerSecond = 0) {
-        ThrottleWindowMs = maximumInvokesPerSecond switch {
+        
+/* Unmerged change from project 'Memento.Core(net7.0)'
+Before:
+                int millisecondsSinceLastInvoke =
+After:
+                var millisecondsSinceLastInvoke =
+*/
+ThrottleWindowMs = maximumInvokesPerSecond switch {
             0 => 0,
             _ => (ushort)(1000 / maximumInvokesPerSecond),
         };

@@ -4,13 +4,6 @@ public record MementoCommandContext<T> : IMementoCommandContext<T> {
 
     public bool IsDisposed { get; private set; }
 
-
-    /* Unmerged change from project 'Memento.Core(net6.0)'
-    Before:
-        public T? State { get; set; } = default(T?);
-    After:
-        public T? State { get; set; } = default;
-    */
     public T? State { get; set; } = default;
 
     object? IMementoStateContext.State {

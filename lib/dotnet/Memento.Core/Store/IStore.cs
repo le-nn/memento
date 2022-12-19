@@ -7,4 +7,10 @@ public interface IStore : IObservable<StateChangedEventArgs> {
             where TStore : IStore;
 
     internal protected void OnInitialized(StoreProvider provider);
+
+    void __setStateForceSilently(object state);
+
+    void __setStateForce(object state);
+
+    Func<object, Command, object> Reducer { get; }
 }
