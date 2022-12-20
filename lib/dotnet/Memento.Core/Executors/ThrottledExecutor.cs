@@ -11,7 +11,7 @@ public class ThrottledExecutor<T> : IObservable<T> {
     readonly List<IObserver<T>> _observers = new();
     readonly object _locker = new();
 
-    public ushort ThrottleWindowMs { get; private set; }
+    public short LatencyMs { get; set; } = 180;
 
     public ThrottledExecutor() {
         _lastInvokeTime = DateTime.UtcNow - TimeSpan.FromMilliseconds(ushort.MaxValue);
@@ -34,25 +34,10 @@ public class ThrottledExecutor<T> : IObservable<T> {
         return Subscribe(observer);
     }
 
-    public void Invoke(T value, byte maximumInvokesPerSecond = 0) {
-
-        /* Unmerged change from project 'Memento.Core(net7.0)'
-        Before:
-                        int millisecondsSinceLastInvoke =
-        After:
-                        var millisecondsSinceLastInvoke =
-        */
-        ThrottleWindowMs = maximumInvokesPerSecond switch {
-            0 => 0,
-            _ => (ushort)(1000 / maximumInvokesPerSecond),
-        };
-
-        Invoke(value);
-    }
 
     public void Invoke(T value) {
         // If no throttle window then bypass throttling
-        if (ThrottleWindowMs is 0) {
+        if (LatencyMs is 0) {
             ExecuteThrottledAction(value);
         }
         else {
@@ -68,7 +53,7 @@ public class ThrottledExecutor<T> : IObservable<T> {
 
 
                 // If last execute was outside the throttle window then execute immediately
-                if (millisecondsSinceLastInvoke >= ThrottleWindowMs) {
+                if (millisecondsSinceLastInvoke >= LatencyMs) {
                     ExecuteThrottledAction(value);
                 }
                 else {
@@ -80,7 +65,7 @@ public class ThrottledExecutor<T> : IObservable<T> {
                     _throttleTimer = new Timer(
                         callback: _ => ExecuteThrottledAction(value),
                         state: null,
-                        dueTime: ThrottleWindowMs - millisecondsSinceLastInvoke,
+                        dueTime: LatencyMs - millisecondsSinceLastInvoke,
                         period: 0
                     );
                 }
@@ -113,5 +98,4 @@ public class ThrottledExecutor<T> : IObservable<T> {
             _lastInvokeTime = DateTime.UtcNow;
         }
     }
-
 }

@@ -1,25 +1,32 @@
-namespace Memento.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Metadata;
+using System.Text;
+using System.Threading.Tasks;
 
-public delegate object NextMiddlewareHandler(object state, Command command);
+namespace Memento.Core.Store;
 
-public abstract class Middleware : IDisposable {
-    protected StoreProvider? Provider;
+public interface IMiddleware {
+    MiddlewareHandler Handler { get; }
 
-    /// <summary>
-    ///  Called on the store initialized.
-    /// </summary>
-    /// <param name="provider">The StoreProvider.</param>
-    internal protected virtual void OnInitialized(StoreProvider provider) {
-        Provider = provider;
+    internal Task InitializeAsync(IServiceProvider provide);
+}
+
+public abstract class Middleware<TMiddlewareHandler> : IMiddleware
+    where TMiddlewareHandler : MiddlewareHandler {
+    TMiddlewareHandler? _handler;
+
+    MiddlewareHandler IMiddleware.Handler => Handler;
+
+    public TMiddlewareHandler Handler => _handler
+        ?? throw new InvalidOperationException($"Middleware '{GetType().FullName}' has not initialized.");
+
+    async Task IMiddleware.InitializeAsync(IServiceProvider provider) {
+        var handler = Create(provider);
+        _handler = handler;
+        await handler.InitializedAsync();
     }
 
-    public virtual object? Handle(
-        object state,
-        Command command,
-        NextMiddlewareHandler next
-    ) => next(state, command);
-
-    public virtual void Dispose() {
-
-    }
+    protected abstract TMiddlewareHandler Create(IServiceProvider provider);
 }

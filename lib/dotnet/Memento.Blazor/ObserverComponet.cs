@@ -4,17 +4,17 @@ using Microsoft.AspNetCore.Components;
 namespace Memento.Blazor;
 
 public class ObserverComponet : ComponentBase, IDisposable {
-    private bool IsDisposed;
-    private IDisposable? StateSubscription;
-    private readonly IDisposable InvokerSubscription;
-    private readonly ThrottledExecutor<StateChangedEventArgs> StateHasChangedThrottler = new();
+    private bool _isDisposed;
+    private IDisposable? _stateSubscription;
+    private readonly IDisposable _invokerSubscription;
+    private readonly ThrottledExecutor<StateChangedEventArgs> _stateHasChangedThrottler = new();
 
     /// <summary>
     /// Creates a new instance
     /// </summary>
     public ObserverComponet() {
-        InvokerSubscription = StateHasChangedThrottler.Subscribe(e => {
-            if (IsDisposed is false) {
+        _invokerSubscription = _stateHasChangedThrottler.Subscribe(e => {
+            if (_isDisposed is false) {
                 base.InvokeAsync(StateHasChanged);
             }
         });
@@ -26,16 +26,16 @@ public class ObserverComponet : ComponentBase, IDisposable {
     /// will be surpressed, and observers will be notified of the last.
     /// state when the time window has elapsed to allow another notification.
     /// </summary>
-    protected byte MaximumStateChangedNotificationsPerSecond { get; set; } = 30;
+    protected byte LatencyMs { get; set; } = 1000 / 30;
 
     /// <summary>
     /// Disposes of the component and unsubscribes from any state
     /// </summary>
     public void Dispose() {
-        if (IsDisposed is false) {
+        if (_isDisposed is false) {
             Dispose(true);
             GC.SuppressFinalize(this);
-            IsDisposed = true;
+            _isDisposed = true;
         }
     }
 
@@ -44,19 +44,20 @@ public class ObserverComponet : ComponentBase, IDisposable {
     /// </summary>
     protected override void OnInitialized() {
         base.OnInitialized();
-        StateSubscription = StateSubscriber.Subscribe(this, e => {
-            StateHasChangedThrottler.Invoke(e, MaximumStateChangedNotificationsPerSecond);
+        _stateSubscription = StateSubscriber.Subscribe(this, e => {
+            _stateHasChangedThrottler.LatencyMs = LatencyMs;
+            _stateHasChangedThrottler.Invoke(e);
         });
     }
 
     protected virtual void Dispose(bool disposing) {
         if (disposing) {
-            if (StateSubscription is null) {
-                throw new NullReferenceException("Have you forgotten to call base.OnInitialized() in your component?");
+            if (_stateSubscription is null) {
+                throw new NullReferenceException("Have you forgotten to call base.OnInitializedAsync() in your component?");
             }
 
-            InvokerSubscription.Dispose();
-            StateSubscription.Dispose();
+            _invokerSubscription.Dispose();
+            _stateSubscription.Dispose();
         }
     }
 }

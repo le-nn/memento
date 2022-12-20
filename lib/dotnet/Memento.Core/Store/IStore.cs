@@ -6,7 +6,7 @@ public interface IStore : IObservable<StateChangedEventArgs> {
     TStore ToStore<TStore>()
             where TStore : IStore;
 
-    internal protected void OnInitialized(StoreProvider provider);
+    internal protected Task OnInitializedAsync(StoreProvider provider);
 
     void __setStateForceSilently(object state);
 

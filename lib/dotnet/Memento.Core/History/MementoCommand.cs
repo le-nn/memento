@@ -71,7 +71,7 @@ public record MementoCommandContext<T> : IMementoCommandContext<T> {
         }
 
         IsDisposed = true;
-        ContextLoaded?.Invoke(this!);
+        _ = ContextLoaded?.Invoke(this!);
     }
 
     public ValueTask LoadDataAsync() {

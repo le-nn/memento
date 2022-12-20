@@ -1,4 +1,5 @@
 using Memento.Core.Internals;
+using Memento.Core.Store;
 using Memento.Core.Store.Internals;
 using System.Net.Sockets;
 
@@ -7,19 +8,11 @@ namespace Memento.Core;
 public abstract class Store<TState, TCommand>
     : IStore, IObservable<StateChangedEventArgs<TState, TCommand>>
     where TState : class
-<<<<<<< HEAD
     where TCommand : Command {
     readonly object _locker = new();
 
     private StoreProvider? Provider { get; set; }
 
-=======
-    where TCommand : Command {
-    readonly object _locker = new();
-
-    private StoreProvider? Provider { get; set; }
-
->>>>>>> 18ac626468eb66b7e9db74bbbd2fb1a1a313d8e6
     protected StateInitializer<TState> Initializer { get; }
 
     private Reducer<TState, TCommand> Reducer { get; }
@@ -109,7 +102,7 @@ public abstract class Store<TState, TCommand>
             Observers.Add(obs);
         }
 
-        return new StoreSubscription($"Store.Subscribe", () => {
+        return new StoreSubscription(GetType().FullName ?? "Store.Subscribe", () => {
             lock (_locker) {
                 Observers.Remove(obs);
             }
@@ -121,7 +114,7 @@ public abstract class Store<TState, TCommand>
             Observers.Add(observer);
         }
 
-        return new StoreSubscription($"Store.Subscribe", () => {
+        return new StoreSubscription(GetType().FullName ?? "Store.Subscribe", () => {
             lock (_locker) {
                 Observers.Remove(observer);
             }
@@ -132,15 +125,23 @@ public abstract class Store<TState, TCommand>
         return Subscribe(new StoreObeserver<TState, TCommand>(observer));
     }
 
-    void IStore.OnInitialized(StoreProvider provider) {
+    async Task IStore.OnInitializedAsync(StoreProvider provider) {
         Provider = provider;
-        OnInitialized(provider);
+        try {
+            await OnInitializedAsync(provider);
+        }
+        catch {
+            throw;
+        }
+        finally {
+            IsInitialized = true;
+        }
     }
 
     internal Func<TState, TCommand, object?> GetMiddlewareInvokeHandler() {
         // process middlewares
         var middlewares = Provider?.ResolveAllMiddlewares()
-            ?? Array.Empty<Middleware>();
+            ?? Array.Empty<IMiddleware>();
         return middlewares.Aggregate(
             (object s, Command m) => {
                 if ((s, m) is not (TState _s, TCommand _m)) {
@@ -150,7 +151,7 @@ public abstract class Store<TState, TCommand>
                 return (object)Reducer.Invoke(_s, _m);
             },
             (before, middleware) =>
-                (object s, Command m) => middleware.Handle(
+                (object s, Command m) => middleware.Handler.Handle(
                     s,
                     m,
                     (_s, _m) => before(_s, m)
@@ -158,8 +159,8 @@ public abstract class Store<TState, TCommand>
         );
     }
 
-    protected virtual void OnInitialized(StoreProvider provider) {
-        IsInitialized = true;
+    protected virtual Task OnInitializedAsync(StoreProvider provider) {
+        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -195,22 +196,26 @@ public abstract class Store<TState, TCommand>
     }
 
     public void __setStateForceSilently(object state) {
-        State = (TState)state;
-    }
-
-<<<<<<< HEAD
-    internal void InvokeObserver(StateChangedEventArgs e) {
-        foreach (var obs in Observers) {
-            obs.OnNext(e);
+        if (state is not TState tstate) {
+            throw new InvalidDataException($"'{state.GetType().FullName}' is not compatible with '{typeof(TState).FullName}'.");
         }
-    }
-=======
-    public void __setStateForce(object state) {
-        // var message = new ForceReplace<TState>(state);
-        // var previous = this.State;
-        State = (TState)state;
-        // this._invokeObserver(previous, state, message);
+
+        State = tstate;
     }
 
->>>>>>> 18ac626468eb66b7e9db74bbbd2fb1a1a313d8e6
+    public void __setStateForce(object state) {
+        if (state is not TState tstate) {
+            throw new InvalidDataException($"'{state.GetType().FullName}' is not compatible with '{typeof(TState).FullName}'.");
+        }
+
+        var previous = State;
+        State = tstate;
+        var command = new Command.ForceReplace(state);
+        InvokeObserver(new StateChangedEventArgs() {
+            Command = command,
+            LastState = previous,
+            Sender = this,
+            State = state,
+        });
+    }
 }

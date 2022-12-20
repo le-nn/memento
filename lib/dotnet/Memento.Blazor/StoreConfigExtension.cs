@@ -1,4 +1,5 @@
 using Memento.Core;
+using Memento.Core.Store;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -25,10 +26,17 @@ public static class StoreConfigExtension {
         }
     }
 
+    public static IServiceCollection AddMiddleware<TMiddleware>(
+        this IServiceCollection collection,
+        Func<TMiddleware> middlewareSelector
+    ) where TMiddleware : class, IMiddleware {
+        collection.AddScoped<IMiddleware>(p => middlewareSelector());
+        return collection;
+    }
+
     public static IServiceCollection AddMiddleware<TMiddleware>(this IServiceCollection collection)
-        where TMiddleware : Middleware {
-        collection.AddScoped<TMiddleware>()
-            .AddScoped<Middleware>(p => p.GetRequiredService<TMiddleware>());
+        where TMiddleware : class, IMiddleware {
+        collection.AddScoped<IMiddleware, TMiddleware>();
         return collection;
     }
 
@@ -37,17 +45,12 @@ public static class StoreConfigExtension {
     }
 
     public static TMiddleware GetMiddlewarer<TMiddleware>(this IServiceProvider provider)
-        where TMiddleware : Middleware {
+        where TMiddleware : MiddlewareHandler {
         return provider.GetRequiredService<TMiddleware>();
     }
 
     public static TStore GetStore<TStore>(this IServiceProvider provider)
         where TStore : class, IStore {
         return provider.GetRequiredService<TStore>();
-    }
-
-    public static WebAssemblyHost UseStores(this WebAssemblyHost builder) {
-        _ = builder.Services.GetStoreProvider();
-        return builder;
     }
 }

@@ -16,7 +16,7 @@
     }
 </div>
 <button class="mt-3 btn btn-primary" @onclick="IncrementCount">Count up</button>
-<button class="mt-3 btn btn-primary" @onclick="CountupMany">Count up 10000 times</button>
+<button class="mt-3 btn btn-primary" @onclick="CountupMany">Count up 100 times</button>
 
 @code {
     async Task IncrementCount() {
@@ -24,6 +24,6 @@
     }
 
     void CountupMany() {
-        this.AsyncCounterStore.CountUpManyTimes(10000);
+        this.AsyncCounterStore.CountUpManyTimes(80);
     }
 }

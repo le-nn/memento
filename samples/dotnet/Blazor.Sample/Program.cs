@@ -2,6 +2,7 @@ using Blazor.Sample;
 using Blazor.Sample.Stores;
 using Blazor.Sample.Todos;
 using Memento.Blazor;
+using Memento.Blazor.Devtools;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -13,14 +14,11 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 
 builder.Services.AddScoped<ITodoService, MockTodoService>();
 
-builder.Services.AddMemento()
-    .AddMiddleware<LoggerMiddleware>()
-    .AddStore<AsyncCounterStore>()
-    .AddStore<RedoUndoTodoStore>()
-    .AddStore<FetchDataStore>();
+builder.Services
+    .AddMemento()
+    .AddMiddleware(() => new LoggerMiddleware())
+    .AddMiddleware(() => new ChromiumDevToolMiddleware())
+    .ScanAssembyAndAddStores(typeof(Program).Assembly);
 
 var app = builder.Build();
-
-app.UseStores();
-
 await app.RunAsync();

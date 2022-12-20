@@ -10,8 +10,6 @@ using System.Xml.Linq;
 
 namespace Memento.Core;
 
-public record Restores : Command;
-
 public record Context<TState, TMessage>(TState State, TMessage Message);
 
 public abstract class MementoStore<TState, TMessages>
@@ -103,12 +101,13 @@ public abstract class MementoStore<TState, TMessages>
                 InvokeObserver(new StateChangedEventArgs {
                     LastState = lastState,
                     State = State,
-                    Command = new Restores(),
+                    Command = new Command.Restores(),
                     Sender = this,
                 });
             },
-            async (state) => {
+            state => {
                 //this.ApplyComputedState(state.State, state.Command);
+                return ValueTask.CompletedTask;
             },
             name ?? Guid.NewGuid().ToString(),
             context => OnContextSavedAsync(context!),
@@ -123,9 +122,9 @@ public abstract class MementoStore<TState, TMessages>
         string? name = null
     ) {
         await CommitAsync(
-            async () => {
-                return (byte)0;
-            },
+             () => {
+                 return ValueTask.FromResult((byte)0);
+             },
             async _ => {
                 await onExecuted();
             },
@@ -141,7 +140,12 @@ public abstract class MementoStore<TState, TMessages>
             throw new Exception("Store is not initialized.");
         }
 
-        await CommitAsync(async () => command, async (s) => { }, async (s) => { }, name);
+        await CommitAsync(
+            () => ValueTask.FromResult(command),
+            s => ValueTask.CompletedTask,
+            s => ValueTask.CompletedTask,
+            name
+        );
     }
 
     public async ValueTask UnExecuteAsync() {
