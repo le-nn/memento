@@ -17,8 +17,4 @@
     <ItemGroup>
         <ProjectReference Include="..\Memento.Core\Memento.Core.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Devtools\Internals\" />
-    </ItemGroup>
 </Project>

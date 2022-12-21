@@ -64,10 +64,10 @@ internal sealed class DevToolJsInterop : IDevtoolInteropHandler, IDisposable {
     /// <inheritdoc/>
     public async Task SendAsync(Command? command, HistoryStateContextJson context) {
         await _jsRuntime.InvokeVoidAsync(
-             _sendToReduxDevToolDirectly,
-             JsonSerializer.Serialize(command, _jsonSerializerOptions),
-             JsonSerializer.Serialize(context, _jsonSerializerOptions)
-         );
+            _sendToReduxDevToolDirectly,
+            JsonSerializer.Serialize(command, _jsonSerializerOptions),
+            JsonSerializer.Serialize(context, _jsonSerializerOptions)
+        );
         await _jsRuntime.InvokeVoidAsync("console.log", context);
     }
 

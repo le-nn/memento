@@ -13,7 +13,7 @@ public record AsyncCounterState {
 }
 
 public record AsyncCounterCommands : Command {
-    public record CountUp : AsyncCounterCommands;
+    public record IncrementAndEndLoading : AsyncCounterCommands;
     public record Increment : AsyncCounterCommands;
     public record SetCount(int Count) : AsyncCounterCommands;
     public record BeginLoading : AsyncCounterCommands;
@@ -24,7 +24,7 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> 
 
     static AsyncCounterState Reducer(AsyncCounterState state, AsyncCounterCommands command) {
         return command switch {
-            CountUp => state with {
+            IncrementAndEndLoading => state with {
                 Count = state.Count + 1,
                 IsLoading = false,
                 Histories = state.Histories.Add(state.Count + 1),
@@ -42,10 +42,14 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> 
         };
     }
 
+    public void CountUp() {
+        Dispatch(new Increment());
+    }
+
     public async Task CountUpAsync() {
         Dispatch(new BeginLoading());
         await Task.Delay(800);
-        Dispatch(new CountUp());
+        Dispatch(new IncrementAndEndLoading());
     }
 
     public void CountUpManyTimes(int count) {

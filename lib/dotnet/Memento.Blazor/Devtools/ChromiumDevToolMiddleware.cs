@@ -46,7 +46,7 @@ public class ChromiumDevToolMiddlewareHandler : MiddlewareHandler {
     }
 
     protected override async Task OnInitializedAsync() {
-        _liftedStore?.Reset();
+        _liftedStore.Reset();
         await _jsInterop.InitializeAsync(_storeProvider.CaptureRootState());
 
         _subscription1 = _storeProvider.Subscribe(e => {
@@ -62,7 +62,7 @@ public class ChromiumDevToolMiddlewareHandler : MiddlewareHandler {
         }
 
         await (
-            _liftedStore?.PushAsync(e.StateChangedEvent, rootState)
+            _liftedStore.PushAsync(e.StateChangedEvent, rootState)
                 ?? Task.CompletedTask
         );
     }
@@ -81,12 +81,12 @@ public class ChromiumDevToolMiddlewareHandler : MiddlewareHandler {
                         break;
                     case "JUMP_TO_STATE":
                     case "TOGGLE_ACTION":
-                        _liftedStore?.Skip(
-                            (command.Payload["id"]).GetInt32()
+                        _ = _liftedStore.Skip(
+                            command.Payload["id"].GetInt32()
                         );
                         break;
                     case "JUMP_TO_ACTION":
-                        _liftedStore?.JumpTo(
+                        _liftedStore.JumpTo(
                             (command.Payload["actionId"]).GetInt32()
                         );
                         break;

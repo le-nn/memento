@@ -123,9 +123,9 @@ internal class LiftedStore : IDisposable {
         var (firstHistoryKey, firstHistory) = _histories.First();
         var beforeState = firstHistory.RootState ?? throw new Exception("");
         var skippedActionIds = _histories
-                .Where(x => x.Value.IsSkipped)
-                .Select(x => x.Key)
-                .ToHashSet();
+            .Where(x => x.Value.IsSkipped)
+            .Select(x => x.Key)
+            .ToHashSet();
         var storeBag = _provider.CaptureStoreBag();
 
         foreach (var (key, history) in _histories) {
@@ -145,7 +145,7 @@ internal class LiftedStore : IDisposable {
                 beforeState = beforeState.SetItem(history.StoreBagKey, state);
 
                 newHistories[key] = history with {
-                    RootState = beforeState.SetItem(history.StoreBagKey, state)
+                    RootState = beforeState
                 };
             }
         }
