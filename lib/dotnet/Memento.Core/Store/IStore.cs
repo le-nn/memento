@@ -13,4 +13,8 @@ public interface IStore : IObservable<StateChangedEventArgs> {
     void __setStateForce(object state);
 
     Func<object, Command, object> Reducer { get; }
+
+    Type GetStateType();
+
+    Type GetCommandType();
 }

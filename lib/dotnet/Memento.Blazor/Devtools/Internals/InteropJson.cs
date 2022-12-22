@@ -15,8 +15,9 @@ public record StoreAction {
     [JsonPropertyName("timestamp")]
     public required long Timestamp { get; init; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
     [JsonPropertyName("stack")]
-    public required object Stack { get; init; }
+    public string? Stack { get; init; }
 
     [JsonPropertyName("type")]
     public required string Type { get; init; }
@@ -26,7 +27,11 @@ public record ActionItem(
     [property:JsonPropertyName("type")]
     string? Type,
     [property:JsonPropertyName("payload")]
-    object? Payload
+    object? Payload,
+    [property:JsonPropertyName("declaredType")]
+    string? DeclaredType,
+    [property:JsonPropertyName("storeName")]
+    string StoreName
 );
 
 public record HistoryStateContextJson {
@@ -47,6 +52,12 @@ public record HistoryStateContextJson {
 
     [JsonPropertyName("stagedActionIds")]
     public required ImmutableArray<int> StagedActionIds { get; init; }
+
+    [JsonPropertyName("isLocked")]
+    public bool IsLocked { get; init; }
+
+    [JsonPropertyName("isPaused")]
+    public bool IsPaused { get; init; }
 }
 
 public record ComputedState(

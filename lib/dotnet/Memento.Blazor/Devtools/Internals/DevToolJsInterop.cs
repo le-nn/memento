@@ -63,17 +63,19 @@ internal sealed class DevToolJsInterop : IDevtoolInteropHandler, IDisposable {
 
     /// <inheritdoc/>
     public async Task SendAsync(Command? command, HistoryStateContextJson context) {
+        await _jsRuntime.InvokeVoidAsync("console.log", context);
         await _jsRuntime.InvokeVoidAsync(
             _sendToReduxDevToolDirectly,
             JsonSerializer.Serialize(command, _jsonSerializerOptions),
             JsonSerializer.Serialize(context, _jsonSerializerOptions)
         );
-        await _jsRuntime.InvokeVoidAsync("console.log", context);
+
     }
 
     /// <inheritdoc/>
     [JSInvokable(DevToolsCallbackId)]
     public void HandleMessage(string json) {
+        _jsRuntime.InvokeVoidAsync("console.log", json);
         _onMessageHandled(json);
     }
 

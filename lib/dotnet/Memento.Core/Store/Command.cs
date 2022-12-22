@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace Memento.Core;
 
 public abstract record Command {
@@ -5,7 +7,7 @@ public abstract record Command {
 
     public record Restores : Command;
 
-    public string Type {
+    public virtual string Type {
         get {
             var type = GetType();
             return type.FullName?.Replace(
@@ -14,6 +16,11 @@ public abstract record Command {
             ) ?? "";
         }
     }
+
+    public string? GetFullTypeName() {
+        return GetType().FullName;
+    }
+
     public Dictionary<string, object> Payload => GetPayloads()
         .ToDictionary(x => x.Key, x => x.Value);
 

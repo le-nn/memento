@@ -15,6 +15,7 @@ public record AsyncCounterState {
 public record AsyncCounterCommands : Command {
     public record IncrementAndEndLoading : AsyncCounterCommands;
     public record Increment : AsyncCounterCommands;
+    public record AddWithAmount(int Amount) : AsyncCounterCommands;
     public record SetCount(int Count) : AsyncCounterCommands;
     public record BeginLoading : AsyncCounterCommands;
 }
@@ -38,6 +39,9 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> 
             BeginLoading => state with {
                 IsLoading = true,
             },
+            AddWithAmount payload => state with {
+                Count = state.Count + payload.Amount,
+            },
             _ => throw new CommandNotHandledException(command),
         };
     }
@@ -58,7 +62,11 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> 
         }
     }
 
-    public void SetCount(int c) {
-        Dispatch(new SetCount(c));
+    public void SetCount(int count) {
+        Dispatch(new SetCount(count));
+    }
+
+    public void CountUpWithAmount(int ammount) {
+        Dispatch(new AddWithAmount(ammount));
     }
 }

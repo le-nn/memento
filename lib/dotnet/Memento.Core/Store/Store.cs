@@ -2,6 +2,7 @@ using Memento.Core.Internals;
 using Memento.Core.Store;
 using Memento.Core.Store.Internals;
 using System.Net.Sockets;
+using System.Text.Json;
 
 namespace Memento.Core;
 
@@ -217,5 +218,13 @@ public abstract class Store<TState, TCommand>
             Sender = this,
             State = state,
         });
+    }
+
+    public Type GetStateType() {
+        return typeof(TState);
+    }
+
+    public Type GetCommandType() {
+        return typeof(TCommand);
     }
 }

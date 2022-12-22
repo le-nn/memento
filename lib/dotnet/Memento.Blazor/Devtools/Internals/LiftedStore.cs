@@ -1,88 +1,137 @@
 ﻿using Memento.Core;
 using System.Collections.Immutable;
 using System.Data;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using System.Text.Json;
 
 namespace Memento.Blazor.Devtools;
 
+
 internal record HistoryState {
     public required int Id { get; set; }
-    public required Command Message { get; init; }
+    public required Command Command { get; init; }
     public required string StoreBagKey { get; init; }
     public required ImmutableDictionary<string, object> RootState { get; init; }
-    public required string Stacktrace { get; init; }
+    public required string? Stacktrace { get; init; }
     public required long Timestamp { get; init; }
-
     public required bool IsSkipped { get; init; }
+
+    public HistoryState AsInitial() {
+        return this with {
+            Command = new Init(),
+            Id = 0,
+            Timestamp = LiftedStore.ToUnixTimeStamp(DateTime.UtcNow),
+        };
+    }
 }
 
-internal record Init : Command;
+internal record Init : Command {
+    public override string Type => "@@INIT";
+}
 
 internal class LiftedStore : IDisposable {
-    Dictionary<int, HistoryState> _histories = new();
-    int _currentCursor = 0;
+    ImmutableArray<HistoryState> _histories = ImmutableArray.Create<HistoryState>();
+    int _currentCursorId = 0;
     int _sequence = 0;
     int NextActionId => _sequence + 1;
     IDisposable? _subscription;
-    HistoryState CurrentHistory => _histories[_currentCursor];
-
+    HistoryState CurrentHistory => _histories.Where(x => x.Id == _currentCursorId).First();
+    readonly ImmutableDictionary<string, object> _rootState;
     readonly StoreProvider _provider;
     readonly ChromiumDevToolOption _options;
-
     public Action<HistoryStateContextJson>? SyncReqested { get; set; }
+
+    public bool IsPaused { get; set; }
+
+    public bool IsLocked { get; set; }
+
+    public static long ToUnixTimeStamp(DateTime dateTime) {
+        return (long)(dateTime - new DateTime(1970, 1, 1)).TotalMilliseconds;
+    }
 
     public LiftedStore(StoreProvider provider, ChromiumDevToolOption options) {
         _provider = provider;
         _options = options;
+        _rootState = _provider.CaptureRootState();
     }
 
-    public void Reset() {
-        _currentCursor = 0;
+    public async Task ResetAsync() {
+        _currentCursorId = 0;
         _sequence = 0;
-        _histories = new() {
-            [0] = new() {
-                Message = new Init(),
+        _histories = ImmutableArray.Create(
+            new HistoryState() {
+                Command = new Init(),
                 StoreBagKey = "",
-                RootState = _provider.CaptureRootState(),
                 Id = 0,
-                Stacktrace = "",
-                Timestamp = 0,
+                RootState = _rootState,
+                Stacktrace = "Stack trace",
+                Timestamp = ToUnixTimeStamp(DateTime.UtcNow),
                 IsSkipped = false,
             }
-        };
+        );
+        await SyncWithPlugin();
+        SetStatesToStore(CurrentHistory);
+    }
+
+    public async Task LockChangedAsync(bool isLocked) {
+        IsLocked = isLocked;
+        await SyncWithPlugin();
     }
 
     public async Task PushAsync(StateChangedEventArgs e, ImmutableDictionary<string, object> rootState) {
-        if (_currentCursor != _sequence) {
+        if (IsLocked) {
+            await SyncWithPlugin();
+            SetStatesToStore(CurrentHistory);
             return;
         }
 
-        var removeItr = _histories.Keys
-            .OrderBy(x => x)
-            .Skip(1)
-            .Take(_histories.Keys.Count - _options.MaximumHistoryLength);
-        foreach (var id in removeItr) {
-            _histories.Remove(id);
+        if (IsPaused) {
+            return;
         }
 
-        _currentCursor++;
+        // adjust maxAge
+        _histories = _histories
+            .Skip(_histories.Length - (int)_options.MaximumHistoryLength)
+            .ToImmutableArray();
+        _histories = _histories.SetItem(0, _histories[0].AsInitial());
+
+        var isJumping = _currentCursorId == _histories.Last().Id;
+
+        // add new history
         _sequence++;
-        var _nowTimestamp = (uint)((e.Timestamp.Ticks - DateTime.Parse("1970-01-01 00:00:00").Ticks) / 10000000);
-        _histories[_sequence] = new() {
-            Message = e.Command,
+        _histories = _histories.Add(new() {
+            Command = e.Command,
             StoreBagKey = e.Sender?.GetType().Name ?? "Error",
             Id = _sequence,
             RootState = rootState,
             Stacktrace = "Stack trace",
-            Timestamp = _nowTimestamp,
+            Timestamp = ToUnixTimeStamp(DateTime.UtcNow),
             IsSkipped = false,
-        };
+        });
+
+        var nextCursor = _histories.LastOrDefault()?.Id ?? _currentCursorId;
+        if (isJumping) {
+            _currentCursorId = nextCursor;
+        }
+        else {
+            CalcState();
+        }
 
         await SyncWithPlugin();
+        SetStatesToStore(CurrentHistory);
+    }
+
+    public void UpdateStoreStateWithCurrent() {
+        SetStatesToStore(CurrentHistory);
     }
 
     public void JumpTo(int id) {
-        _currentCursor = id;
-        var history = _histories[id];
+        _currentCursorId = id;
+
+        var history = _histories.Where(x => id == x.Id).FirstOrDefault()
+            ?? throw new InvalidOperationException($"id '{id}' is not found.");
         SetStatesToStore(history);
     }
 
@@ -91,7 +140,7 @@ internal class LiftedStore : IDisposable {
             var storeBag = _provider.CaptureStoreBag();
             foreach (var storeName in storeBag.Keys) {
                 if (storeName == history.StoreBagKey
-                    || history.Message is Init
+                    || history.Command is Init
                     || history.RootState[storeName].Equals(storeBag[storeName].State) is false
                 ) {
                     // target store should invoke change event
@@ -108,10 +157,61 @@ internal class LiftedStore : IDisposable {
         }
     }
 
-    public async Task Skip(int id) {
-        _histories[id] = _histories[id] with {
-            IsSkipped = !_histories[id].IsSkipped,
-        };
+    public async Task CommitAsync() {
+        var history = CurrentHistory;
+        _histories = ImmutableArray.Create(history.AsInitial());
+
+        await SyncWithPlugin();
+        _currentCursorId = 0;
+        SetStatesToStore(CurrentHistory);
+    }
+
+    public async Task RollbackAsync() {
+        var history = _histories.First();
+        _histories = ImmutableArray.Create(history.AsInitial());
+
+        await SyncWithPlugin();
+        _currentCursorId = 0;
+        SetStatesToStore(CurrentHistory);
+    }
+
+    public async Task ReorderActionsAsync(int actionId, int beforeActionId) {
+        var histories = _histories.Where(x => x.Id != actionId).ToImmutableArray();
+        var target = _histories.Where(x => x.Id == actionId).First();
+        var before = _histories.Where(x => x.Id == beforeActionId).First();
+
+        var index = histories.IndexOf(before);
+        _histories = histories.Insert(index, target);
+
+        CalcState();
+        await SyncWithPlugin();
+    }
+
+    public async Task SweepAsync() {
+        var history = _histories.First();
+        _histories = _histories
+            .Where(x => x.IsSkipped is false)
+            .ToImmutableArray();
+
+        // decrement current cursor id until history is found
+        while (_histories.Where(x => x.Id == _currentCursorId).Any() is false) {
+            _currentCursorId--;
+        }
+
+        await SyncWithPlugin();
+        SetStatesToStore(CurrentHistory);
+    }
+
+    public async Task SkipAsync(int id) {
+        var history = _histories.Where(x => id == x.Id).FirstOrDefault()
+            ?? throw new InvalidOperationException($"id '{id}' is not found.");
+
+        _histories = _histories.SetItem(
+            _histories.IndexOf(history),
+            history with {
+                IsSkipped = !history.IsSkipped,
+            }
+        );
 
         CalcState();
         await SyncWithPlugin();
@@ -119,74 +219,42 @@ internal class LiftedStore : IDisposable {
     }
 
     public void CalcState() {
-        var newHistories = new Dictionary<int, HistoryState>();
-        var (firstHistoryKey, firstHistory) = _histories.First();
+        var newHistories = ImmutableArray.CreateBuilder<HistoryState>();
+        var firstHistory = _histories.First();
         var beforeState = firstHistory.RootState ?? throw new Exception("");
         var skippedActionIds = _histories
-            .Where(x => x.Value.IsSkipped)
-            .Select(x => x.Key)
+            .Where(x => x.IsSkipped)
+            .Select(x => x.Id)
             .ToHashSet();
         var storeBag = _provider.CaptureStoreBag();
 
-        foreach (var (key, history) in _histories) {
+        foreach (var (i, history) in _histories.Select((x, i) => (i, x))) {
             // initial or skipped history
-            if (key == firstHistoryKey || skippedActionIds.Contains(history.Id)) {
-                newHistories[key] = history with {
+            if (i is 0 || skippedActionIds.Contains(history.Id)) {
+                newHistories.Add(history with {
                     RootState = beforeState,
-                };
+                });
             }
             else {
                 var store = storeBag[history.StoreBagKey];
                 var state = store.Reducer(
                     beforeState[history.StoreBagKey],
-                    history.Message
+                    history.Command
                 );
 
                 beforeState = beforeState.SetItem(history.StoreBagKey, state);
 
-                newHistories[key] = history with {
+                newHistories.Add(history with {
                     RootState = beforeState
-                };
+                });
             }
         }
 
-        _histories = newHistories;
+        _histories = newHistories.ToImmutable();
     }
 
     public Task SyncWithPlugin() {
-        var sended = new HistoryStateContextJson() {
-            ActionsById = _histories.Keys
-                .Select(key => _histories[key])
-                .Aggregate(
-                    ImmutableDictionary.Create<int, StoreAction>(),
-                    (x, y) => x.Add(
-                        y.Id,
-                        new() {
-                            Action = new(
-                                y.Message.Type,
-                                y.Message.Payload
-                            ),
-                            Type = "PERFORM_ACTION",
-                            Stack = y.Stacktrace,
-                            Timestamp = y.Timestamp,
-                        }
-                    )
-                ).ToDictionary(x => x.Key, x => x.Value),
-            ComputedStates = _histories.Keys
-                .OrderBy(x => x)
-                .Select(key => _histories[key])
-                .Select(history => new ComputedState(history.RootState))
-                .ToImmutableArray(),
-            NextActionId = NextActionId,
-            CurrentStateIndex = _currentCursor,
-            SkippedActionIds = _histories
-                .Where(x => x.Value.IsSkipped)
-                .Select(x => x.Key)
-                .ToImmutableArray(),
-            StagedActionIds = _histories.Keys.OrderBy(x => x).ToImmutableArray(),
-        };
-
-        SyncReqested?.Invoke(sended);
+        SyncReqested?.Invoke(Serialize());
 
         return Task.CompletedTask;
     }
@@ -194,5 +262,107 @@ internal class LiftedStore : IDisposable {
     public void Dispose() {
         _subscription?.Dispose();
         _subscription = null;
+    }
+
+    public HistoryStateContextJson Serialize() {
+        return new HistoryStateContextJson() {
+            ActionsById = _histories
+                  .Aggregate(
+                      ImmutableDictionary.Create<int, StoreAction>(),
+                      (x, y) => x.Add(
+                          y.Id,
+                          new() {
+                              Action = new(
+                                  y.Command.Type,
+                                  y.Command.Payload,
+                                  y.Command.GetFullTypeName(),
+                                  y.StoreBagKey
+                              ),
+                              Type = "PERFORM_ACTION",
+                              Stack = y.Stacktrace,
+                              Timestamp = y.Timestamp,
+                          }
+                      )
+                  )
+                  .ToDictionary(x => x.Key, x => x.Value),
+            ComputedStates = _histories
+                  .Select(history => new ComputedState(history.RootState))
+                  .ToImmutableArray(),
+            NextActionId = NextActionId,
+            CurrentStateIndex = _currentCursorId,
+            SkippedActionIds = _histories
+                  .Where(x => x.IsSkipped)
+                  .Select(x => x.Id)
+                  .ToImmutableArray(),
+            StagedActionIds = _histories
+                  .Select(x => x.Id)
+                  .ToImmutableArray(),
+            IsLocked = IsLocked,
+            IsPaused = IsPaused,
+        };
+    }
+
+    public async Task ImportAsync(JsonElement jsonElement) {
+        var historyStateContextJson = jsonElement.Deserialize<HistoryStateContextJson>()!;
+        var skipActions = historyStateContextJson.SkippedActionIds.ToHashSet();
+        var computedStates = jsonElement.GetProperty("computedStates").EnumerateArray().ToArray();
+        var storeBag = _provider.CaptureStoreBag();
+
+        _histories = historyStateContextJson.StagedActionIds
+            .Select((id, i) => {
+                var action = historyStateContextJson.ActionsById[id];
+                var command = DeserializeCommand(action.Action.DeclaredType, action.Action.Payload);
+                return new HistoryState() {
+                    StoreBagKey = action.Action.StoreName,
+                    RootState = DeserializeStates(storeBag, computedStates[i].GetProperty("state")),
+                    Id = id,
+                    Command = DeserializeCommand(action.Action.DeclaredType, action.Action.Payload),
+                    Stacktrace = action.Stack,
+                    Timestamp = action.Timestamp,
+                    IsSkipped = skipActions.Contains(id),
+                };
+            }).ToImmutableArray();
+
+
+        _currentCursorId = _histories[historyStateContextJson.CurrentStateIndex].Id;
+        IsLocked = historyStateContextJson.IsLocked;
+        IsPaused = historyStateContextJson.IsPaused;
+        _sequence = historyStateContextJson.NextActionId - 1;
+
+        CalcState();
+        await SyncWithPlugin();
+        SetStatesToStore(CurrentHistory);
+    }
+
+    static ImmutableDictionary<string, object> DeserializeStates(ImmutableDictionary<string, IStore> storeBag, JsonElement stateJson) {
+        var rootState = ImmutableDictionary.CreateBuilder<string, object>();
+        foreach (var key in stateJson.EnumerateObject()) {
+            var storeState = key.Value.Deserialize(storeBag[key.Name].GetStateType())
+                ?? throw new Exception("failed to deserialize state.");
+
+            rootState.Add(key.Name, storeState);
+        }
+
+        return rootState.ToImmutable();
+    }
+
+    static Command DeserializeCommand(string? typeName, object? payload) {
+        if (typeName is null) {
+            return new Init();
+        }
+
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
+            var type = assembly.GetType(typeName);
+            if (type is not null) {
+                var command = (Command?)JsonSerializer.Deserialize(
+                    JsonSerializer.Serialize(payload),
+                    type
+                );
+
+                return command ?? throw new Exception($"Failed to serializze historyStateContextJson.");
+            }
+        }
+
+        throw new Exception($"type '{typeName}' is not found.");
     }
 }
