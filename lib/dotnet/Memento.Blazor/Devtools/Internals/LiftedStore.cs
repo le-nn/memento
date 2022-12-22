@@ -259,11 +259,6 @@ internal class LiftedStore : IDisposable {
         return Task.CompletedTask;
     }
 
-    public void Dispose() {
-        _subscription?.Dispose();
-        _subscription = null;
-    }
-
     public HistoryStateContextJson Serialize() {
         return new HistoryStateContextJson() {
             ActionsById = _histories
@@ -332,6 +327,11 @@ internal class LiftedStore : IDisposable {
         CalcState();
         await SyncWithPlugin();
         SetStatesToStore(CurrentHistory);
+    }
+
+    public void Dispose() {
+        _subscription?.Dispose();
+        _subscription = null;
     }
 
     static ImmutableDictionary<string, object> DeserializeStates(ImmutableDictionary<string, IStore> storeBag, JsonElement stateJson) {
