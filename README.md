@@ -44,9 +44,9 @@ Store
 ```csharp
 using Memento.Core;
 using System.Collections.Immutable;
-using static Blazor.Sample.Stores.AsyncCounterCommands;
+using static Memento.Sample.Blazor.Stores.AsyncCounterCommands;
 
-namespace Blazor.Sample.Stores;
+namespace Memento.Sample.Blazor.Stores;
 
 public record AsyncCounterState {
     public int Count { get; init; } = 0;
@@ -107,7 +107,7 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> 
 
 Razor view
 ```razor
-@using Blazor.Sample.Stores
+@using Memento.Sample.Blazor.Stores
 @using System.Text.Json
 
 @page "/counter"

@@ -1,6 +1,5 @@
 using Memento.Core;
 using Memento.Core.Store;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 

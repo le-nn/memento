@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
 
-namespace Blazor.Sample.Todos;
+namespace Memento.Sample.Blazor.Todos;
 
 public class MockTodoService : ITodoService {
     readonly List<Todo> Items = new();

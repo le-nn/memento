@@ -1,4 +1,4 @@
-namespace Blazor.Sample.Todos;
+namespace Memento.Sample.Blazor.Todos;
 
 /// <summary>
 /// Represents Todo entity. 

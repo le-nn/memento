@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
@@ -22,6 +23,12 @@ public record StoreAction {
     [JsonPropertyName("type")]
     public required string Type { get; init; }
 }
+
+public record ActionItemFromDevtool(
+    string Type,
+    Dictionary<string, JsonElement>? Payload, 
+    string? Source
+);
 
 public record ActionItem(
     [property:JsonPropertyName("type")]

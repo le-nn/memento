@@ -2,7 +2,7 @@ using Memento.Core;
 using System.Collections.Immutable;
 using System.Net.Http.Json;
 
-namespace Blazor.Sample.Stores;
+namespace Memento.Sample.Blazor.Stores;
 
 public record FetchDataState {
     public ImmutableArray<WeatherForecast>? WeatherForecasts { get; init; }

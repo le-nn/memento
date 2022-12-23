@@ -159,7 +159,7 @@ Views
 
 ```razor
 @page "/fetchdata"
-@using Blazor.Sample.Stores
+@using Memento.Sample.Blazor.Stores
 @inject FetchDataStore FetchDataStore
 
 <PageTitle>Weather forecast</PageTitle>

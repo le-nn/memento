@@ -2,9 +2,9 @@ using Memento.Core.Store;
 using Microsoft.JSInterop;
 using System.Text.Json;
 
-namespace Blazor.Sample;
+namespace Memento.Sample.Blazor;
 
-public class LoggerMiddleware : Middleware<MiddlewareHandler> {
+public class LoggerMiddleware : Middleware {
     protected override MiddlewareHandler Create(IServiceProvider provider) {
         return new LoggerMiddlewareHandler(
             provider.GetRequiredService<IJSRuntime>()

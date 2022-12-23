@@ -68,21 +68,21 @@ public class ConcatAsyncOperationExecutor {
     }
 
     class Operation<T> : IOperation {
-        readonly Func<Task<T>> func;
-        readonly TaskCompletionSource<T> taskSource;
+        readonly Func<Task<T>> _func;
+        readonly TaskCompletionSource<T> _taskSource;
 
         public Operation(Func<Task<T>> func, TaskCompletionSource<T> taskSource) {
-            this.func = func;
-            this.taskSource = taskSource;
+            this._func = func;
+            this._taskSource = taskSource;
         }
 
         public async Task HandleAsync() {
             try {
-                var reslut = await func.Invoke();
-                taskSource.SetResult(reslut);
+                var reslut = await _func.Invoke();
+                _taskSource.SetResult(reslut);
             }
             catch (Exception ex) {
-                taskSource.SetException(ex);
+                _taskSource.SetException(ex);
             }
         }
     }

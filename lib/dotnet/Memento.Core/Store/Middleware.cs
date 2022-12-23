@@ -13,13 +13,10 @@ public interface IMiddleware {
     internal Task InitializeAsync(IServiceProvider provide);
 }
 
-public abstract class Middleware<TMiddlewareHandler> : IMiddleware
-    where TMiddlewareHandler : MiddlewareHandler {
-    TMiddlewareHandler? _handler;
+public abstract class Middleware : IMiddleware {
+    MiddlewareHandler? _handler;
 
-    MiddlewareHandler IMiddleware.Handler => Handler;
-
-    public TMiddlewareHandler Handler => _handler
+    public MiddlewareHandler Handler => _handler
         ?? throw new InvalidOperationException($"Middleware '{GetType().FullName}' has not initialized.");
 
     async Task IMiddleware.InitializeAsync(IServiceProvider provider) {
@@ -28,5 +25,5 @@ public abstract class Middleware<TMiddlewareHandler> : IMiddleware
         await handler.InitializedAsync();
     }
 
-    protected abstract TMiddlewareHandler Create(IServiceProvider provider);
+    protected abstract MiddlewareHandler Create(IServiceProvider provider);
 }

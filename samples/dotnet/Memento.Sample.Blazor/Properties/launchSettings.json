@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "Blazor.Sample": {
+    "Memento.Sample.Blazor": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

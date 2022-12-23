@@ -14,9 +14,9 @@ Dig into step by step from there.
 using Memento.Core;
 using System.Collections.Immutable;
 
-using static Blazor.Sample.Stores.AsyncCounterCommands;
+using static Memento.Sample.Blazor.Stores.AsyncCounterCommands;
 
-namespace Blazor.Sample.Stores;
+namespace Memento.Sample.Blazor.Stores;
 
 public record AsyncCounterState {
     public int Count { get; init; } = 0;
@@ -244,7 +244,7 @@ This is an example of Counter.
 
 ```razor
 
-@using Blazor.Sample.Stores
+@using Memento.Sample.Blazor.Stores
 
 @page "/counter"
 @inherits ObserverComponet

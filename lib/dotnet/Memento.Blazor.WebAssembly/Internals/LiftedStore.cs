@@ -8,7 +8,6 @@ using System.Text.Json;
 
 namespace Memento.Blazor.Devtools;
 
-
 internal record HistoryState {
     public required int Id { get; set; }
     public required Command Command { get; init; }
@@ -40,7 +39,7 @@ internal class LiftedStore : IDisposable {
     HistoryState CurrentHistory => _histories.Where(x => x.Id == _currentCursorId).First();
     readonly ImmutableDictionary<string, object> _rootState;
     readonly StoreProvider _provider;
-    readonly ChromiumDevToolOption _options;
+    readonly ReduxDevToolOption _options;
     public Action<HistoryStateContextJson>? SyncReqested { get; set; }
 
     public bool IsPaused { get; set; }
@@ -51,7 +50,7 @@ internal class LiftedStore : IDisposable {
         return (long)(dateTime - new DateTime(1970, 1, 1)).TotalMilliseconds;
     }
 
-    public LiftedStore(StoreProvider provider, ChromiumDevToolOption options) {
+    public LiftedStore(StoreProvider provider, ReduxDevToolOption options) {
         _provider = provider;
         _options = options;
         _rootState = _provider.CaptureRootState();

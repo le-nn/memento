@@ -1,6 +1,6 @@
-using Blazor.Sample;
-using Blazor.Sample.Stores;
-using Blazor.Sample.Todos;
+using Memento.Sample.Blazor;
+using Memento.Sample.Blazor.Stores;
+using Memento.Sample.Blazor.Todos;
 using Memento.Blazor;
 using Memento.Blazor.Devtools;
 using Microsoft.AspNetCore.Components.Web;
@@ -17,7 +17,7 @@ builder.Services.AddScoped<ITodoService, MockTodoService>();
 builder.Services
     .AddMemento()
     .AddMiddleware(() => new LoggerMiddleware())
-    .AddMiddleware(() => new ChromiumDevToolMiddleware())
+    .AddMiddleware(() => new BrowserReduxDevToolMiddleware())
     .ScanAssembyAndAddStores(typeof(Program).Assembly);
 
 var app = builder.Build();

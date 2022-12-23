@@ -1,7 +1,7 @@
-using Blazor.Sample.Todos;
+using Memento.Sample.Blazor.Todos;
 using System.Collections.Immutable;
 
-namespace Blazor.Sample.Stores;
+namespace Memento.Sample.Blazor.Stores;
 
 using static RedoUndoTodoCommands;
 

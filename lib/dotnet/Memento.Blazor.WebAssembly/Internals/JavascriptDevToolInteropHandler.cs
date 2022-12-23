@@ -3,11 +3,7 @@ using Microsoft.JSInterop;
 using System.Collections.Immutable;
 using System.Text.Json;
 
-using static Memento.Core.Command;
-
 namespace Memento.Blazor.Devtools;
-
-public record ActionItemFromDevtool(string Type, Dictionary<string, JsonElement>? Payload, string? Source);
 
 /// <summary>
 /// Interop for dev tools
@@ -87,9 +83,9 @@ internal sealed class DevToolJsInterop : IDevtoolInteropHandler, IDisposable {
         }
     }
 
-    static string GetClientScripts(ChromiumDevToolOption options) {
+    static string GetClientScripts(ReduxDevToolOption options) {
         var optionsJson = BuildOptionsJson(options);
-
+        var isOpenDevtool = options.OpenDevtool ? "true" : "false";
         var code = $$"""
             var {{_reduxDevToolsVariableName}} = undefined;
             try {
@@ -132,15 +128,19 @@ internal sealed class DevToolJsInterop : IDevtoolInteropHandler, IDisposable {
                 {{_reduxDevToolsVariableName}}.init(JSON.parse(stateJson));
             }
 
-            function {{_sendToReduxDevToolDirectly}}(a,b) {
+            function {{_sendToReduxDevToolDirectly}}(a, b) {
                 {{_reduxDevToolsVariableName}}.send(JSON.parse(a), JSON.parse(b));
+            }
+
+            if({{isOpenDevtool}}) {
+                window.__REDUX_DEVTOOLS_EXTENSION__.open();
             }
             """;
 
         return code;
     }
 
-    static string BuildOptionsJson(ChromiumDevToolOption options) {
+    static string BuildOptionsJson(ReduxDevToolOption options) {
         var values = new List<string> {
             $"name:\"{options.Name}\"",
             $"maxAge:{options.MaximumHistoryLength}",

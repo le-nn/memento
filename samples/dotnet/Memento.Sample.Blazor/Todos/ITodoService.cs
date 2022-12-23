@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
 
-namespace Blazor.Sample.Todos;
+namespace Memento.Sample.Blazor.Todos;
 
 public interface ITodoService {
     Task<ImmutableArray<Todo>> FetchItemsAsync();

@@ -1,57 +1,51 @@
-﻿using Memento.Core;
+﻿using Memento.Blazor.Devtools;
+using Memento.Core;
 using Memento.Core.Executors;
 using Memento.Core.Store;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 using System.Collections.Immutable;
 using System.Text.Json;
+
 using static Memento.Core.Command;
 
-namespace Memento.Blazor.Devtools;
-
-public class ChromiumDevToolMiddleware : Middleware<ChromiumDevToolMiddlewareHandler> {
-    readonly ChromiumDevToolOption _chromiumDevToolOption;
-
-    public ChromiumDevToolMiddleware(ChromiumDevToolOption? chromiumDevToolOption = null) {
-        _chromiumDevToolOption = chromiumDevToolOption ?? new();
-    }
-
-    protected override ChromiumDevToolMiddlewareHandler Create(IServiceProvider provider) {
-        return new(provider, _chromiumDevToolOption);
-    }
-}
+namespace Memento.ReduxDevtool.Internals;
 
 /// <remarks>
 /// Reference to the redux devtool instrument.
 /// https://github.com/zalmoxisus/redux-devtools-instrument/blob/master/src/instrument.js
 /// </remarks>
-public class ChromiumDevToolMiddlewareHandler : MiddlewareHandler {
+public class BrowserReduxDevToolMiddlewareHandler : MiddlewareHandler {
     IDisposable? _subscription1;
     IDisposable? _subscription2;
 
-    readonly DevToolJsInterop _jsInterop;
+    readonly IDevtoolInteropHandler _interopHandler;
     readonly StoreProvider _storeProvider;
     readonly ConcatAsyncOperationExecutor _concatExecutor = new();
     readonly LiftedStore _liftedStore;
     readonly ThrottledExecutor<HistoryStateContextJson> _throttledExecutor = new();
 
-    public ChromiumDevToolMiddlewareHandler(IServiceProvider provider, ChromiumDevToolOption option) {
-        _jsInterop = new(
-            provider.GetRequiredService<IJSRuntime>(),
+    public BrowserReduxDevToolMiddlewareHandler(IServiceProvider provider, ReduxDevToolOption option) {
+        _interopHandler = new DevToolJsInterop(
+            (IJSRuntime)(provider.GetService(typeof(IJSRuntime))
+                ?? throw new Exception("Prease register 'IJSRuntime' to ServiceProvider")
+            ),
             HandleMessage
         );
-        _storeProvider = provider.GetRequiredService<StoreProvider>();
+        _storeProvider = (StoreProvider)(
+            provider.GetService(typeof(StoreProvider))
+                ?? throw new Exception("Prease register 'IJSRuntime' to ServiceProvider")
+        );
         _liftedStore = new(_storeProvider, option) {
             SyncReqested = _throttledExecutor.Invoke
         };
         _subscription2 = _throttledExecutor.Subscribe(async sended => {
-            await _jsInterop.SendAsync(null, sended);
+            await _interopHandler.SendAsync(null, sended);
         });
     }
 
     protected override async Task OnInitializedAsync() {
         await _liftedStore.ResetAsync();
-        await _jsInterop.InitializeAsync(_storeProvider.CaptureRootState());
+        await _interopHandler.InitializeAsync(_storeProvider.CaptureRootState());
 
         _subscription1 = _storeProvider.Subscribe(e => {
             _ = _concatExecutor.ExecuteAsync(async () => {
@@ -123,6 +117,7 @@ public class ChromiumDevToolMiddlewareHandler : MiddlewareHandler {
             }
         }
         catch (Exception ex) {
+            // TODO: Handle logger
             Console.WriteLine(ex.StackTrace);
         }
     }
