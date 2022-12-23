@@ -14,7 +14,7 @@ namespace Memento.ReduxDevtool.Internals;
 /// Reference to the redux devtool instrument.
 /// https://github.com/zalmoxisus/redux-devtools-instrument/blob/master/src/instrument.js
 /// </remarks>
-public class BrowserReduxDevToolMiddlewareHandler : MiddlewareHandler {
+class BrowserReduxDevToolMiddlewareHandler : MiddlewareHandler {
     IDisposable? _subscription1;
     IDisposable? _subscription2;
 
