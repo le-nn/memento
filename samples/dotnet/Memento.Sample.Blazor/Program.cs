@@ -1,8 +1,6 @@
+using Memento.Blazor.Devtools.Browser;
 using Memento.Sample.Blazor;
-using Memento.Sample.Blazor.Stores;
 using Memento.Sample.Blazor.Todos;
-using Memento.Blazor;
-using Memento.Blazor.Devtools;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 

@@ -1,12 +1,9 @@
 ﻿using Memento.Core;
 using System.Collections.Immutable;
 using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
 using System.Text.Json;
 
-namespace Memento.Blazor.Devtools;
+namespace Memento.ReduxDevtool.Internal;
 
 internal record HistoryState {
     public required int Id { get; set; }
@@ -21,7 +18,7 @@ internal record HistoryState {
         return this with {
             Command = new Init(),
             Id = 0,
-            Timestamp = LiftedStore.ToUnixTimeStamp(DateTime.UtcNow),
+            Timestamp = LiftedHistoryContainer.ToUnixTimeStamp(DateTime.UtcNow),
         };
     }
 }
@@ -30,7 +27,7 @@ internal record Init : Command {
     public override string Type => "@@INIT";
 }
 
-internal class LiftedStore : IDisposable {
+internal sealed class LiftedHistoryContainer : IDisposable {
     ImmutableArray<HistoryState> _histories = ImmutableArray.Create<HistoryState>();
     int _currentCursorId = 0;
     int _sequence = 0;
@@ -50,7 +47,7 @@ internal class LiftedStore : IDisposable {
         return (long)(dateTime - new DateTime(1970, 1, 1)).TotalMilliseconds;
     }
 
-    public LiftedStore(StoreProvider provider, ReduxDevToolOption options) {
+    public LiftedHistoryContainer(StoreProvider provider, ReduxDevToolOption options) {
         _provider = provider;
         _options = options;
         _rootState = _provider.CaptureRootState();

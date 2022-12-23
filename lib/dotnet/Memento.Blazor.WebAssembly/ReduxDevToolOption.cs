@@ -1,4 +1,4 @@
-﻿namespace Memento.Blazor.Devtools;
+﻿namespace Memento.ReduxDevtool;
 
 public record ReduxDevToolOption {
     public string Name { get; init; } = "Memento Developer Tool";

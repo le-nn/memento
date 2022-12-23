@@ -7,7 +7,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Memento.Blazor.Devtools;
+namespace Memento.ReduxDevtool.Internal;
 
 public record StoreAction {
     [JsonPropertyName("action")]
@@ -26,7 +26,7 @@ public record StoreAction {
 
 public record ActionItemFromDevtool(
     string Type,
-    Dictionary<string, JsonElement>? Payload, 
+    Dictionary<string, JsonElement>? Payload,
     string? Source
 );
 

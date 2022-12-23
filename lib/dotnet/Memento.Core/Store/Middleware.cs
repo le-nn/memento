@@ -7,19 +7,13 @@ using System.Threading.Tasks;
 
 namespace Memento.Core.Store;
 
-public interface IMiddleware {
-    MiddlewareHandler Handler { get; }
-
-    internal Task InitializeAsync(IServiceProvider provide);
-}
-
-public abstract class Middleware : IMiddleware {
+public abstract class Middleware {
     MiddlewareHandler? _handler;
 
     public MiddlewareHandler Handler => _handler
         ?? throw new InvalidOperationException($"Middleware '{GetType().FullName}' has not initialized.");
 
-    async Task IMiddleware.InitializeAsync(IServiceProvider provider) {
+    internal async Task InitializeAsync(IServiceProvider provider) {
         var handler = Create(provider);
         _handler = handler;
         await handler.InitializedAsync();

@@ -40,6 +40,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.ReduxDevtool", "lib
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.Sample.Blazor", "samples\dotnet\Memento.Sample.Blazor\Memento.Sample.Blazor.csproj", "{5E37E92A-6056-4B0A-9C2B-C382790B2098}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memento.ReduxDevTool.Browser", "lib\dotnet\Memento.ReduxDevTool.Browser\Memento.ReduxDevTool.Browser.csproj", "{D8201046-04A1-4AE3-8282-5CBDDC0B2F3E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +72,10 @@ Global
 		{5E37E92A-6056-4B0A-9C2B-C382790B2098}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E37E92A-6056-4B0A-9C2B-C382790B2098}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E37E92A-6056-4B0A-9C2B-C382790B2098}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8201046-04A1-4AE3-8282-5CBDDC0B2F3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8201046-04A1-4AE3-8282-5CBDDC0B2F3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8201046-04A1-4AE3-8282-5CBDDC0B2F3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8201046-04A1-4AE3-8282-5CBDDC0B2F3E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,6 +88,7 @@ Global
 		{95938898-9BDC-4379-BFFF-A70E72877728} = {E9CA5D2D-621D-408E-AB95-E602DD3CA8FA}
 		{39F14286-B1B2-4F9F-9A71-363748B1C91D} = {9B9FF1D5-F476-4658-B7EF-98A24BC9BB4A}
 		{5E37E92A-6056-4B0A-9C2B-C382790B2098} = {AD16691B-0034-4F49-8F90-0932C029DA3C}
+		{D8201046-04A1-4AE3-8282-5CBDDC0B2F3E} = {9B9FF1D5-F476-4658-B7EF-98A24BC9BB4A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52122159-362B-41B0-BE89-5FC9BF19BE01}

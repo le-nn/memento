@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace Memento.Sample.Blazor;
 
-public class LoggerMiddleware : Middleware {
+public sealed class LoggerMiddleware : Middleware {
     protected override MiddlewareHandler Create(IServiceProvider provider) {
         return new LoggerMiddlewareHandler(
             provider.GetRequiredService<IJSRuntime>()
@@ -32,4 +32,3 @@ public class LoggerMiddleware : Middleware {
         }
     }
 }
-

@@ -1,14 +1,15 @@
 ﻿using Memento.Core;
+using Memento.ReduxDevtool.Internal;
 using Microsoft.JSInterop;
 using System.Collections.Immutable;
 using System.Text.Json;
 
-namespace Memento.ReduxDevtool.Internal;
+namespace Memento.ReduxDevtool.Browser;
 
 /// <summary>
 /// Interop for dev tools
 /// </summary>
-internal sealed class DevToolJsInterop : IDevtoolInteropHandler, IDisposable {
+internal sealed class JavascriptDevToolInteropHandler : IDevtoolInteropHandler, IDisposable {
     private const string _sendToReduxDevToolDirectly = "mementoReduxDispatch";
     private const string _toJsInitMethodName = "mementoReduxDevToolInit";
     private const string _reduxDevToolsVariableName = "mementoReduxDevTool";
@@ -22,7 +23,7 @@ internal sealed class DevToolJsInterop : IDevtoolInteropHandler, IDisposable {
     private bool _disposed;
     private bool _isInitializing;
     private readonly IJSRuntime _jsRuntime;
-    private readonly DotNetObjectReference<DevToolJsInterop> _dotNetRef;
+    private readonly DotNetObjectReference<JavascriptDevToolInteropHandler> _dotNetRef;
 
     public bool IsInitializing => _isInitializing;
 
@@ -32,7 +33,7 @@ internal sealed class DevToolJsInterop : IDevtoolInteropHandler, IDisposable {
     /// Creates an instance of the dev tools interop.
     /// </summary>
     /// <param name="jsRuntime">The jsRuntime.</param>
-    public DevToolJsInterop(IJSRuntime jsRuntime) {
+    public JavascriptDevToolInteropHandler(IJSRuntime jsRuntime) {
         _jsRuntime = jsRuntime;
         _dotNetRef = DotNetObjectReference.Create(this);
     }

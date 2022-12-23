@@ -28,14 +28,14 @@ public static class StoreConfigExtension {
     public static IServiceCollection AddMiddleware<TMiddleware>(
         this IServiceCollection collection,
         Func<TMiddleware> middlewareSelector
-    ) where TMiddleware : class, IMiddleware {
-        collection.AddScoped<IMiddleware>(p => middlewareSelector());
+    ) where TMiddleware : Middleware {
+        collection.AddScoped<Middleware>(p => middlewareSelector());
         return collection;
     }
 
     public static IServiceCollection AddMiddleware<TMiddleware>(this IServiceCollection collection)
-        where TMiddleware : class, IMiddleware {
-        collection.AddScoped<IMiddleware, TMiddleware>();
+        where TMiddleware : Middleware {
+        collection.AddScoped<Middleware, TMiddleware>();
         return collection;
     }
 

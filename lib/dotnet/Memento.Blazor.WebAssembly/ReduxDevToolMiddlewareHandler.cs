@@ -1,39 +1,34 @@
-﻿using Memento.Blazor.Devtools;
-using Memento.Core;
+﻿using Memento.Core;
 using Memento.Core.Executors;
-using Memento.Core.Store;
-using Microsoft.JSInterop;
+using Memento.ReduxDevtool.Internal;
 using System.Collections.Immutable;
 using System.Text.Json;
 
 using static Memento.Core.Command;
 
-namespace Memento.ReduxDevtool.Internals;
+namespace Memento.ReduxDevtool;
 
 /// <remarks>
 /// Reference to the redux devtool instrument.
 /// https://github.com/zalmoxisus/redux-devtools-instrument/blob/master/src/instrument.js
 /// </remarks>
-class BrowserReduxDevToolMiddlewareHandler : MiddlewareHandler {
+public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
     IDisposable? _subscription1;
     IDisposable? _subscription2;
 
-    readonly IDevtoolInteropHandler _interopHandler;
-    readonly StoreProvider _storeProvider;
     readonly ConcatAsyncOperationExecutor _concatExecutor = new();
-    readonly LiftedStore _liftedStore;
     readonly ThrottledExecutor<HistoryStateContextJson> _throttledExecutor = new();
+    readonly LiftedHistoryContainer _liftedStore;
+    readonly StoreProvider _storeProvider;
+    readonly IDevtoolInteropHandler _interopHandler;
 
-    public BrowserReduxDevToolMiddlewareHandler(IServiceProvider provider, ReduxDevToolOption option) {
-        _interopHandler = new DevToolJsInterop(
-            (IJSRuntime)(provider.GetService(typeof(IJSRuntime))
-                ?? throw new Exception("Prease register 'IJSRuntime' to ServiceProvider")
-            ),
-            HandleMessage
-        );
+    public ReduxDevToolMiddlewareHandler(IDevtoolInteropHandler devtoolInteropHandler, IServiceProvider provider, ReduxDevToolOption option) {
+        _interopHandler = devtoolInteropHandler;
+        _interopHandler.MessageHandled = HandleMessage;
+
         _storeProvider = (StoreProvider)(
             provider.GetService(typeof(StoreProvider))
-                ?? throw new Exception("Prease register 'IJSRuntime' to ServiceProvider")
+                ?? throw new Exception("Prease register 'StoreProvider' to ServiceProvider")
         );
         _liftedStore = new(_storeProvider, option) {
             SyncReqested = _throttledExecutor.Invoke

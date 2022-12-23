@@ -13,8 +13,8 @@ public static class ServiceProviderExtensions {
         return provider.GetServices<IStore>();
     }
 
-    public static IEnumerable<IMiddleware> GetAllMiddlewares(this IServiceProvider provider) {
-        return provider.GetServices<IMiddleware>();
+    public static IEnumerable<Middleware> GetAllMiddlewares(this IServiceProvider provider) {
+        return provider.GetServices<Middleware>();
     }
 
     public static IEnumerable<T> GetServices<T>(this IServiceProvider provider) {

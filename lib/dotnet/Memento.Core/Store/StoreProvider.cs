@@ -81,7 +81,7 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs> {
         return _serviceContainer.GetAllStores();
     }
 
-    public IEnumerable<IMiddleware> ResolveAllMiddlewares() {
+    public IEnumerable<Middleware> ResolveAllMiddlewares() {
         return _serviceContainer.GetAllMiddlewares();
     }
 

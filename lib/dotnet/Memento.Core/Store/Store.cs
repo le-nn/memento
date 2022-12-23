@@ -142,7 +142,7 @@ public abstract class Store<TState, TCommand>
     internal Func<TState, TCommand, object?> GetMiddlewareInvokeHandler() {
         // process middlewares
         var middlewares = Provider?.ResolveAllMiddlewares()
-            ?? Array.Empty<IMiddleware>();
+            ?? Array.Empty<Middleware>();
         return middlewares.Aggregate(
             (object s, Command m) => {
                 if ((s, m) is not (TState _s, TCommand _m)) {

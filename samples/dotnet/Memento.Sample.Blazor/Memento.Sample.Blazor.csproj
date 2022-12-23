@@ -13,7 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\lib\dotnet\Memento.Blazor.WebAssembly\Memento.ReduxDevtool.csproj" />
         <ProjectReference Include="..\..\..\lib\dotnet\Memento.Blazor\Memento.Blazor.csproj" />
+        <ProjectReference Include="..\..\..\lib\dotnet\Memento.ReduxDevTool.Browser\Memento.ReduxDevTool.Browser.csproj" />
     </ItemGroup>
 </Project>
