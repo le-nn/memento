@@ -1,4 +1,4 @@
-﻿namespace Memento.ReduxDevtool;
+﻿namespace Memento.ReduxDevTool;
 
 public record ReduxDevToolOption {
     public string Name { get; init; } = "Memento Developer Tool";

@@ -1,12 +1,12 @@
 ﻿using Memento.Core;
 using Memento.Core.Executors;
-using Memento.ReduxDevtool.Internal;
+using Memento.ReduxDevTool.Internal;
 using System.Collections.Immutable;
 using System.Text.Json;
 
 using static Memento.Core.Command;
 
-namespace Memento.ReduxDevtool;
+namespace Memento.ReduxDevTool;
 
 /// <remarks>
 /// Reference to the redux devtool instrument.

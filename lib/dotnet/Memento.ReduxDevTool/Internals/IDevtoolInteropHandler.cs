@@ -1,7 +1,7 @@
 ﻿using Memento.Core;
 using System.Collections.Immutable;
 
-namespace Memento.ReduxDevtool.Internal;
+namespace Memento.ReduxDevTool.Internal;
 
 public interface IDevtoolInteropHandler {
     Action<string>? MessageHandled { get; set; }

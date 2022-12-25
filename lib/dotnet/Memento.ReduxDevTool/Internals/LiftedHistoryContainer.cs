@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 using System.Data;
 using System.Text.Json;
 
-namespace Memento.ReduxDevtool.Internal;
+namespace Memento.ReduxDevTool.Internal;
 
 internal record HistoryState {
     public required int Id { get; set; }

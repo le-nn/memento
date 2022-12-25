@@ -1,8 +1,8 @@
 ﻿using Memento.Core;
 using Memento.Core.Store;
-using Memento.ReduxDevtool.Internal;
+using Memento.ReduxDevTool.Internal;
 
-namespace Memento.ReduxDevtool;
+namespace Memento.ReduxDevTool;
 
 public sealed class ReduxDevToolMiddleware : Middleware {
     readonly ReduxDevToolOption _chromiumDevToolOption;

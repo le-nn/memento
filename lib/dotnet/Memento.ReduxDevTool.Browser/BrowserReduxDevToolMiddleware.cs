@@ -1,7 +1,7 @@
 ﻿using Memento.Core;
 using Memento.Core.Store;
-using Memento.ReduxDevtool;
-using Memento.ReduxDevtool.Browser;
+using Memento.ReduxDevTool;
+using Memento.ReduxDevTool.Browser;
 using Microsoft.JSInterop;
 
 namespace Memento.Blazor.Devtools.Browser;

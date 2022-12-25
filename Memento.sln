@@ -36,11 +36,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{95938898-9
 		docs\Tutorial.cs.md = docs\Tutorial.cs.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.ReduxDevtool", "lib\dotnet\Memento.Blazor.WebAssembly\Memento.ReduxDevtool.csproj", "{39F14286-B1B2-4F9F-9A71-363748B1C91D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.ReduxDevTool", "lib\dotnet\Memento.Blazor.WebAssembly\Memento.ReduxDevTool.csproj", "{39F14286-B1B2-4F9F-9A71-363748B1C91D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.Sample.Blazor", "samples\dotnet\Memento.Sample.Blazor\Memento.Sample.Blazor.csproj", "{5E37E92A-6056-4B0A-9C2B-C382790B2098}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memento.ReduxDevTool.Browser", "lib\dotnet\Memento.ReduxDevTool.Browser\Memento.ReduxDevTool.Browser.csproj", "{D8201046-04A1-4AE3-8282-5CBDDC0B2F3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.ReduxDevTool.Browser", "lib\dotnet\Memento.ReduxDevTool.Browser\Memento.ReduxDevTool.Browser.csproj", "{D8201046-04A1-4AE3-8282-5CBDDC0B2F3E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memento.ReduxDevTool.Remote", "lib\dotnet\Memento.ReduxDevtool.Remote\Memento.ReduxDevTool.Remote.csproj", "{A89FB1F5-1094-4FAA-9C56-E065AC33DC23}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,6 +78,10 @@ Global
 		{D8201046-04A1-4AE3-8282-5CBDDC0B2F3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8201046-04A1-4AE3-8282-5CBDDC0B2F3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8201046-04A1-4AE3-8282-5CBDDC0B2F3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A89FB1F5-1094-4FAA-9C56-E065AC33DC23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A89FB1F5-1094-4FAA-9C56-E065AC33DC23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A89FB1F5-1094-4FAA-9C56-E065AC33DC23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A89FB1F5-1094-4FAA-9C56-E065AC33DC23}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,6 +95,7 @@ Global
 		{39F14286-B1B2-4F9F-9A71-363748B1C91D} = {9B9FF1D5-F476-4658-B7EF-98A24BC9BB4A}
 		{5E37E92A-6056-4B0A-9C2B-C382790B2098} = {AD16691B-0034-4F49-8F90-0932C029DA3C}
 		{D8201046-04A1-4AE3-8282-5CBDDC0B2F3E} = {9B9FF1D5-F476-4658-B7EF-98A24BC9BB4A}
+		{A89FB1F5-1094-4FAA-9C56-E065AC33DC23} = {9B9FF1D5-F476-4658-B7EF-98A24BC9BB4A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52122159-362B-41B0-BE89-5FC9BF19BE01}
