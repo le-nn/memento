@@ -2,14 +2,17 @@ using Memento.Sample.Blazor;
 using Memento.Sample.Blazor.Todos;
 using Memento.Blazor;
 using Memento.ReduxDevTool.Remote;
+using Memento.Blazor.Devtools.Browser;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddMemento()
-    .AddMiddleware(() => new RemoteReduxDevToolMiddleware(8000))
+        .AddMiddleware(() => new LoggerMiddleware())
+    .AddMiddleware(() => new BrowserReduxDevToolMiddleware())
+
     .ScanAssembyAndAddStores(typeof(App).Assembly);
-builder.Services.AddSingleton<ITodoService, MockTodoService>();
+builder.Services.AddScoped<ITodoService, MockTodoService>();
 builder.Services.AddSingleton(p => new HttpClient {
     BaseAddress = new Uri("https://localhost:7236")
 });

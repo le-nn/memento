@@ -3,29 +3,48 @@ using System.Collections.Immutable;
 namespace Memento.Sample.Blazor.Todos;
 
 public class MockTodoService : ITodoService {
-    readonly List<Todo> Items = new();
+    readonly List<Todo> _items = new() {
+        new () {
+            TodoId = Guid.NewGuid(),
+            CreatedAt = DateTime.Now,
+            IsCompleted = false,
+            Text = "Test Item 1",
+        },
+        new () {
+            TodoId = Guid.NewGuid(),
+            CreatedAt = DateTime.Now,
+            IsCompleted = false,
+            Text = "Test Item 2",
+        },
+        new () {
+            TodoId = Guid.NewGuid(),
+            CreatedAt = DateTime.Now,
+            IsCompleted = false,
+            Text = "Test Item 3",
+        },
+    };
 
     public async Task<Todo> CreateItemAsync(Guid id, string text) {
         await Task.Delay(600);
         var todo = Todo.CreateNew(id, text);
-        Items.Add(todo);
+        _items.Add(todo);
         return todo;
     }
 
     public async Task<Todo?> FetchItemAsync(Guid id) {
         await Task.Delay(600);
-        return Items.Where(x => x.TodoId == id).FirstOrDefault();
+        return _items.Where(x => x.TodoId == id).FirstOrDefault();
     }
 
     public async Task<ImmutableArray<Todo>> FetchItemsAsync() {
         await Task.Delay(600);
-        return Items.ToImmutableArray();
+        return _items.ToImmutableArray();
     }
 
     public async Task RemoveAsync(Guid id) {
         var item = await FetchItemAsync(id);
         if (item is not null) {
-            Items.Remove(item);
+            _items.Remove(item);
         }
     }
 
@@ -35,9 +54,9 @@ public class MockTodoService : ITodoService {
             return;
         }
 
-        var index = Items.IndexOf(item);
+        var index = _items.IndexOf(item);
         if (index is not -1) {
-            Items[index] = todo;
+            _items[index] = todo;
         }
     }
 
@@ -62,10 +81,10 @@ public class MockTodoService : ITodoService {
             return null;
         }
 
-        var index = Items.IndexOf(item);
+        var index = _items.IndexOf(item);
         var newItem = func(item);
         if (index is not -1) {
-            Items[index] = newItem;
+            _items[index] = newItem;
         }
         else {
             return null;

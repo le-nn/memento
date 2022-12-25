@@ -48,8 +48,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.Sample.BlazorServer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.Sample.Blazor", "samples\dotnet\Memento.Sample.Blazor\Memento.Sample.Blazor.csproj", "{591C0E60-CA82-4285-B6FF-353B95A9006C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmptyBlazorApp1", "EmptyBlazorApp1\EmptyBlazorApp1.csproj", "{0920EE6D-C28B-40E0-A3E1-101D1EA99CA8}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -96,10 +94,6 @@ Global
 		{591C0E60-CA82-4285-B6FF-353B95A9006C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{591C0E60-CA82-4285-B6FF-353B95A9006C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{591C0E60-CA82-4285-B6FF-353B95A9006C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0920EE6D-C28B-40E0-A3E1-101D1EA99CA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0920EE6D-C28B-40E0-A3E1-101D1EA99CA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0920EE6D-C28B-40E0-A3E1-101D1EA99CA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0920EE6D-C28B-40E0-A3E1-101D1EA99CA8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -116,7 +110,6 @@ Global
 		{7F257652-FD9C-4DA9-9031-3BC19ABBD006} = {AD16691B-0034-4F49-8F90-0932C029DA3C}
 		{9EDCA455-6B77-4525-A78D-B67D48B4A618} = {AD16691B-0034-4F49-8F90-0932C029DA3C}
 		{591C0E60-CA82-4285-B6FF-353B95A9006C} = {AD16691B-0034-4F49-8F90-0932C029DA3C}
-		{0920EE6D-C28B-40E0-A3E1-101D1EA99CA8} = {AD16691B-0034-4F49-8F90-0932C029DA3C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52122159-362B-41B0-BE89-5FC9BF19BE01}

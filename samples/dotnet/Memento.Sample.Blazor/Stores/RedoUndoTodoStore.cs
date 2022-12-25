@@ -7,6 +7,8 @@ using static RedoUndoTodoCommands;
 
 public record RedoUndoTodoState {
     public ImmutableArray<Todo> Todos { get; init; } = ImmutableArray.Create<Todo>();
+
+    public bool IsLoading { get; init; }
 }
 
 public record RedoUndoTodoCommands : Command {
@@ -15,7 +17,6 @@ public record RedoUndoTodoCommands : Command {
     public record Replace(Guid Id, Todo Item) : RedoUndoTodoCommands;
     public record BeginLoading : RedoUndoTodoCommands;
     public record EndLoading : RedoUndoTodoCommands;
-    public record Commit : RedoUndoTodoCommands;
 }
 
 public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState, RedoUndoTodoCommands> {
@@ -39,6 +40,8 @@ public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState, RedoUndoTodoCom
                     payload.Item
                 )
             },
+            BeginLoading => state with { IsLoading = true },
+            EndLoading => state with { IsLoading = false },
             _ => throw new Exception("The command is not handled."),
         };
     }
@@ -58,7 +61,7 @@ public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState, RedoUndoTodoCom
         );
     }
 
-    public async Task FetchAsync() {
+    public async Task LoadAsync() {
         Dispatch(new BeginLoading());
         var items = await TodoService.FetchItemsAsync();
         Dispatch(new SetItems(items));
