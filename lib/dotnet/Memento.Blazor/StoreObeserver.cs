@@ -1,10 +1,10 @@
 namespace Memento.Core;
 
 internal class StoreObeserver : IObserver<StateChangedEventArgs> {
-    readonly Action<StateChangedEventArgs> action;
+    readonly Action<StateChangedEventArgs> _action;
 
     public StoreObeserver(Action<StateChangedEventArgs> action) {
-        this.action = action;
+        _action = action;
     }
 
     public void OnCompleted() {
@@ -16,7 +16,7 @@ internal class StoreObeserver : IObserver<StateChangedEventArgs> {
     }
 
     public void OnNext(StateChangedEventArgs value) {
-        action(value);
+        _action(value);
     }
 }
 

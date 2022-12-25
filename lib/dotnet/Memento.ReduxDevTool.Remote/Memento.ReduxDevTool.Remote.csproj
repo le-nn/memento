@@ -8,6 +8,8 @@
   <ItemGroup>
 
     <ProjectReference Include="..\Memento.Core\Memento.Core.csproj" />
+
+    <ProjectReference Include="..\Memento.ReduxDevTool\Memento.ReduxDevTool.csproj" />
   </ItemGroup>
 
 </Project>

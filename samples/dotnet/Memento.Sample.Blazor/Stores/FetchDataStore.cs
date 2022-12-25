@@ -1,5 +1,6 @@
 using Memento.Core;
 using System.Collections.Immutable;
+using System.Net.Http;
 using System.Net.Http.Json;
 
 namespace Memento.Sample.Blazor.Stores;
@@ -23,12 +24,12 @@ public record WeatherForecast {
 }
 
 public class FetchDataStore : Store<FetchDataState, FetchDataCommands> {
-    HttpClient HttpClient { get; }
+    readonly HttpClient _httpClient;
 
     public FetchDataStore(
         HttpClient httpClient
     ) : base(() => new(), Reducer) {
-        HttpClient = httpClient;
+        _httpClient = httpClient;
     }
 
     static FetchDataState Reducer(FetchDataState state, FetchDataCommands command) {
@@ -41,7 +42,7 @@ public class FetchDataStore : Store<FetchDataState, FetchDataCommands> {
     }
 
     public async Task FetchAsync() {
-        var forecasts = await HttpClient.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json")
+        var forecasts = await _httpClient.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json")
             ?? throw new Exception("Failed to fetch data.");
         Dispatch(new FetchDataCommands.SetWeatherForecast(forecasts.ToImmutableArray()));
     }

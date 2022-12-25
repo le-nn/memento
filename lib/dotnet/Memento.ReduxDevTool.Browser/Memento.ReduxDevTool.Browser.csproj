@@ -1,13 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Memento.ReduxDevTool\Memento.ReduxDevTool.csproj" />
-    <ProjectReference Include="..\Memento.Core\Memento.Core.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Memento.ReduxDevTool\Memento.ReduxDevTool.csproj" />
+        <ProjectReference Include="..\Memento.Core\Memento.Core.csproj" />
+    </ItemGroup>
+
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+        <PackageReference Include="Microsoft.JSInterop"  Version="7.*" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+        <PackageReference Include="Microsoft.JSInterop" Version="6.*" />
+    </ItemGroup>
 
 </Project>

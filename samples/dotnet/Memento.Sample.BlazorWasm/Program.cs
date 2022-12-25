@@ -1,3 +1,4 @@
+using Memento.Blazor;
 using Memento.Blazor.Devtools.Browser;
 using Memento.Sample.Blazor;
 using Memento.Sample.Blazor.Todos;
@@ -16,7 +17,7 @@ builder.Services
     .AddMemento()
     .AddMiddleware(() => new LoggerMiddleware())
     .AddMiddleware(() => new BrowserReduxDevToolMiddleware())
-    .ScanAssembyAndAddStores(typeof(Program).Assembly);
+    .ScanAssembyAndAddStores(typeof(App).Assembly);
 
 var app = builder.Build();
 await app.RunAsync();

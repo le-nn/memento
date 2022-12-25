@@ -1,17 +1,17 @@
 namespace Memento.Core;
 
 internal sealed class StoreSubscription : IDisposable {
-    private readonly string Id;
-    private readonly Action Action;
-    private bool IsDisposed;
-    private readonly bool WasCreated;
+    private readonly string _id;
+    private readonly Action _action;
+    private bool _isDisposed;
+    private readonly bool _wasCreated;
 
     /// <summary>
     /// Creates an instance of the class
     /// </summary>
     /// <param name="id">
-    ///		An Id that is included in the command of exceptions that are thrown, this is useful
-    ///		for helping to identify the source that created the instance that threw the exception.
+    ///  An Id that is included in the command of exceptions that are thrown, this is useful
+    ///  for helping to identify the source that created the instance that threw the exception.
     /// </param>
     /// <param name="action">The action to execute when the instance is disposed</param>
     public StoreSubscription(string id, Action action) {
@@ -20,23 +20,23 @@ internal sealed class StoreSubscription : IDisposable {
         if (action is null)
             throw new ArgumentNullException(nameof(action));
 
-        Id = id;
-        Action = action;
-        WasCreated = true;
+        _id = id;
+        _action = action;
+        _wasCreated = true;
     }
 
     /// <summary>
     /// Executes the action when disposed
     /// </summary>
     public void Dispose() {
-        if (IsDisposed)
+        if (_isDisposed)
             throw new ObjectDisposedException(
                 nameof(StoreSubscription),
-                $"Attempt to call {nameof(Dispose)} twice on {nameof(StoreSubscription)} with Id \"{Id}\".");
+                $"Attempt to call {nameof(Dispose)} twice on {nameof(StoreSubscription)} with Id \"{_id}\".");
 
-        IsDisposed = true;
+        _isDisposed = true;
         GC.SuppressFinalize(this);
-        Action();
+        _action();
     }
 
     /// <summary>
@@ -44,7 +44,7 @@ internal sealed class StoreSubscription : IDisposable {
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if the object is collected without being disposed</exception>
     ~StoreSubscription() {
-        if (!IsDisposed && WasCreated)
-            throw new InvalidOperationException($"{nameof(StoreSubscription)} with Id \"{Id}\" was not disposed. ");
+        if (!_isDisposed && _wasCreated)
+            throw new InvalidOperationException($"{nameof(StoreSubscription)} with Id \"{_id}\" was not disposed. ");
     }
 }

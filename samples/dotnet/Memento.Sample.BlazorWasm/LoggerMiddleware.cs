@@ -1,4 +1,5 @@
 using Memento.Core.Store;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 using System.Text.Json;
 

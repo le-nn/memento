@@ -1,19 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
     </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.0" />
-    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\lib\dotnet\Memento.Blazor\Memento.Blazor.csproj" />
         <ProjectReference Include="..\..\..\lib\dotnet\Memento.Core\Memento.Core.csproj" />
+        <ProjectReference Include="..\..\..\lib\dotnet\Memento.ReduxDevtool.Remote\Memento.ReduxDevTool.Remote.csproj" />
+        <ProjectReference Include="..\Memento.Sample.Blazor\Memento.Sample.Blazor.csproj" />
     </ItemGroup>
 
 </Project>
