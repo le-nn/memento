@@ -28,7 +28,7 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
 
         _storeProvider = (StoreProvider)(
             provider.GetService(typeof(StoreProvider))
-                ?? throw new Exception("Prease register 'StoreProvider' to ServiceProvider")
+                ?? throw new Exception("Please register 'StoreProvider' to ServiceProvider")
         );
         _liftedStore = new(_storeProvider, option) {
             SyncReqested = _throttledExecutor.Invoke
