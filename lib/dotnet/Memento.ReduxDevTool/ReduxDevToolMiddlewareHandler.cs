@@ -25,7 +25,10 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
     public ReduxDevToolMiddlewareHandler(IDevtoolInteropHandler devtoolInteropHandler, IServiceProvider provider, ReduxDevToolOption option) {
         _interopHandler = devtoolInteropHandler;
         _interopHandler.MessageHandled = HandleMessage;
-
+        _interopHandler.SyncRequested = () => {
+            _liftedStore?.SyncWithPlugin();
+        };
+            
         _storeProvider = (StoreProvider)(
             provider.GetService(typeof(StoreProvider))
                 ?? throw new Exception("Please register 'StoreProvider' to ServiceProvider")

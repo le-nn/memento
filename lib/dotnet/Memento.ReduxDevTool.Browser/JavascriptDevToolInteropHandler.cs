@@ -28,6 +28,7 @@ internal sealed class JavascriptDevToolInteropHandler : IDevtoolInteropHandler, 
     public bool IsInitializing => _isInitializing;
 
     public Action<string>? MessageHandled { get; set; }
+    public Action? SyncRequested { get; set; }
 
     /// <summary>
     /// Creates an instance of the dev tools interop.

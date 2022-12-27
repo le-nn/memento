@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Memento.Core.Store;
 
-public abstract class Middleware {
+public abstract class Middleware : IDisposable {
     MiddlewareHandler? _handler;
 
     public MiddlewareHandler Handler => _handler
@@ -20,4 +20,8 @@ public abstract class Middleware {
     }
 
     protected abstract MiddlewareHandler Create(IServiceProvider provider);
+
+    public void Dispose() {
+        _handler?.Dispose();
+    }
 }

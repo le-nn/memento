@@ -6,6 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Fleck" Version="1.2.0" />
+    <PackageReference Include="ScClient.Official" Version="1.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
 
     <ProjectReference Include="..\Memento.Core\Memento.Core.csproj" />
 

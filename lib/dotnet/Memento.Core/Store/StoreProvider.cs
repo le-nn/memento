@@ -11,11 +11,22 @@ public record RootStateChangedEventArgs {
     public required ImmutableDictionary<string, object> RootState { get; init; }
 }
 
-public class StoreProvider : IObservable<RootStateChangedEventArgs> {
+public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable {
     readonly IServiceProvider _serviceContainer;
     readonly List<IDisposable> _subscriptions = new();
     readonly List<IObserver<RootStateChangedEventArgs>> _observers = new();
     readonly object _locker = new();
+
+    readonly ImmutableArray<IStore> _stores;
+    readonly ImmutableArray<Middleware> _middlewares;
+
+    public bool IsInitialized { get; private set; }
+
+    public StoreProvider(IServiceProvider container) {
+        _serviceContainer = container;
+        _stores = _serviceContainer.GetAllStores().ToImmutableArray();
+        _middlewares = _serviceContainer.GetAllMiddlewares().ToImmutableArray();
+    }
 
     public ImmutableDictionary<string, object> CaptureRootState() {
         return ResolveAllStores().Aggregate(
@@ -29,12 +40,12 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs> {
         (x, y) => x.Add(y.GetType().Name, y)
     );
 
-
-    public StoreProvider(IServiceProvider container) {
-        _serviceContainer = container;
-    }
-
     public async Task InitializAsync() {
+        if (IsInitialized) {
+            throw new InvalidOperationException("Already initialized.");
+        }
+
+        IsInitialized = true;
         // observe all stores.
         foreach (var store in ResolveAllStores()) {
             var subscription = store.Subscribe(new StoreObeserver(e => {
@@ -78,11 +89,11 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs> {
     }
 
     public IEnumerable<IStore> ResolveAllStores() {
-        return _serviceContainer.GetAllStores();
+        return _stores;
     }
 
     public IEnumerable<Middleware> ResolveAllMiddlewares() {
-        return _serviceContainer.GetAllMiddlewares();
+        return _middlewares;
     }
 
     public IDisposable Subscribe(IObserver<RootStateChangedEventArgs> observer) {
@@ -103,6 +114,17 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs> {
     private void InvokeObserver(RootStateChangedEventArgs e) {
         foreach (var observer in _observers) {
             observer.OnNext(e);
+        }
+    }
+
+    public void Dispose() {
+        foreach (var subscription in _subscriptions) {
+            subscription.Dispose();
+        }
+
+        // Initalize all middlewares.
+        foreach (var middleware in ResolveAllMiddlewares()) {
+            middleware.Dispose();
         }
     }
 }

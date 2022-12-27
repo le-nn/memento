@@ -7,7 +7,7 @@ namespace Memento.Blazor;
 
 public static class StoreConfigExtension {
     public static IServiceCollection AddMemento(this IServiceCollection services) {
-        services.AddScoped(p => new StoreProvider(p));
+        services.AddScoped<StoreProvider>();
         return services;
     }
 

@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddMemento()
         .AddMiddleware(() => new LoggerMiddleware())
-    .AddMiddleware(() => new BrowserReduxDevToolMiddleware())
+    .AddMiddleware(() => new RemoteReduxDevToolMiddleware(8000 ))
 
     .ScanAssembyAndAddStores(typeof(App).Assembly);
 builder.Services.AddScoped<ITodoService, MockTodoService>();
