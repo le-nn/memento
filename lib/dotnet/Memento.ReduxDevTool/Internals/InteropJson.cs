@@ -26,7 +26,7 @@ public record StoreAction {
 
 public record ActionItemFromDevtool(
     string Type,
-    Dictionary<string, JsonElement>? Payload,
+    JsonElement? Payload,
     string? Source
 );
 

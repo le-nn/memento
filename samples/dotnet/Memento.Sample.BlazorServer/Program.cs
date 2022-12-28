@@ -7,9 +7,10 @@ using Memento.Blazor.Devtools.Browser;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
+    .AddSingleton<DevtoolWebSocketConnection>()
     .AddMemento()
         .AddMiddleware(() => new LoggerMiddleware())
-    .AddMiddleware(() => new RemoteReduxDevToolMiddleware(8000 ))
+    .AddMiddleware(() => new RemoteReduxDevToolMiddleware())
 
     .ScanAssembyAndAddStores(typeof(App).Assembly);
 builder.Services.AddScoped<ITodoService, MockTodoService>();

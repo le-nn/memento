@@ -29,10 +29,9 @@ internal sealed class StoreSubscription : IDisposable {
     /// Executes the action when disposed
     /// </summary>
     public void Dispose() {
-        if (IsDisposed)
-            throw new ObjectDisposedException(
-                nameof(StoreSubscription),
-                $"Attempt to call {nameof(Dispose)} twice on {nameof(StoreSubscription)} with Id \"{Id}\".");
+        if (IsDisposed) {
+            return;
+        }
 
         IsDisposed = true;
         GC.SuppressFinalize(this);

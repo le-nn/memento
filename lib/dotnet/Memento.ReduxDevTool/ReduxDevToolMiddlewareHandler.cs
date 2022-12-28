@@ -28,7 +28,7 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
         _interopHandler.SyncRequested = () => {
             _liftedStore?.SyncWithPlugin();
         };
-            
+
         _storeProvider = (StoreProvider)(
             provider.GetService(typeof(StoreProvider))
                 ?? throw new Exception("Please register 'StoreProvider' to ServiceProvider")
@@ -71,7 +71,11 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
                     PropertyNameCaseInsensitive = true,
                 });
 
-            if (command?.Payload?.TryGetValue("type", out var val) is true) {
+            if (
+                command?.Payload is { } payload
+                && command?.Payload?.TryGetProperty("type", out var p) is true
+                && p.GetString() is { } val
+            ) {
                 switch (val.ToString()) {
                     case "RESET":
                         await _liftedStore.ResetAsync();
@@ -86,30 +90,30 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
                         await _liftedStore.RollbackAsync();
                         break;
                     case "PAUSE_RECORDING":
-                        _liftedStore.IsPaused = command.Payload["status"].GetBoolean();
+                        _liftedStore.IsPaused = payload.GetProperty("status").GetBoolean();
                         break;
                     case "REORDER_ACTION":
                         await _liftedStore.ReorderActionsAsync(
-                            command.Payload["actionId"].GetInt32(),
-                            command.Payload["beforeActionId"].GetInt32()
+                            payload.GetProperty("actionId").GetInt32(),
+                           payload.GetProperty("beforeActionId").GetInt32()
                         );
                         break;
                     case "JUMP_TO_STATE":
                     case "TOGGLE_ACTION":
                         _ = _liftedStore.SkipAsync(
-                            command.Payload["id"].GetInt32()
+                            command.Payload?.GetProperty("id").GetInt32() ?? -1
                         );
                         break;
                     case "LOCK_CHANGES":
-                        await _liftedStore.LockChangedAsync(command.Payload["status"].GetBoolean());
+                        await _liftedStore.LockChangedAsync(payload.GetProperty("status").GetBoolean());
                         break;
                     case "JUMP_TO_ACTION":
                         _liftedStore.JumpTo(
-                            command.Payload["actionId"].GetInt32()
+                           payload.GetProperty("actionId").GetInt32()
                         );
                         break;
                     case "IMPORT_STATE":
-                        await _liftedStore.ImportAsync(command.Payload["nextLiftedState"]);
+                        await _liftedStore.ImportAsync(payload.GetProperty("nextLiftedState"));
                         break;
                 }
             }

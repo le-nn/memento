@@ -8,15 +8,15 @@ namespace Memento.ReduxDevTool.Remote;
 /// </summary>
 public sealed class RemoteReduxDevToolMiddleware : Middleware {
     readonly ReduxDevToolOption _chromiumDevToolOption;
-    readonly int _port;
 
-    public RemoteReduxDevToolMiddleware(int port ,ReduxDevToolOption? chromiumDevToolOption = null) {
+    public RemoteReduxDevToolMiddleware(ReduxDevToolOption? chromiumDevToolOption = null) {
         _chromiumDevToolOption = chromiumDevToolOption ?? new();
-        _port = port;
     }
 
     protected override MiddlewareHandler Create(IServiceProvider provider) {
-        var handler = new SocketDevtoolInteropHandler();
+        var webSocketConnection = (DevtoolWebSocketConnection?)provider.GetService(typeof(DevtoolWebSocketConnection))
+            ?? new DevtoolWebSocketConnection();
+        var handler = new RemoteDevtoolInteropHandler(webSocketConnection);
 
         return new ReduxDevToolMiddlewareHandler(handler, provider, _chromiumDevToolOption);
     }
