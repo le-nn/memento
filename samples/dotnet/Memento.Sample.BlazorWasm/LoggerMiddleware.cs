@@ -1,8 +1,6 @@
 using Memento.Core;
 using Memento.Core.Store;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
-using System.Text.Json;
 
 namespace Memento.Sample.Blazor;
 

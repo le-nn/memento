@@ -1,16 +1,7 @@
 ﻿using Fleck;
-using Memento.Core;
 using Memento.ReduxDevTool.Internal;
-using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Encodings.Web;
 using System.Text.Json;
-using System.Text.Unicode;
-using System.Threading.Tasks;
 
 namespace Memento.ReduxDevTool.Remote;
 
@@ -30,6 +21,8 @@ public class DevtoolWebSocketConnection : IDisposable {
 
     public event Action<int>? HandshakeRequested;
 
+    public event Action<Exception>? ErrorOccurred;
+
     public bool IsDisposed { get; private set; }
 
     public DevtoolWebSocketConnection(
@@ -47,22 +40,15 @@ public class DevtoolWebSocketConnection : IDisposable {
             }
 
             socket.OnPing = e => {
-                Console.WriteLine("ping -------------");
-                Console.WriteLine(e);
                 socket.SendPong(""u8.ToArray());
             };
 
             socket.OnPong = e => {
-                Console.WriteLine("pong -------------");
-                e.ToList().ForEach(t => Console.Write(t));
-                Console.WriteLine();
-                Console.WriteLine(Encoding.UTF8.GetString(e));
                 socket.SendPong(""u8.ToArray());
             };
 
             socket.OnError = e => {
-                Console.WriteLine("error -------------");
-                Console.WriteLine(e);
+                ErrorOccurred?.Invoke(e);
             };
 
             socket.OnOpen = () => {
@@ -81,47 +67,50 @@ public class DevtoolWebSocketConnection : IDisposable {
                     }
 
                     var json = JsonSerializer.Deserialize<JsonDocument>(message);
-
                     var eventname = json?.RootElement.GetProperty("event").GetString();
                     var cid = json?.RootElement.TryGetProperty("cid", out var p) is true
                         ? p.GetInt32()
                         : 0;
 
-                    if (eventname is "#handshake") {
-                        HandshakeRequested?.Invoke(cid);
-                    }
-                    else if (eventname is "login") {
-                        socket.Send($$"""
-                        {
-                            "rid": {{cid}},
-                            "data" : "log"
-                        }
-                        """);
-                    }
-                    else if (eventname is "#subscribe") {
-                        socket.Send($$"""
+                    switch (eventname) {
+                        case "#handshake":
+                            HandshakeRequested?.Invoke(cid);
+                            break;
+                        case "login":
+                            socket.Send($$"""
+                            {
+                                "rid": {{cid}},
+                                "data" : "log"
+                            }
+                            """);
+                            break;
+                        case "#subscribe":
+                            socket.Send($$"""
                             { "rid": {{cid}} }
                             """
-                        );
-                    }
-                    else if (eventname?.StartsWith("sc-") is true) {
-                        if (json?.RootElement.GetProperty("data").GetProperty("type").GetString() is "START") {
-                            SyncRequested?.Invoke(eventname);
-                        }
-                        else {
-                            var data = json?.RootElement.GetProperty("data");
-                            if (data is { } d) {
-                                var actualAction = new ActionItemFromDevtool(
-                                    d.GetProperty("type").GetString() ?? "",
-                                    d.GetProperty("action"),
-                                    null
-                                );
-                                MessageHandled?.Invoke(eventname, JsonSerializer.Serialize(actualAction));
+                          );
+                            break;
+                        case "respond":
+                            SendStartRequested?.Invoke();
+                            break;
+                        default:
+                            if (eventname?.StartsWith("sc-") is true) {
+                                if (json?.RootElement.GetProperty("data").GetProperty("type").GetString() is "START") {
+                                    SyncRequested?.Invoke(eventname);
+                                }
+                                else {
+                                    var data = json?.RootElement.GetProperty("data");
+                                    if (data is { } d) {
+                                        var actualAction = new ActionItemFromDevtool(
+                                            d.GetProperty("type").GetString() ?? "",
+                                            d.GetProperty("action"),
+                                            null
+                                        );
+                                        MessageHandled?.Invoke(eventname, JsonSerializer.Serialize(actualAction));
+                                    }
+                                }
                             }
-                        }
-                    }
-                    else if (eventname is "respond") {
-                        SendStartRequested?.Invoke();
+                            break;
                     }
                 }
                 catch (Exception ex) {
@@ -217,6 +206,9 @@ public class DevtoolWebSocketConnection : IDisposable {
     async Task Ping() {
         while (true) {
             await Task.Delay(10000);
+            if (IsDisposed) {
+                return;
+            }
 
             foreach (var connection in _webSocketConnections.ToArray()) {
                 await connection.SendPing(""u8.ToArray());

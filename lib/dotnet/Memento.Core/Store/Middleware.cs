@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Memento.Core.Store;
+﻿namespace Memento.Core.Store;
 
 public abstract class Middleware : IDisposable {
     MiddlewareHandler? _handler;

@@ -1,6 +1,3 @@
-using Memento.Core.Store;
-using System;
-
 namespace Memento.Core;
 
 public delegate object NextMiddlewareCallback(object state, Command command);

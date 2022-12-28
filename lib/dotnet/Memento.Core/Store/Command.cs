@@ -1,5 +1,3 @@
-using System.Text.Json;
-
 namespace Memento.Core;
 
 public abstract record Command {

@@ -2,7 +2,6 @@ using Memento.Sample.Blazor;
 using Memento.Sample.Blazor.Todos;
 using Memento.Blazor;
 using Memento.ReduxDevTool.Remote;
-using Memento.Blazor.Devtools.Browser;
 
 var builder = WebApplication.CreateBuilder(args);
 

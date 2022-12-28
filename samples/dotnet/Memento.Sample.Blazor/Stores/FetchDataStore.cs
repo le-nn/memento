@@ -1,6 +1,4 @@
-using Memento.Core;
 using System.Collections.Immutable;
-using System.Net.Http;
 using System.Net.Http.Json;
 
 namespace Memento.Sample.Blazor.Stores;
