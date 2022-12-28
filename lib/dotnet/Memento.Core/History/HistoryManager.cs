@@ -3,25 +3,25 @@ using Memento.Core.Executors;
 namespace Memento.Core;
 
 public class HistoryManager {
-    private int maxHistoryCount = 8;
-    private readonly FutureHistoryStack<IMementoCommandContext> Future = new();
-    private readonly PastHistoryStack<IMementoCommandContext> Past = new();
-    private readonly ConcatAsyncOperationExecutor ConcatAsyncOperationExecutor = new();
+    private int _maxHistoryCount = 8;
+    private readonly FutureHistoryStack<IMementoCommandContext> _future = new();
+    private readonly PastHistoryStack<IMementoCommandContext> _past = new();
+    private readonly ConcatAsyncOperationExecutor _concatAsyncOperationExecutor = new();
 
     public IMementoCommandContext? Present { get; private set; }
 
-    public IReadOnlyCollection<IMementoStateContext> FutureHistories => Future.AsReadOnly();
+    public IReadOnlyCollection<IMementoStateContext> FutureHistories => _future.AsReadOnly();
 
-    public IReadOnlyCollection<IMementoStateContext> PastHistories => Past.AsReadOnly();
+    public IReadOnlyCollection<IMementoStateContext> PastHistories => _past.AsReadOnly();
 
-    public bool CanReDo => Future.Count is not 0;
+    public bool CanReDo => _future.Count is not 0;
 
-    public bool CanUnDo => Past.Count is not 0 || Present is not null;
+    public bool CanUnDo => _past.Count is not 0 || Present is not null;
 
     public int MaxHistoryCount {
-        get => maxHistoryCount;
+        get => _maxHistoryCount;
         set {
-            maxHistoryCount = value;
+            _maxHistoryCount = value;
             ReduceIfPastHistoriesOverflow();
         }
     }
@@ -50,14 +50,14 @@ public class HistoryManager {
     }
 
     public async ValueTask ExcuteAsync<T>(IMementoCommandContext<T> command) {
-        await ConcatAsyncOperationExecutor.ExecuteAsync(async () => {
+        await _concatAsyncOperationExecutor.ExecuteAsync(async () => {
             if (CanReDo) {
                 ClearFutureHistoriesAsync();
             }
 
             if (Present is not null) {
                 await Present.InvokeContextSavedAsync();
-                Past.Push(Present);
+                _past.Push(Present);
             }
 
             await command.CommitAsync();
@@ -70,17 +70,17 @@ public class HistoryManager {
     }
 
     public async ValueTask<bool> ReExecuteAsync() {
-        return await ConcatAsyncOperationExecutor.ExecuteAsync(async () => {
+        return await _concatAsyncOperationExecutor.ExecuteAsync(async () => {
             if (CanReDo is false) {
                 return false;
             }
 
             if (Present is not null) {
                 await Present.InvokeContextSavedAsync();
-                Past.Push(Present);
+                _past.Push(Present);
             }
 
-            var item = Future.Pop()!;
+            var item = _future.Pop()!;
             await item.InvokeContextLoadedAsync();
             await item.CommitAsync();
             await item.LoadDataAsync();
@@ -91,7 +91,7 @@ public class HistoryManager {
     }
 
     public async ValueTask<bool> UnExecuteAsync() {
-        return await ConcatAsyncOperationExecutor.ExecuteAsync(async () => {
+        return await _concatAsyncOperationExecutor.ExecuteAsync(async () => {
             if (CanUnDo is false) {
                 return false;
             }
@@ -99,11 +99,11 @@ public class HistoryManager {
             if (Present is not null) {
                 await Present.RestoreAsync();
                 await Present.InvokeContextSavedAsync();
-                Future.Push(Present);
+                _future.Push(Present);
             }
 
-            if (Past.Count is not 0) {
-                var item = Past.Pop()!;
+            if (_past.Count is not 0) {
+                var item = _past.Pop()!;
                 await item.InvokeContextLoadedAsync();
                 await item.LoadDataAsync();
                 Present = item;
@@ -117,17 +117,17 @@ public class HistoryManager {
     }
 
     private void ClearFutureHistoriesAsync() {
-        var items = Future.ToArray();
-        Future.Clear();
+        var items = _future.ToArray();
+        _future.Clear();
         foreach (var item in items) {
             item.Dispose();
         }
     }
 
     private void ReduceIfPastHistoriesOverflow() {
-        if (Past.Count > MaxHistoryCount) {
-            for (var i = 0; i < Past.Count - MaxHistoryCount; i++) {
-                Past.RemoveLast()
+        if (_past.Count > MaxHistoryCount) {
+            for (var i = 0; i < _past.Count - MaxHistoryCount; i++) {
+                _past.RemoveLast()
                     ?.Dispose();
             }
         }
