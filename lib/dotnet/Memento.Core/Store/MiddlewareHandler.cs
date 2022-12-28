@@ -1,6 +1,10 @@
+using Memento.Core.Store;
+
 namespace Memento.Core;
 
-public delegate object NextMiddlewareCallback(object state, Command command);
+public delegate object NextStoreMiddlewareCallback(object state, Command command);
+
+public delegate RootState NextProviderMiddlewareCallback(RootState state, StateChangedEventArgs e);
 
 public abstract class MiddlewareHandler : IDisposable {
     /// <summary>
@@ -15,10 +19,16 @@ public abstract class MiddlewareHandler : IDisposable {
         return Task.CompletedTask;
     }
 
-    public virtual object? Handle(
+    public virtual RootState? HandleProviderDispatch(
+        RootState state,
+        StateChangedEventArgs e,
+        NextProviderMiddlewareCallback next
+    ) => next(state, e);
+
+    public virtual object? HandleStoreDispatch(
         object state,
         Command command,
-        NextMiddlewareCallback next
+        NextStoreMiddlewareCallback next
     ) => next(state, command);
 
     public virtual void Dispose() {

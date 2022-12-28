@@ -8,7 +8,7 @@ namespace Memento.Core;
 public record RootStateChangedEventArgs {
     public required StateChangedEventArgs StateChangedEvent { get; init; }
     public required IStore Store { get; init; }
-    public required ImmutableDictionary<string, object> RootState { get; init; }
+    public required RootState RootState { get; init; }
 }
 
 public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable {
@@ -28,11 +28,11 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
         _middlewares = _serviceContainer.GetAllMiddlewares().ToImmutableArray();
     }
 
-    public ImmutableDictionary<string, object> CaptureRootState() {
-        return ResolveAllStores().Aggregate(
+    public RootState CaptureRootState() {
+        return new(ResolveAllStores().Aggregate(
             ImmutableDictionary.Create<string, object>(),
             (x, y) => x.Add(y.GetType().Name, y.State)
-        );
+        ));
     }
 
     public ImmutableDictionary<string, IStore> CaptureStoreBag() => ResolveAllStores().Aggregate(
@@ -49,17 +49,21 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
         // observe all stores.
         foreach (var store in ResolveAllStores()) {
             var subscription = store.Subscribe(new StoreObeserver(e => {
-                InvokeObserver(new RootStateChangedEventArgs() {
-                    StateChangedEvent = e,
-                    Store = store,
-                    RootState = CaptureRootState(),
-                });
+                var handler = GetMiddlewareInvokeHandler();
+                var rootState = handler(CaptureRootState(), e);
+                if (rootState is not null) {
+                    InvokeObserver(new RootStateChangedEventArgs() {
+                        StateChangedEvent = e,
+                        Store = store,
+                        RootState = rootState,
+                    });
+                }
             }));
             _subscriptions.Add(subscription);
         }
 
         // Initalize all middlewares.
-        foreach (var middleware in ResolveAllMiddlewares()) {
+        foreach (var middleware in GetAllMiddlewares()) {
             try {
                 await middleware.InitializeAsync(_serviceContainer);
             }
@@ -92,7 +96,7 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
         return _stores;
     }
 
-    public IEnumerable<Middleware> ResolveAllMiddlewares() {
+    public IEnumerable<Middleware> GetAllMiddlewares() {
         return _middlewares;
     }
 
@@ -111,6 +115,21 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
     public IDisposable Subscribe(Action<RootStateChangedEventArgs> observer)
         => Subscribe(new StoreProviderObserver(observer));
 
+    internal Func<RootState, StateChangedEventArgs, RootState?> GetMiddlewareInvokeHandler() {
+        // process middlewares
+        var middlewares = GetAllMiddlewares()
+            ?? Array.Empty<Middleware>();
+        return middlewares.Aggregate(
+            (RootState s, StateChangedEventArgs _) => s,
+            (before, middleware) =>
+                (RootState s, StateChangedEventArgs m) => middleware.Handler.HandleProviderDispatch(
+                    s,
+                    m,
+                    (_s, _m) => before(_s, m)
+                )
+        );
+    }
+
     private void InvokeObserver(RootStateChangedEventArgs e) {
         foreach (var observer in _observers) {
             observer.OnNext(e);
@@ -123,7 +142,7 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
         }
 
         // Initalize all middlewares.
-        foreach (var middleware in ResolveAllMiddlewares()) {
+        foreach (var middleware in GetAllMiddlewares()) {
             middleware.Dispose();
         }
     }

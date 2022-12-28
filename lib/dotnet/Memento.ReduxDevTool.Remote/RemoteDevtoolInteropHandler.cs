@@ -1,4 +1,5 @@
 ﻿using Memento.Core;
+using Memento.Core.Store;
 using Memento.ReduxDevTool.Internal;
 using System.Collections.Immutable;
 
@@ -39,7 +40,7 @@ internal class RemoteDevtoolInteropHandler : IDevtoolInteropHandler, IAsyncDispo
         MessageHandled?.Invoke(json);
     }
 
-    public async Task InitializeAsync(ImmutableDictionary<string, object> state) {
+    public async Task InitializeAsync(RootState state) {
         await _webSocketConnection.InitializeAsync(state);
     }
 

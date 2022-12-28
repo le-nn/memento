@@ -1,4 +1,5 @@
 ﻿using Memento.Core;
+using Memento.Core.Store;
 using Memento.ReduxDevTool.Internal;
 using Microsoft.JSInterop;
 using System.Collections.Immutable;
@@ -39,7 +40,7 @@ internal sealed class JavascriptDevToolInteropHandler : IDevtoolInteropHandler, 
         _dotNetRef = DotNetObjectReference.Create(this);
     }
 
-    public async Task InitializeAsync(ImmutableDictionary<string, object> state) {
+    public async Task InitializeAsync(RootState state) {
         _isInitializing = true;
         try {
             var script = GetClientScripts(new());

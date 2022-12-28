@@ -1,4 +1,5 @@
 ﻿using Memento.Core;
+using Memento.Core.Store;
 using System.Collections.Immutable;
 using System.Data;
 using System.Text.Json;
@@ -34,7 +35,7 @@ internal sealed class LiftedHistoryContainer : IDisposable {
     int NextActionId => _sequence + 1;
     IDisposable? _subscription;
     HistoryState CurrentHistory => _histories.Where(x => x.Id == _currentCursorId).First();
-    readonly ImmutableDictionary<string, object> _rootState;
+    readonly RootState _rootState;
     readonly StoreProvider _provider;
     readonly ReduxDevToolOption _options;
     public Action<HistoryStateContextJson>? SyncReqested { get; set; }
@@ -61,7 +62,7 @@ internal sealed class LiftedHistoryContainer : IDisposable {
                 Command = new Init(),
                 StoreBagKey = "",
                 Id = 0,
-                RootState = _rootState,
+                RootState = _rootState.AsImmutableDictionary(),
                 Stacktrace = "Stack trace",
                 Timestamp = ToUnixTimeStamp(DateTime.UtcNow),
                 IsSkipped = false,
@@ -76,7 +77,7 @@ internal sealed class LiftedHistoryContainer : IDisposable {
         await SyncWithPlugin();
     }
 
-    public async Task PushAsync(StateChangedEventArgs e, ImmutableDictionary<string, object> rootState) {
+    public async Task PushAsync(StateChangedEventArgs e, RootState rootState,string stackTrace) {
         if (IsLocked) {
             await SyncWithPlugin();
             SetStatesToStore(CurrentHistory);
@@ -101,8 +102,8 @@ internal sealed class LiftedHistoryContainer : IDisposable {
             Command = e.Command,
             StoreBagKey = e.Sender?.GetType().Name ?? "Error",
             Id = _sequence,
-            RootState = rootState,
-            Stacktrace = "Stack trace",
+            RootState = rootState.AsImmutableDictionary(),
+            Stacktrace = stackTrace,
             Timestamp = ToUnixTimeStamp(DateTime.UtcNow),
             IsSkipped = false,
         });

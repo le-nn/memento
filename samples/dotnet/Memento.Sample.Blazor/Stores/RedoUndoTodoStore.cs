@@ -48,8 +48,8 @@ public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState, RedoUndoTodoCom
 
     public async Task CreateNewAsync(string text) {
         await CommitAsync(
-            async () => {
-                return Guid.NewGuid();
+            () => {
+                return ValueTask.FromResult(Guid.NewGuid());
             },
             async id => {
                 var item = await TodoService.CreateItemAsync(id, text);

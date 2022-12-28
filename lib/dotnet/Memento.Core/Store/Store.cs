@@ -139,7 +139,7 @@ public abstract class Store<TState, TCommand>
 
     internal Func<TState, TCommand, object?> GetMiddlewareInvokeHandler() {
         // process middlewares
-        var middlewares = Provider?.ResolveAllMiddlewares()
+        var middlewares = Provider?.GetAllMiddlewares()
             ?? Array.Empty<Middleware>();
         return middlewares.Aggregate(
             (object s, Command m) => {
@@ -150,7 +150,7 @@ public abstract class Store<TState, TCommand>
                 return (object)Reducer.Invoke(_s, _m);
             },
             (before, middleware) =>
-                (object s, Command m) => middleware.Handler.Handle(
+                (object s, Command m) => middleware.Handler.HandleStoreDispatch(
                     s,
                     m,
                     (_s, _m) => before(_s, m)

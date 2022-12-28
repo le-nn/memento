@@ -1,4 +1,5 @@
 ﻿using Memento.Core;
+using Memento.Core.Store;
 using System.Collections.Immutable;
 
 namespace Memento.ReduxDevTool.Internal;
@@ -8,7 +9,7 @@ public interface IDevtoolInteropHandler {
 
     Action? SyncRequested { get; set; }
 
-    Task InitializeAsync(ImmutableDictionary<string, object> state);
+    Task InitializeAsync(RootState state);
 
     Task SendAsync(Command? command, HistoryStateContextJson context);
 

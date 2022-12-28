@@ -1,4 +1,5 @@
 ﻿using Fleck;
+using Memento.Core.Store;
 using Memento.ReduxDevTool.Internal;
 using System.Collections.Immutable;
 using System.Text.Json;
@@ -141,7 +142,7 @@ public class DevtoolWebSocketConnection : IDisposable {
 
     }
 
-    public Task InitializeAsync(ImmutableDictionary<string, object> _) {
+    public Task InitializeAsync(RootState _) {
         return Task.CompletedTask;
     }
 
