@@ -11,7 +11,6 @@ public record StoreAction {
     [JsonPropertyName("timestamp")]
     public required long Timestamp { get; init; }
 
-    [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
     [JsonPropertyName("stack")]
     public string? Stack { get; init; }
 

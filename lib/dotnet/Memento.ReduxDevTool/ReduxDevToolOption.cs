@@ -7,7 +7,9 @@ public record ReduxDevToolOption {
 
     public TimeSpan Latency { get; init; } = TimeSpan.FromMilliseconds(800);
 
-    public bool StackTraceEnabled { get; init; }
+    public bool StackTraceEnabled { get; init; } = true;
+
+    public int StackTraceLinesLimit { get; init; } = 30;
 
     public bool OpenDevtool { get; init; } = false;
 }

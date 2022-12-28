@@ -63,7 +63,7 @@ internal sealed class LiftedHistoryContainer : IDisposable {
                 StoreBagKey = "",
                 Id = 0,
                 RootState = _rootState.AsImmutableDictionary(),
-                Stacktrace = "Stack trace",
+                Stacktrace = "",
                 Timestamp = ToUnixTimeStamp(DateTime.UtcNow),
                 IsSkipped = false,
             }

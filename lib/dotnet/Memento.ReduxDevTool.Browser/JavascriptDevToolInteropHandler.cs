@@ -86,29 +86,33 @@ internal sealed class JavascriptDevToolInteropHandler : IDevtoolInteropHandler, 
         var optionsJson = BuildOptionsJson(options);
         var isOpenDevtool = options.OpenDevtool ? "true" : "false";
         var code = $$"""
+            const config = {
+                {{optionsJson}},
+                features: {
+                    pause: true, // start/pause recording of dispatched actions
+                    lock: true, // lock/unlock dispatching actions and side effects
+                    persist: true, // persist states on page reloading
+                    export: true, // export history of actions in a file
+                    import: 'custom', // import history of actions from a file
+                    jump: true, // jump back and forth (time travelling)
+                    skip: true, // skip (cancel) actions
+                    reorder: true, // drag and drop actions in the history list
+                    dispatch: false, // dispatch custom actions or action creators
+                    test: false, // generate tests for the selected actions
+                },
+            }
+            console.log(config,0)
+
             var {{_ReduxDevToolsVariableName}} = undefined;
             try {
                  {{_ReduxDevToolsVariableName}} = window.__REDUX_DEVTOOLS_EXTENSION__
-                    .connect({
-                        {{optionsJson}},
-                        features: {
-                            pause: true, // start/pause recording of dispatched actions
-                            lock: true, // lock/unlock dispatching actions and side effects
-                            persist: false, // persist states on page reloading
-                            export: true, // export history of actions in a file
-                            import: 'custom', // import history of actions from a file
-                            jump: true, // jump back and forth (time travelling)
-                            skip: true, // skip (cancel) actions
-                            reorder: true, // drag and drop actions in the history list
-                            dispatch: false, // dispatch custom actions or action creators
-                            test: false, // generate tests for the selected actions
-                        },
-                    });
+                    .connect({...config});
             }
             catch{
                 console.error("failed to connect redux devtool")
             }
             
+            console.log({{_ReduxDevToolsVariableName}})
             if (!{{_ReduxDevToolsVariableName}}) {
                 console.error("failed to connect redux devtool")
             }
@@ -128,11 +132,11 @@ internal sealed class JavascriptDevToolInteropHandler : IDevtoolInteropHandler, 
             }
 
             function {{_sendToReduxDevToolDirectly}}(a, b) {
-                {{_ReduxDevToolsVariableName}}.send(JSON.parse(a), JSON.parse(b));
+               {{_ReduxDevToolsVariableName}}.send(JSON.parse(a), JSON.parse(b));
             }
 
             if({{isOpenDevtool}}) {
-                window.__REDUX_DEVTOOLS_EXTENSION__.open();
+               window.__REDUX_DEVTOOLS_EXTENSION__.open();
             }
             """;
 
@@ -140,14 +144,13 @@ internal sealed class JavascriptDevToolInteropHandler : IDevtoolInteropHandler, 
     }
 
     static string BuildOptionsJson(ReduxDevToolOption options) {
+        var stack = options.StackTraceEnabled ? "true" : "false";
         var values = new List<string> {
-            $"name:\"{options.Name}\"",
-            $"maxAge:{options.MaximumHistoryLength}",
-            $"latency:{options.Latency.TotalMilliseconds}"
+            $"name: \"{options.Name}\"",
+            $"maxAge: {options.MaximumHistoryLength}",
+            $"latency: {options.Latency.TotalMilliseconds}",
+            $"trace: {stack}",
         };
-        if (options.StackTraceEnabled is true) {
-            values.Add("trace: function() { return JSON.parse(window.mementoDevToolsDotNetInterop.stackTrace); }");
-        }
 
         return string.Join(",", values);
     }

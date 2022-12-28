@@ -2,6 +2,7 @@
 using Memento.Core.Executors;
 using Memento.Core.Store;
 using Memento.ReduxDevTool.Internal;
+using Microsoft.VisualBasic.FileIO;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
@@ -16,28 +17,27 @@ namespace Memento.ReduxDevTool;
 /// https://github.com/zalmoxisus/redux-devtools-instrument/blob/master/src/instrument.js
 /// </remarks>
 public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
-    const string stackTraceFilterExpression =
-      @"^(?:(?!\b" +
-      @"System" +
-      @"|Microsoft" +
-      @"|Memento.Blazor" +
-      @"|Memento.Core" +
-      @"|Memento.ReduxDevTool" +
-      @"\b).)*$";
+    const string _stackTraceFilterExpression =
+        @"^(?:(?!\b" +
+        @"System" +
+        @"|Microsoft" +
+        @"|Memento.Blazor" +
+        @"|Memento.Core" +
+        @"|Memento.ReduxDevTool" +
+        @"\b).)*$";
 
-    readonly Regex _stackTraceFilterRegex = new(stackTraceFilterExpression, RegexOptions.Compiled);
+    readonly Regex _stackTraceFilterRegex = new(_stackTraceFilterExpression, RegexOptions.Compiled);
     readonly ConcatAsyncOperationExecutor _concatExecutor = new();
     readonly ThrottledExecutor<HistoryStateContextJson> _throttledExecutor = new();
     readonly LiftedHistoryContainer _liftedStore;
     readonly StoreProvider _storeProvider;
     readonly IDevtoolInteropHandler _interopHandler;
+    readonly ReduxDevToolOption _option;
 
-    IDisposable? _subscription2;
-
-    public bool IsStackTraceEnabled { get; set; } = true;
-    public uint StackTraceLimit { get; set; } = 30;
+    IDisposable? _subscription;
 
     public ReduxDevToolMiddlewareHandler(IDevtoolInteropHandler devtoolInteropHandler, IServiceProvider provider, ReduxDevToolOption option) {
+        _option = option;
         _interopHandler = devtoolInteropHandler;
         _interopHandler.MessageHandled = HandleMessage;
         _interopHandler.SyncRequested = () => {
@@ -51,7 +51,7 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
         _liftedStore = new(_storeProvider, option) {
             SyncReqested = _throttledExecutor.Invoke
         };
-        _subscription2 = _throttledExecutor.Subscribe(async sended => {
+        _subscription = _throttledExecutor.Subscribe(async sended => {
             await _interopHandler.SendAsync(null, sended);
         });
     }
@@ -61,14 +61,16 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
         StateChangedEventArgs e,
         NextProviderMiddlewareCallback next
     ) {
-        var stackTrace = string.Join(
-            "\r\n",
-            new StackTrace(fNeedFileInfo: true)
-                .GetFrames()
-                .Select(x => $"at {x.GetMethod()?.DeclaringType?.FullName}.{x.GetMethod()?.Name} ({x.GetFileName()}:{x.GetFileLineNumber()}:{x.GetFileColumnNumber()})")
-                .Where(x => _stackTraceFilterRegex?.IsMatch(x) is not false)
-                .Take((int)StackTraceLimit)
-        );
+        var stackTrace = _option.StackTraceEnabled
+            ? string.Join(
+                "\r\n",
+                new StackTrace(fNeedFileInfo: true)
+                    .GetFrames()
+                    .Select(x => $"at {x.GetMethod()?.DeclaringType?.FullName}.{x.GetMethod()?.Name} ({x.GetFileName()}:{x.GetFileLineNumber()}:{x.GetFileColumnNumber()})")
+                    .Where(x => _stackTraceFilterRegex?.IsMatch(x) is not false)
+                    .Take((int)_option.StackTraceLinesLimit)
+            )
+            : "";
 
         _ = _concatExecutor.ExecuteAsync(async () => {
             await SendAsync(e, state, stackTrace);
@@ -78,8 +80,9 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
     }
 
     protected override async Task OnInitializedAsync() {
-        await _liftedStore.ResetAsync();
+
         await _interopHandler.InitializeAsync(_storeProvider.CaptureRootState());
+        await _liftedStore.ResetAsync();
     }
 
     public async Task SendAsync(StateChangedEventArgs e, RootState rootState, string stackTrace) {
@@ -152,7 +155,7 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
     }
 
     public override void Dispose() {
-        _subscription2?.Dispose();
-        _subscription2 = null;
+        _subscription?.Dispose();
+        _subscription = null;
     }
 }
