@@ -77,7 +77,7 @@ internal sealed class LiftedHistoryContainer : IDisposable {
         await SyncWithPlugin();
     }
 
-    public async Task PushAsync(StateChangedEventArgs e, RootState rootState,string stackTrace) {
+    public async Task PushAsync(StateChangedEventArgs e, RootState rootState, string stackTrace) {
         if (IsLocked) {
             await SyncWithPlugin();
             SetStatesToStore(CurrentHistory);

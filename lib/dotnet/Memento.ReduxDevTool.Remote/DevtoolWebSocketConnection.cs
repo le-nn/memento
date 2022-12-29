@@ -1,7 +1,6 @@
 ﻿using Fleck;
 using Memento.Core.Store;
 using Memento.ReduxDevTool.Internal;
-using System.Collections.Immutable;
 using System.Text.Json;
 
 namespace Memento.ReduxDevTool.Remote;

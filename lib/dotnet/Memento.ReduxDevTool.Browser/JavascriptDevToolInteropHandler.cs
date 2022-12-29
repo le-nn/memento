@@ -2,7 +2,6 @@
 using Memento.Core.Store;
 using Memento.ReduxDevTool.Internal;
 using Microsoft.JSInterop;
-using System.Collections.Immutable;
 using System.Text.Json;
 
 namespace Memento.ReduxDevTool.Browser;

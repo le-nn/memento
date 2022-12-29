@@ -1,6 +1,5 @@
 ﻿using Memento.Core;
 using Memento.Core.Store;
-using System.Collections.Immutable;
 
 namespace Memento.ReduxDevTool.Internal;
 

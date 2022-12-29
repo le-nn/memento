@@ -2,10 +2,7 @@
 using Memento.Core.Executors;
 using Memento.Core.Store;
 using Memento.ReduxDevTool.Internal;
-using Microsoft.VisualBasic.FileIO;
-using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using static Memento.Core.Command;
@@ -80,7 +77,6 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
     }
 
     protected override async Task OnInitializedAsync() {
-
         await _interopHandler.InitializeAsync(_storeProvider.CaptureRootState());
         await _liftedStore.ResetAsync();
     }

@@ -22,7 +22,7 @@ public sealed class LoggerMiddleware : Middleware {
             _ = HandleLog(state, e);
             return next(state, e);
         }
-        
+
         public async Task HandleLog(object state, StateChangedEventArgs e) {
             await _jSRuntime.InvokeVoidAsync("console.log", new {
                 StateName = state.GetType().Name,
