@@ -11,7 +11,7 @@ using GetStateChangedPropertyDelegate = Func<object, IStore>;
 /// on a specific object
 /// </summary>
 public static class StateSubscriber {
-    private static readonly ConcurrentDictionary<Type, IEnumerable<GetStateChangedPropertyDelegate>> ValueDelegatesByType = new();
+    private static readonly ConcurrentDictionary<Type, IEnumerable<GetStateChangedPropertyDelegate>> _valueDelegatesByType = new();
 
     /// <summary>
     /// Subscribes to all <see cref="IStateChangedNotifier"/> properties on the specified <paramref name="subject"/>
@@ -50,7 +50,7 @@ public static class StateSubscriber {
             );
 
     private static IEnumerable<GetStateChangedPropertyDelegate> GetStateChangedNotifierPropertyDelegatesForType(Type type)
-        => ValueDelegatesByType.GetOrAdd(
+        => _valueDelegatesByType.GetOrAdd(
             type,
             _ =>
                 from currentProperty in GetStateChangedNotifierProperties(type)
