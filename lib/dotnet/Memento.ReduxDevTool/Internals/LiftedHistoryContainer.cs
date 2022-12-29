@@ -141,11 +141,11 @@ internal sealed class LiftedHistoryContainer : IDisposable {
                     || history.RootState[storeName].Equals(storeBag[storeName].State) is false
                 ) {
                     // target store should invoke change event
-                    storeBag[storeName].__setStateForce(history.RootState[storeName]);
+                    storeBag[storeName].SetStateForce(history.RootState[storeName]);
                 }
                 else {
                     // ignore to invoke change event because updating ui is heavy
-                    storeBag[storeName].__setStateForceSilently(history.RootState[storeName]);
+                    storeBag[storeName].SetStateForceSilently(history.RootState[storeName]);
                 }
             }
         }

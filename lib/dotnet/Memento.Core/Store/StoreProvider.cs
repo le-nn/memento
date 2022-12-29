@@ -5,12 +5,6 @@ using System.Collections.Immutable;
 
 namespace Memento.Core;
 
-public record RootStateChangedEventArgs {
-    public required StateChangedEventArgs StateChangedEvent { get; init; }
-    public required IStore Store { get; init; }
-    public required RootState RootState { get; init; }
-}
-
 public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable {
     readonly IServiceProvider _serviceContainer;
     readonly List<IDisposable> _subscriptions = new();

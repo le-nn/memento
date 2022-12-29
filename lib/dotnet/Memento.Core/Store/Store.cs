@@ -194,7 +194,7 @@ public abstract class Store<TState, TCommand>
         }
     }
 
-    public void __setStateForceSilently(object state) {
+    public void SetStateForceSilently(object state) {
         if (state is not TState tstate) {
             throw new InvalidDataException($"'{state.GetType().FullName}' is not compatible with '{typeof(TState).FullName}'.");
         }
@@ -202,7 +202,7 @@ public abstract class Store<TState, TCommand>
         State = tstate;
     }
 
-    public void __setStateForce(object state) {
+    public void SetStateForce(object state) {
         if (state is not TState tstate) {
             throw new InvalidDataException($"'{state.GetType().FullName}' is not compatible with '{typeof(TState).FullName}'.");
         }

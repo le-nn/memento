@@ -8,9 +8,9 @@ public interface IStore : IObservable<StateChangedEventArgs> {
 
     internal protected Task OnInitializedAsync(StoreProvider provider);
 
-    void __setStateForceSilently(object state);
+    void SetStateForceSilently(object state);
 
-    void __setStateForce(object state);
+    void SetStateForce(object state);
 
     Func<object, Command, object> Reducer { get; }
 
