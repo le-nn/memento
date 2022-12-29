@@ -34,7 +34,6 @@ public class ThrottledExecutor<T> : IObservable<T> {
         return Subscribe(observer);
     }
 
-
     public void Invoke(T value) {
         // If no throttle window then bypass throttling
         if (LatencyMs is 0) {
