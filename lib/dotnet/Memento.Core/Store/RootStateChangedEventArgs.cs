@@ -1,4 +1,4 @@
-﻿namespace Memento.Core.Store;
+﻿namespace Memento.Core;
 
 public record RootStateChangedEventArgs {
     public required StateChangedEventArgs StateChangedEvent { get; init; }

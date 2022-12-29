@@ -12,7 +12,7 @@ namespace Memento.ReduxDevTool.Browser;
 internal sealed class JavascriptDevToolInteropHandler : IDevtoolInteropHandler, IDisposable {
     private const string _sendToReduxDevToolDirectly = "mementoReduxDispatch";
     private const string _toJsInitMethodName = "mementoReduxDevToolInit";
-    private const string _ReduxDevToolsVariableName = "mementoReduxDevTool";
+    private const string _reduxDevToolsVariableName = "mementoReduxDevTool";
 
     public const string DevToolsCallbackId = "mementoReduxDevToolsCallback";
 
@@ -102,36 +102,36 @@ internal sealed class JavascriptDevToolInteropHandler : IDevtoolInteropHandler, 
             }
             console.log(config,0)
 
-            var {{_ReduxDevToolsVariableName}} = undefined;
+            var {{_reduxDevToolsVariableName}} = undefined;
             try {
-                 {{_ReduxDevToolsVariableName}} = window.__REDUX_DEVTOOLS_EXTENSION__
+                 {{_reduxDevToolsVariableName}} = window.__REDUX_DEVTOOLS_EXTENSION__
                     .connect({...config});
             }
             catch{
                 console.error("failed to connect redux devtool")
             }
             
-            console.log({{_ReduxDevToolsVariableName}})
-            if (!{{_ReduxDevToolsVariableName}}) {
+            console.log({{_reduxDevToolsVariableName}})
+            if (!{{_reduxDevToolsVariableName}}) {
                 console.error("failed to connect redux devtool")
             }
 
             function {{_toJsInitMethodName}}(stateJson, dotnetObj){
-                if(!{{_ReduxDevToolsVariableName}}){
+                if(!{{_reduxDevToolsVariableName}}){
                     console.error("Redux devtool is not connected");
                     return;
                 }
             
-                {{_ReduxDevToolsVariableName}}.subscribe(message => {
+                {{_reduxDevToolsVariableName}}.subscribe(message => {
                     const json = JSON.stringify(message);
                     dotnetObj.invokeMethodAsync('{{DevToolsCallbackId}}', json);
                 });
 
-                {{_ReduxDevToolsVariableName}}.init(JSON.parse(stateJson));
+                {{_reduxDevToolsVariableName}}.init(JSON.parse(stateJson));
             }
 
             function {{_sendToReduxDevToolDirectly}}(a, b) {
-               {{_ReduxDevToolsVariableName}}.send(JSON.parse(a), JSON.parse(b));
+               {{_reduxDevToolsVariableName}}.send(JSON.parse(a), JSON.parse(b));
             }
 
             if({{isOpenDevtool}}) {

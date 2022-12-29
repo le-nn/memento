@@ -1,5 +1,4 @@
 namespace Memento.Core.Internals;
-
 internal class GeneralObeserver<T> : IObserver<T> {
     readonly Action<T> _action;
 

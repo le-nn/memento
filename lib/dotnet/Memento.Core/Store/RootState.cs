@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace Memento.Core.Store;
+namespace Memento.Core;
 
 public record RootState : IReadOnlyDictionary<string, object?> {
     readonly ImmutableDictionary<string, object> _rootState;
