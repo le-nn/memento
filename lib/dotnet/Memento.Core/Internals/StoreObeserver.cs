@@ -59,13 +59,14 @@ internal class StoreProviderObserver : IObserver<RootStateChangedEventArgs> {
     }
 }
 
-internal class StoreObeserver<TState, TMessages> : IObserver<StateChangedEventArgs<TState, TMessages>>
-    where TState : class
-    where TMessages : Command {
+internal class StoreObeserver<TState, TMessages> 
+    : IObserver<StateChangedEventArgs<TState, TMessages>>
+        where TState : class
+        where TMessages : Command {
     readonly Action<StateChangedEventArgs<TState, TMessages>> _action;
 
     public StoreObeserver(Action<StateChangedEventArgs<TState, TMessages>> action) {
-        this._action = action;
+        _action = action;
     }
 
     public void OnCompleted() {

@@ -1,17 +1,18 @@
 namespace Memento.Core.Store.Internals;
 
 internal sealed class StoreSubscription : IDisposable {
-    private readonly string _id;
-    private readonly Action _action;
     private bool _isDisposed;
-    private readonly bool _wasCreated;
+
+    readonly private string _id;
+    readonly private Action _action;
+    readonly private bool _wasCreated;
 
     /// <summary>
     /// Creates an instance of the class
     /// </summary>
     /// <param name="id">
-    ///		An _id that is included in the command of exceptions that are thrown, this is useful
-    ///		for helping to identify the source that created the instance that threw the exception.
+    ///  An _id that is included in the command of exceptions that are thrown, this is useful
+    ///  for helping to identify the source that created the instance that threw the exception.
     /// </param>
     /// <param name="action">The _action to execute when the instance is disposed</param>
     public StoreSubscription(string id, Action action) {
