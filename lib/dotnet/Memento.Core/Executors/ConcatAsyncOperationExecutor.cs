@@ -67,8 +67,8 @@ public class ConcatAsyncOperationExecutor {
         readonly TaskCompletionSource<T> _taskSource;
 
         public Operation(Func<Task<T>> func, TaskCompletionSource<T> taskSource) {
-            this._func = func;
-            this._taskSource = taskSource;
+            _func = func;
+            _taskSource = taskSource;
         }
 
         public async Task HandleAsync() {
