@@ -100,7 +100,6 @@ internal sealed class JavascriptDevToolInteropHandler : IDevtoolInteropHandler, 
                     test: false, // generate tests for the selected actions
                 },
             }
-            console.log(config,0)
 
             var {{_reduxDevToolsVariableName}} = undefined;
             try {
@@ -110,8 +109,7 @@ internal sealed class JavascriptDevToolInteropHandler : IDevtoolInteropHandler, 
             catch{
                 console.error("failed to connect redux devtool")
             }
-            
-            console.log({{_reduxDevToolsVariableName}})
+
             if (!{{_reduxDevToolsVariableName}}) {
                 console.error("failed to connect redux devtool")
             }

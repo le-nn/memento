@@ -116,7 +116,6 @@ public class DevtoolWebSocketConnection : IDisposable {
                 }
                 catch (Exception ex) {
                     Console.WriteLine(ex.Message);
-
                 }
             };
         });
@@ -170,7 +169,6 @@ public class DevtoolWebSocketConnection : IDisposable {
     }
 
     public async Task SendAsync(string id, HistoryStateContextJson context) {
-        Console.WriteLine("send " + id);
         var json = new {
             @event = "#publish",
             data = new {
