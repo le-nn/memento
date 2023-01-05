@@ -1,6 +1,6 @@
 # Release notes for .NET
 
-### Memento Core
+### Memento
 
 ## v0.0.4
 
@@ -81,24 +81,7 @@ It outputs following.
 * Add .NET7 support.
 * Change name Message -> Command, Reducer -> Reducer, Mutate -> Dispatch
 
+## v1.0.0
 
----
-
-### Memento Blazor
-
-## v0.0.4
-
-* First release
-
-## v0.0.5
-
-* Change namespace ```Memento``` to ```Memento.Core```
-* Add .NET 6 support
-
-## v0.1.0
-
-* Update Memento.Core libs
-
-## v0.2.0
-
-* Update Memento.Core libs
+* Add support for Redux devtools
+* Some apis are breaking changed
