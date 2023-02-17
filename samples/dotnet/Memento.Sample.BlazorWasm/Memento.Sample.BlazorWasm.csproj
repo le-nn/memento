@@ -13,9 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\lib\dotnet\Memento.Blazor\Memento.Blazor.csproj" />
-        <ProjectReference Include="..\..\..\lib\dotnet\Memento.Core\Memento.Core.csproj" />
-        <ProjectReference Include="..\..\..\lib\dotnet\Memento.ReduxDevTool.Browser\Memento.ReduxDevTool.Browser.csproj" />
+        <ProjectReference Include="..\..\..\src\Memento.Blazor\Memento.Blazor.csproj" />
+        <ProjectReference Include="..\..\..\src\Memento.ReduxDevTool.Browser\Memento.ReduxDevTool.Browser.csproj" />
         <ProjectReference Include="..\Memento.Sample.Blazor\Memento.Sample.Blazor.csproj" />
     </ItemGroup>
 </Project>
