@@ -355,7 +355,7 @@ internal sealed class LiftedHistoryContainer : IDisposable {
                     type
                 );
 
-                return command ?? throw new Exception($"Failed to serializze historyStateContextJson.");
+                return command ?? throw new Exception($"Failed to serialize historyStateContextJson.");
             }
         }
 
