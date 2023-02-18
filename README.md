@@ -2,42 +2,46 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Flexible and easy unidirectional store-pattern container for state management with Dependency Injection for Frontend app on .NET or JS/TS.
+Easy unidirectional store and red/undo library for state management for frontend apps on Blazor/.NET
+
+# Basic Concept
+
+You can subscribe to state change notifications, allowing state to be shared between components.
+Undirectional flow and immutable change of state to provide a predictable architecture.
+
+### For patterns like Flux or MVU
+
+Besides a simple store pattern, we also provide patterns inspired by MVU patterns such as Flux and Elm.
+Since we change the state through the Reducer, we can change the state based on stricter rules and observe the state in detail.
+
+## DEMO Page
+
+https://le-nn.github.io/memento/
 
 ## React or TS/JS bindings
 
 Currently, moved to here
 https://github.com/le-nn/memento-js
 
-# Basic Concept
+## Features
 
-You can define stores inspired by MVU patterns such as Flux and Elm to observe state changes more detail.
-
-Some are inspired by Elm and MVU.
-And Redux and Flux pattern are same too, but memento is not Redux and Flux.
-
-#### Features
-
-* Less boilarplate and simple usage 
-* Is not flux or redux
-* Observe detailed status with command patterns and makes it easier to monitor what happened within the application 
+* Less boilarplate, less rule and simple usage 
 * Immutable and Unidirectional data flow
 * Multiple stores but manged by single provider, so can observe and manage as one state tree
-* Less rules have been established
-* Fragile because there are fewer established rules than Redux and Flux
+* Observe detailed status with command patterns and makes it easier to monitor what happened within the application 
 
-# Concepts and Data Flow
-
-Note the concept is a bit different from Flux and Redux
+## Concepts and Data Flow
 
 <img width="800px" src="./Architecture.jpg"/>
 
 ## Rules
 
 * State should always be read-only.
-* To change state our app should Dispatch via Reducer in the action method
-* Every Reducer that processes in the action will create new state to reflect the old state combined with the changes expected for the action.
 * The UI then uses the new state to render its display.
+
+### For patterns like Flux
+* Every Reducer that processes in the action will create new state to reflect the old state combined with the changes expected for the action.
+* To change state our app should Dispatch via Reducer in the action method
 
 ## Overview
 
@@ -148,20 +152,14 @@ Razor view
 
 | Package Name    | Version | Lang       | Platform            | Package manager | Release Notes                      | Package provider                                       |
 | --------------- | ------- | ---------- | ------------------- | --------------- | ---------------------------------- | ------------------------------------------------------ |
-| Memento.Core    | 1.0.0   | C#         | .NET 6 or later     | Nuget           | [Notes](./release-notes.dotnet.md) | [Nuget](https://www.nuget.org/packages/Memento.Core)   |
-| Memento.Blazor  | 1.0.0   | Blazor     | .NET 6 or later     | Nuget           | [Notes](./release-notes.dotnet.md) | [Nuget](https://www.nuget.org/packages/Memento.Blazor) |
+| Memento.Core    | 1.0.0   | C#         | .NET 6 or later     | NuGet           | [Notes](./release-notes.dotnet.md) | [NuGet](https://www.nuget.org/packages/Memento.Core)   |
+| Memento.Blazor  | 1.0.0   | Blazor     | .NET 6 or later     | NuGet           | [Notes](./release-notes.dotnet.md) | [NuGet](https://www.nuget.org/packages/Memento.Blazor) |
 
 # Documentation
 
 [Basic Concept with C#](./docs/Tutorial.cs.md)
 
 [Blazor](./docs/Blazor/GettingStandard.md)
-
-# Demo
-
-Here is a demo site built with React in Typescript.
-[DEMO](https://le-nn.github.io/memento/)
-
 
 # License
 Designed with ♥ by le-nn. Licensed under the MIT License.
