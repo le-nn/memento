@@ -16,6 +16,20 @@ In addition, we provide a store that easily implements Redo/Undo by managing in 
 Besides a simple store pattern, we also provide patterns inspired by MVU patterns such as Flux and Elm.
 Since we change the state through the Reducer, we can change the state based on stricter rules and observe the state in detail.
 
+### Devtool
+
+Redux DevTools are supported.
+Redux DevTools is for debugging application's state changes.
+State can be time traveled and history can be viewed in DevTools.
+
+Redux DevTools Chrome extensions
+https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=ja
+
+Redux DevTools Github Repository
+https://github.com/reduxjs/redux-devtools
+
+See documentation for details of usage.
+
 ## DEMO Page
 
 https://le-nn.github.io/memento/
