@@ -34,19 +34,18 @@ internal sealed class LiftedHistoryContainer : IDisposable {
     int _sequence = 0;
     int NextActionId => _sequence + 1;
     IDisposable? _subscription;
-    HistoryState CurrentHistory => _histories.Where(x => x.Id == _currentCursorId).First();
+
     readonly RootState _rootState;
     readonly StoreProvider _provider;
     readonly ReduxDevToolOption _options;
+
+    HistoryState CurrentHistory => _histories.Where(x => x.Id == _currentCursorId).First();
+
     public Action<HistoryStateContextJson>? SyncReqested { get; set; }
 
     public bool IsPaused { get; set; }
 
     public bool IsLocked { get; set; }
-
-    public static long ToUnixTimeStamp(DateTime dateTime) {
-        return (long)(dateTime - new DateTime(1970, 1, 1)).TotalMilliseconds;
-    }
 
     public LiftedHistoryContainer(StoreProvider provider, ReduxDevToolOption options) {
         _provider = provider;
@@ -360,5 +359,9 @@ internal sealed class LiftedHistoryContainer : IDisposable {
         }
 
         throw new Exception($"type '{typeName}' is not found.");
+    }
+
+    public static long ToUnixTimeStamp(DateTime dateTime) {
+        return (long)(dateTime - new DateTime(1970, 1, 1)).TotalMilliseconds;
     }
 }
