@@ -1,5 +1,4 @@
 using Memento.Core.Internals;
-using Memento.Core.Store;
 using Memento.Core.Store.Internals;
 using System.Collections.Immutable;
 

@@ -1,4 +1,4 @@
-﻿namespace Memento.Core.Store;
+﻿namespace Memento.Core;
 
 public abstract class Middleware : IDisposable {
     MiddlewareHandler? _handler;

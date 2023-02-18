@@ -1,12 +1,11 @@
 ﻿using Fleck;
 using Memento.Core;
-using Memento.Core.Store;
 using Memento.ReduxDevTool.Internal;
 using System.Text.Json;
 
 namespace Memento.ReduxDevTool.Remote;
 
-public class DevtoolWebSocketConnection : IDisposable {
+public class DevToolWebSocketConnection : IDisposable {
     const int _pingTimeout = 600000;
 
     readonly WebSocketServer _server;
@@ -26,7 +25,7 @@ public class DevtoolWebSocketConnection : IDisposable {
 
     public bool IsDisposed { get; private set; }
 
-    public DevtoolWebSocketConnection(
+    public DevToolWebSocketConnection(
         string hostName = "0.0.0.0",
         ushort port = 8000,
         bool secure = false

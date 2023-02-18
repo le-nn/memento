@@ -1,5 +1,4 @@
 ﻿using Memento.Core;
-using Memento.Core.Store;
 
 namespace Memento.ReduxDevTool.Remote;
 
@@ -14,10 +13,9 @@ public sealed class RemoteReduxDevToolMiddleware : Middleware {
     }
 
     protected override MiddlewareHandler Create(IServiceProvider provider) {
-        var webSocketConnection = (DevtoolWebSocketConnection?)provider.GetService(typeof(DevtoolWebSocketConnection))
-            ?? new DevtoolWebSocketConnection();
+        var webSocketConnection = (DevToolWebSocketConnection?)provider.GetService(typeof(DevToolWebSocketConnection))
+            ?? new DevToolWebSocketConnection();
         var handler = new RemoteDevtoolInteropHandler(webSocketConnection);
-
         return new ReduxDevToolMiddlewareHandler(handler, provider, _chromiumDevToolOption);
     }
 }

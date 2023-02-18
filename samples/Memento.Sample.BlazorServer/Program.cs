@@ -6,12 +6,11 @@ using Memento.Sample.Blazor.Todos;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddSingleton<DevtoolWebSocketConnection>()
+    .AddRemoteReduxDevToolMiddleware()
     .AddMemento()
     .AddMiddleware(() => new LoggerMiddleware())
-    .AddMiddleware(() => new RemoteReduxDevToolMiddleware())
-
     .ScanAssembyAndAddStores(typeof(App).Assembly);
+
 builder.Services.AddScoped<ITodoService, MockTodoService>();
 builder.Services.AddSingleton(p => new HttpClient {
     BaseAddress = new Uri("https://localhost:7236")
@@ -28,11 +27,8 @@ if (!app.Environment.IsDevelopment()) {
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 

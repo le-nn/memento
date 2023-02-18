@@ -7,10 +7,12 @@
 
   <ItemGroup>
     <PackageReference Include="Fleck" Version="1.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageReference Include="ScClient.Official" Version="1.2.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Memento.Blazor\Memento.Blazor.csproj" />
     <ProjectReference Include="..\Memento.Core\Memento.Core.csproj" />
     <ProjectReference Include="..\Memento.ReduxDevTool\Memento.ReduxDevTool.csproj" />
   </ItemGroup>
