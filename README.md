@@ -6,8 +6,10 @@ Easy unidirectional store and red/undo library for state management for frontend
 
 # Basic Concept
 
-You can subscribe to state change notifications, allowing state to be shared between components.
-Undirectional flow and immutable change of state to provide a predictable architecture.
+We provides a Store that allows you to share state between components.
+Stores are managed by a single Provider and can subscribe to state change notifications.
+Undirectional flow and immutable change of state provides a predictable architecture.
+In addition, we provide a store that easily implements Redo/Undo by managing in an immutable state.
 
 ### For patterns like Flux or MVU
 
