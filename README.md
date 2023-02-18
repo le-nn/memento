@@ -18,17 +18,11 @@ Since we change the state through the Reducer, we can change the state based on 
 
 ### Devtool
 
-Redux DevTools are supported.
-Redux DevTools is for debugging application's state changes.
+[Redux DevTools](https://github.com/reduxjs/redux-devtools) is supported.
+Redux DevTools is a tool for debugging application's state changes.
 State can be time traveled and history can be viewed in DevTools.
 
-Redux DevTools Chrome extensions
-https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=ja
-
-Redux DevTools Github Repository
-https://github.com/reduxjs/redux-devtools
-
-See documentation for details of usage.
+[See documentation](./docs/DevTools.md) for details of usage.
 
 ## DEMO Page
 
