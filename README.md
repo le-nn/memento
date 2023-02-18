@@ -4,7 +4,10 @@
 
 Flexible and easy unidirectional store-pattern container for state management with Dependency Injection for Frontend app on .NET or JS/TS.
 
-[DEMO](https://le-nn.github.io/memento/) with React in Typescript
+## React or TS/JS bindings
+
+Currently, moved to here
+https://github.com/le-nn/memento-js
 
 # Basic Concept
 
