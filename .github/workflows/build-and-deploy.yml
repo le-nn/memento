@@ -1,0 +1,45 @@
+name: "Publish BlazorApp"
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the code
+      - uses: actions/checkout@v2
+
+      # Install .NET Core SDK
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 7.x
+
+      # Generate the website
+      - name: Install wasm tool
+        run: dotnet workload install wasm-tools
+
+      #- name: Build and Test
+      #  run: | 
+      #      dotnet build -c Release
+      #      dotnet test
+      ## Generate the website
+      #- name: Publish
+      #  run: dotnet publish ./samples/BlazorTransitionGroup.Samples/BlazorTransitionGroup.Samples.csproj -c Release -p:GHPages=true
+
+      - name: Build and Test
+        run: | 
+            dotnet build
+            dotnet test
+
+      # Generate the website
+      - name: Publish Sample Page
+        run: dotnet publish ./samples/Memento.Sample.BlazorWasm/Memento.Sample.BlazorWasm.csproj -c Release -p:GHPages=true
+
+      # Deploy the site
+      - name: Deploy Github Pages
+        if: (github.event_name == 'push')
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./samples/Memento.Sample.BlazorWasm/bin/Release/net7.0/publish/wwwroot
+          force_orphan: true
