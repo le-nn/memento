@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddSingleton<DevtoolWebSocketConnection>()
     .AddMemento()
-        .AddMiddleware(() => new LoggerMiddleware())
+    .AddMiddleware(() => new LoggerMiddleware())
     .AddMiddleware(() => new RemoteReduxDevToolMiddleware())
 
     .ScanAssembyAndAddStores(typeof(App).Assembly);

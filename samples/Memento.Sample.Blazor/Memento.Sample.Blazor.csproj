@@ -12,8 +12,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\src\Memento.Blazor\Memento.Blazor.csproj" />
-      <ProjectReference Include="..\..\..\src\Memento.Core\Memento.Core.csproj" />
+      <ProjectReference Include="..\..\src\Memento.Blazor\Memento.Blazor.csproj" />
+      <ProjectReference Include="..\..\src\Memento.Core\Memento.Core.csproj" />
     </ItemGroup>
 
 </Project>

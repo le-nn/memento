@@ -7,9 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\src\Memento.Blazor\Memento.Blazor.csproj" />
-        <ProjectReference Include="..\..\..\src\Memento.ReduxDevTool.Browser\Memento.ReduxDevTool.Browser.csproj" />
-        <ProjectReference Include="..\..\..\src\Memento.ReduxDevTool.Remote\Memento.ReduxDevTool.Remote.csproj" />
+        <ProjectReference Include="..\..\src\Memento.Blazor\Memento.Blazor.csproj" />
+        <ProjectReference Include="..\..\src\Memento.ReduxDevTool.Browser\Memento.ReduxDevTool.Browser.csproj" />
+        <ProjectReference Include="..\..\src\Memento.ReduxDevTool.Remote\Memento.ReduxDevTool.Remote.csproj" />
         <ProjectReference Include="..\Memento.Sample.Blazor\Memento.Sample.Blazor.csproj" />
     </ItemGroup>
 
