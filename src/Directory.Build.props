@@ -16,7 +16,7 @@
         <PackageId>$(AssemblyName)</PackageId>
         <AssemblyName>$(AssemblyName)</AssemblyName>
 
-        <Description>Easy unidirectional store-pattern container for state management and redo/undo container for .NET.</Description>
+        <Description>Easy unidirectional store and red/undo library for state management for frontend apps on Blazor/.NET</Description>
         <Authors>le-nn</Authors>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/le-nn/memento</PackageProjectUrl>
