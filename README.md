@@ -143,29 +143,14 @@ Razor view
 
 ## Compatibility and bindings
 
-### The currently supported framework bindings are as follows
-
-| Lang    | Framework                   |
-| ------- | --------------------------- |
-| TS/JS   | React                       |
-| C#      | Blazor                      |
-
-### Current packages and status
-
 | Package Name    | Version | Lang       | Platform            | Package manager | Release Notes                      | Package provider                                       |
 | --------------- | ------- | ---------- | ------------------- | --------------- | ---------------------------------- | ------------------------------------------------------ |
-| memento.core    | 1.0.3   | TS/JS      | node.js 14 or later | npm or yarn     | [Notes](./release-notes.node.md)   | [npm](https://www.npmjs.com/package/memento.core)      |
-| memento.react   | 1.0.4   | TS/JS      | node.js 14 or later | npm or yarn     | [Notes](./release-notes.node.md)   | [npm](https://www.npmjs.com/package/memento.react)     |
 | Memento.Core    | 1.0.0   | C#         | .NET 6 or later     | Nuget           | [Notes](./release-notes.dotnet.md) | [Nuget](https://www.nuget.org/packages/Memento.Core)   |
 | Memento.Blazor  | 1.0.0   | Blazor     | .NET 6 or later     | Nuget           | [Notes](./release-notes.dotnet.md) | [Nuget](https://www.nuget.org/packages/Memento.Blazor) |
 
 # Documentation
 
-[Basic Concept with Typescript/Javascript](./docs/Tutorial.ts.md)
-
 [Basic Concept with C#](./docs/Tutorial.cs.md)
-
-[React](./docs/React/GettingStandard.md)
 
 [Blazor](./docs/Blazor/GettingStandard.md)
 
