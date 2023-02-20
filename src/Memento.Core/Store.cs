@@ -28,7 +28,7 @@ public abstract class Store<TState, TCommand>
     /// </summary>
     /// <param name="initializer">An initializer that creates a initial state.</param>
     /// <param name="Reducer">An reducer that changes a store state.</param>
-    /// <exception cref="ArgumentNullException">Throws when <see cref="initializer"/> returns null. </exception>
+    /// <exception cref="ArgumentNullException"> Throws when <see cref="initializer"/> returns null. </exception>
     public Store(
         StateInitializer<TState> initializer,
         Reducer<TState, TCommand> Reducer) {
