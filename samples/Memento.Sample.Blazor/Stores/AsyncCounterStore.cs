@@ -11,61 +11,44 @@ public record AsyncCounterState {
     public ImmutableArray<int> Histories { get; init; } = ImmutableArray.Create<int>();
 }
 
-public record AsyncCounterCommands : Command {
-    public record IncrementAndEndLoading : AsyncCounterCommands;
-    public record Increment : AsyncCounterCommands;
-    public record AddWithAmount(int Amount) : AsyncCounterCommands;
-    public record SetCount(int Count) : AsyncCounterCommands;
-    public record BeginLoading : AsyncCounterCommands;
-}
-
-public class FluxAsyncCounterStore : FluxStore<AsyncCounterState, AsyncCounterCommands> {
-    public FluxAsyncCounterStore() : base(() => new(), Reducer) { }
-
-    static AsyncCounterState Reducer(AsyncCounterState state, AsyncCounterCommands command) {
-        return command switch {
-            IncrementAndEndLoading => state with {
-                Count = state.Count + 1,
-                IsLoading = false,
-                Histories = state.Histories.Add(state.Count + 1),
-            },
-            SetCount payload => state with {
-                Count = payload.Count,
-            },
-            Increment => state with {
-                Count = state.Count + 1,
-            },
-            BeginLoading => state with {
-                IsLoading = true,
-            },
-            AddWithAmount payload => state with {
-                Count = state.Count + payload.Amount,
-            },
-            _ => throw new CommandNotHandledException(command),
-        };
-    }
+public class AsyncCounterStore : Store<AsyncCounterState> {
+    public AsyncCounterStore() : base(() => new()) { }
 
     public void CountUp() {
-        Dispatch(new Increment());
+        Mutate(state => state with {
+            Count = state.Count + 1,
+            IsLoading = false,
+            Histories = state.Histories.Add(state.Count + 1),
+        });
     }
 
     public async Task CountUpAsync() {
-        Dispatch(new BeginLoading());
+        Mutate(state => state with { IsLoading = true, });
         await Task.Delay(800);
-        Dispatch(new IncrementAndEndLoading());
+        Mutate(state => state with {
+            Count = state.Count + 1,
+            IsLoading = false,
+            Histories = state.Histories.Add(state.Count + 1),
+        });
     }
 
     public void CountUpManyTimes(int count) {
         for (var i = 0; i < count; i++) {
-            Dispatch(new Increment());
+            Mutate(state => state with {
+                Count = state.Count + 1,
+            });
         }
     }
 
     public void SetCount(int count) {
-        Dispatch(new SetCount(count));
+        Mutate(state => state with {
+            Count = count,
+        });
     }
 
     public void CountUpWithAmount(int amount) {
-        Dispatch(new AddWithAmount(amount));
+        Mutate(state => state with {
+            Count = state.Count + amount,
+        });
     }
 }

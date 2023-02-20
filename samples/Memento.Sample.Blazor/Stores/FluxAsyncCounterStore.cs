@@ -23,7 +23,7 @@ public record FluxAsyncCounterCommand : Command {
 public class FluxAsyncCounterStore : FluxStore<FluxAsyncCounterState, FluxAsyncCounterCommand> {
     public FluxAsyncCounterStore() : base(() => new(), Reducer) { }
 
-    static AsyncCounterState Reducer(FluxAsyncCounterState state, FluxAsyncCounterCommand command) {
+    static FluxAsyncCounterState Reducer(FluxAsyncCounterState state, FluxAsyncCounterCommand command) {
         return command switch {
             IncrementAndEndLoading => state with {
                 Count = state.Count + 1,
