@@ -7,24 +7,28 @@ public abstract class Store<TState, TCommand>
     : IStore, IObservable<StateChangedEventArgs<TState, TCommand>>
     where TState : class
     where TCommand : Command {
+    StoreProvider? _provider;
+
+    readonly List<IObserver<StateChangedEventArgs>> _observers = new();
     readonly object _locker = new();
+    readonly Reducer<TState, TCommand> _reducer;
 
-    private StoreProvider? Provider { get; set; }
-
-    protected StateInitializer<TState> Initializer { get; }
-
-    private Reducer<TState, TCommand> Reducer { get; }
-
-    private List<IObserver<StateChangedEventArgs>> Observers { get; } = new();
-
-    public TState State { get; internal set; }
+    Func<object, Command, object> IStore.Reducer => ((o, m) => _reducer((TState)o, (TCommand)m));
 
     object IStore.State => State;
 
+    protected StateInitializer<TState> Initializer { get; }
+
+    public TState State { get; internal set; }
+
     public bool IsInitialized { get; private set; }
 
-    Func<object, Command, object> IStore.Reducer => ((o, m) => Reducer((TState)o, (TCommand)m));
-
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Store{TState, TCommand}"/> class.
+    /// </summary>
+    /// <param name="initializer">An initializer that creates a initial state.</param>
+    /// <param name="Reducer">An reducer that changes a store state.</param>
+    /// <exception cref="ArgumentNullException">Throws when <see cref="initializer"/> returns null. </exception>
     public Store(
         StateInitializer<TState> initializer,
         Reducer<TState, TCommand> Reducer) {
@@ -32,7 +36,7 @@ public abstract class Store<TState, TCommand>
         State = initializer()
             ?? throw new ArgumentNullException("initializer must be returned not null.");
 
-        this.Reducer = (state, command) => {
+        _reducer = (state, command) => {
             return Reducer(state, command);
         };
     }
@@ -69,10 +73,10 @@ public abstract class Store<TState, TCommand>
     }
 
     internal void ApplyComputedState(TState state, TCommand command) {
-        var (newstate, e) = ComputeNewState(state, command);
-        if (newstate is not null && e is not null) {
+        var (newState, e) = ComputeNewState(state, command);
+        if (newState is not null && e is not null) {
             lock (_locker) {
-                State = newstate;
+                State = newState;
                 InvokeObserver(e);
             }
         }
@@ -97,24 +101,24 @@ public abstract class Store<TState, TCommand>
         });
 
         lock (_locker) {
-            Observers.Add(obs);
+            _observers.Add(obs);
         }
 
         return new StoreSubscription(GetType().FullName ?? "Store.Subscribe", () => {
             lock (_locker) {
-                Observers.Remove(obs);
+                _observers.Remove(obs);
             }
         });
     }
 
     IDisposable IObservable<StateChangedEventArgs>.Subscribe(IObserver<StateChangedEventArgs> observer) {
         lock (_locker) {
-            Observers.Add(observer);
+            _observers.Add(observer);
         }
 
         return new StoreSubscription(GetType().FullName ?? "Store.Subscribe", () => {
             lock (_locker) {
-                Observers.Remove(observer);
+                _observers.Remove(observer);
             }
         });
     }
@@ -124,7 +128,7 @@ public abstract class Store<TState, TCommand>
     }
 
     async Task IStore.OnInitializedAsync(StoreProvider provider) {
-        Provider = provider;
+        _provider = provider;
         try {
             await OnInitializedAsync(provider);
         }
@@ -138,7 +142,7 @@ public abstract class Store<TState, TCommand>
 
     internal Func<TState, TCommand, object?> GetMiddlewareInvokeHandler() {
         // process middlewares
-        var middlewares = Provider?.GetAllMiddlewares()
+        var middlewares = _provider?.GetAllMiddlewares()
             ?? Array.Empty<Middleware>();
         return middlewares.Aggregate(
             (object s, Command m) => {
@@ -146,7 +150,7 @@ public abstract class Store<TState, TCommand>
                     throw new Exception();
                 }
 
-                return (object)Reducer.Invoke(_s, _m);
+                return (object)_reducer.Invoke(_s, _m);
             },
             (before, middleware) =>
                 (object s, Command m) => middleware.Handler.HandleStoreDispatch(
@@ -162,7 +166,7 @@ public abstract class Store<TState, TCommand>
     }
 
     /// <summary>
-    /// Called before invoke Reducer and return value overrides current state.
+    /// Called before invoke _reducer and return value overrides current state.
     /// </summary>
     /// <param name="state"> The current state.</param>
     /// <param name="command"> The command for mutating the state.</param>
@@ -172,9 +176,9 @@ public abstract class Store<TState, TCommand>
     }
 
     /// <summary>
-    /// Called before invoke Reducer and return value overrides current state.
+    /// Called before invoke _reducer and return value overrides current state.
     /// </summary>
-    /// <param name="state"> The computed state via Reducer.</param>
+    /// <param name="state"> The computed state via _reducer.</param>
     /// <param name="command"> The command for mutating the state.</param>
     /// <returns> override state.</returns>
     protected virtual TState OnAfterDispatch(TState state, TCommand command) {
@@ -182,13 +186,13 @@ public abstract class Store<TState, TCommand>
     }
 
     internal void InvokeObserver(StateChangedEventArgs<TState, TCommand> e) {
-        foreach (var obs in Observers) {
+        foreach (var obs in _observers) {
             obs.OnNext(e);
         }
     }
 
     internal void InvokeObserver(StateChangedEventArgs e) {
-        foreach (var obs in Observers) {
+        foreach (var obs in _observers) {
             obs.OnNext(e);
         }
     }
