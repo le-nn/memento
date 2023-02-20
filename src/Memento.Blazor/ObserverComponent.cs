@@ -53,7 +53,7 @@ public class ObserverComponent : ComponentBase, IDisposable {
     protected virtual void Dispose(bool disposing) {
         if (disposing) {
             if (_stateSubscription is null) {
-                throw new NullReferenceException("Have you forgotten to call base.OnInitializedAsync() in your component?");
+                throw new NullReferenceException("Have you forgotten to call base.InitializeAsync() in your component?");
             }
 
             _invokerSubscription.Dispose();

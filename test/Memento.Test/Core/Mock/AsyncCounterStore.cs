@@ -25,7 +25,7 @@ public record AsyncCounterCommands : Command {
     public record ModifyCount(int Value) : AsyncCounterCommands;
 }
 
-public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> {
+public class AsyncCounterStore : FluxStore<AsyncCounterState, AsyncCounterCommands> {
     readonly Random _random = new(1234);
 
     public AsyncCounterStore() : base(() => new(), Reducer) {

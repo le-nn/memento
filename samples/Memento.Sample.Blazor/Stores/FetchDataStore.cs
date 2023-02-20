@@ -21,7 +21,7 @@ public record WeatherForecast {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
 
-public class FetchDataStore : Store<FetchDataState, FetchDataCommands> {
+public class FetchDataStore : FluxStore<FetchDataState, FetchDataCommands> {
     readonly HttpClient _httpClient;
 
     public FetchDataStore(

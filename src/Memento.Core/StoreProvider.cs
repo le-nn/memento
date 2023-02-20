@@ -68,7 +68,7 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
         // InitializeAsync all stores.
         foreach (var store in ResolveAllStores()) {
             try {
-                await store.OnInitializedAsync(this);
+                await store.InitializeAsync(this);
             }
             catch (Exception ex) {
                 throw new Exception(@$"Failed to initialize memento provider ""{ex.Message}""", ex);

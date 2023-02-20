@@ -1,9 +1,10 @@
 using System.Collections.Immutable;
-using static Memento.Sample.Blazor.Stores.AsyncCounterCommands;
+
+using static Memento.Sample.Blazor.Stores.FluxAsyncCounterCommand;
 
 namespace Memento.Sample.Blazor.Stores;
 
-public record AsyncCounterState {
+public record FluxAsyncCounterState {
     public int Count { get; init; } = 0;
 
     public bool IsLoading { get; init; } = false;
@@ -11,18 +12,18 @@ public record AsyncCounterState {
     public ImmutableArray<int> Histories { get; init; } = ImmutableArray.Create<int>();
 }
 
-public record AsyncCounterCommands : Command {
-    public record IncrementAndEndLoading : AsyncCounterCommands;
-    public record Increment : AsyncCounterCommands;
-    public record AddWithAmount(int Amount) : AsyncCounterCommands;
-    public record SetCount(int Count) : AsyncCounterCommands;
-    public record BeginLoading : AsyncCounterCommands;
+public record FluxAsyncCounterCommand : Command {
+    public record IncrementAndEndLoading : FluxAsyncCounterCommand;
+    public record Increment : FluxAsyncCounterCommand;
+    public record AddWithAmount(int Amount) : FluxAsyncCounterCommand;
+    public record SetCount(int Count) : FluxAsyncCounterCommand;
+    public record BeginLoading : FluxAsyncCounterCommand;
 }
 
-public class FluxAsyncCounterStore : FluxStore<AsyncCounterState, AsyncCounterCommands> {
+public class FluxAsyncCounterStore : FluxStore<FluxAsyncCounterState, FluxAsyncCounterCommand> {
     public FluxAsyncCounterStore() : base(() => new(), Reducer) { }
 
-    static AsyncCounterState Reducer(AsyncCounterState state, AsyncCounterCommands command) {
+    static AsyncCounterState Reducer(FluxAsyncCounterState state, FluxAsyncCounterCommand command) {
         return command switch {
             IncrementAndEndLoading => state with {
                 Count = state.Count + 1,

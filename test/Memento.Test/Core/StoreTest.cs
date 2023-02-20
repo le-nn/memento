@@ -126,7 +126,7 @@ public class StoreTest {
     }
 
     [Fact]
-    public async Task Performance() {
+    public void Performance() {
         var store = new AsyncCounterStore();
 
         var commands = new List<Command>();
@@ -144,6 +144,7 @@ public class StoreTest {
 
         sw.Stop();
 
+        Assert.Equal(10000, commands.Count);
         Assert.True(sw.ElapsedMilliseconds < 100);
     }
 }

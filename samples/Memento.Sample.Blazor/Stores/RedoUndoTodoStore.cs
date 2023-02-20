@@ -19,7 +19,7 @@ public record RedoUndoTodoCommands : Command {
     public record EndLoading : RedoUndoTodoCommands;
 }
 
-public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState, RedoUndoTodoCommands> {
+public class RedoUndoTodoStore : FluxMementoStore<RedoUndoTodoState, RedoUndoTodoCommands> {
     ITodoService TodoService { get; }
 
     public RedoUndoTodoStore(ITodoService todoService) : base(() => new(), Reducer, new() { MaxHistoryCount = 200 }) {
