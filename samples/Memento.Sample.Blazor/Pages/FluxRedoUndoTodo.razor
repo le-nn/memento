@@ -1,0 +1,106 @@
+@page "/flux-todo"
+@using Memento.Sample.Blazor.Stores
+@inherits ObserverComponent
+@inject FluxRedoUndoTodoStore RedoUndoTodoStore
+
+<h3>RedoUndoTodo</h3>
+
+<div class="px-4 container">
+    <div class="mx-auto" style="max-width:600px;">
+        <div class="d-flex mt-3 w-100 align-items-center">
+            <div>
+                Past: @(RedoUndoTodoStore.Present is { } ? RedoUndoTodoStore.PastHistories.Count + 1 : 0)
+                Future: @RedoUndoTodoStore.FutureHistories.Count
+            </div>
+            <div class="m-auto" />
+            <button class="btn btn-primary"
+                    disabled="@(!RedoUndoTodoStore.CanUnDo)"
+            @onclick="Undo">
+                Undo
+            </button>
+            <button class="btn btn-primary mx-1"
+                    disabled="@(!RedoUndoTodoStore.CanReDo)"
+            @onclick="Redo">
+                Redo
+            </button>
+        </div>
+
+        <hr class="my-4" />
+
+        <div class="d-flex flex-column">
+            @foreach (var todo in RedoUndoTodoStore.State.Todos) {
+                <div class="d-flex shadow p-3 rounded-pill mb-3 bg-white">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           checked="@todo.IsCompleted"
+                           onchange="@(() => HandleToggleTodo(todo.TodoId))" />
+                    @if (todo.IsCompleted) {
+                        <s class="mx-2">
+                            @todo.Text
+                        </s>
+                    }
+                    else {
+                        <div class="mx-2">
+                            @todo.Text
+                        </div>
+                    }
+                </div>
+            }
+
+            <div class="d-flex  shadow p-1 rounded-pill bg-white">
+                <input @onkeydown="HandleKeyEnter"
+                @bind="text"
+                       placeholder="Input todo text"
+                       class="form-control form-control-sm input bg-transparent" />
+                <button class="btn btn-primary rounded-circle"
+                @onclick="@AddTodo">
+                    <i class="oi oi-plus" aria-hidden="true" />
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    string text = "";
+
+    protected override async Task OnInitializedAsync() {
+        await RedoUndoTodoStore.LoadAsync();
+    }
+
+    async Task HandleKeyEnter(KeyboardEventArgs e) {
+        if (e.Code is "Enter") {
+            await AddTodo();
+        }
+    }
+
+    async Task AddTodo() {
+        var _text = text;
+        text = "";
+
+        await RedoUndoTodoStore.CreateNewAsync(_text);
+    }
+
+    async Task Redo() {
+        await this.RedoUndoTodoStore.ReExecuteAsync();
+    }
+
+    async Task Undo() {
+        await this.RedoUndoTodoStore.UnExecuteAsync();
+    }
+
+    async Task HandleToggleTodo(Guid id) {
+        await this.RedoUndoTodoStore.ToggleIsCompletedAsync(id);
+    }
+}
+
+<style>
+    .input:focus {
+        border: none;
+        box-shadow: none;
+    }
+
+    .input {
+        border: none;
+    }
+</style>

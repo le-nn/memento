@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using static Memento.Sample.Blazor.Stores.AsyncCounterCommands;
 
 namespace Memento.Sample.Blazor.Stores;
 
