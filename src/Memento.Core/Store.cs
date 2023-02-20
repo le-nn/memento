@@ -19,10 +19,10 @@ public class Store<TState> : AbstractStore<TState, Command.StateHasChanged>
 
     public void Mutate(Func<TState, TState> reducer) {
         var state = State;
-        ComputedAndApplyState(reducer(state), new Command.StateHasChanged(state));
+        ComputedAndApplyState(state, new Command.StateHasChanged(reducer(state)));
     }
 
     public void Mutate(TState state) {
-        ComputedAndApplyState(state, new Command.StateHasChanged(state));
+        ComputedAndApplyState(State, new Command.StateHasChanged(state));
     }
 }
