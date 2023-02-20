@@ -2,7 +2,7 @@ namespace Memento.Core;
 
 public record MementoStoreContext<TState>(TState State);
 
-public abstract class MementoStore<TState, TCommand>
+public abstract class MementoStore<TState>
     : Store<TState>
         where TState : class {
     readonly HistoryManager _historyManager;
@@ -13,17 +13,17 @@ public abstract class MementoStore<TState, TCommand>
 
     public IMementoStateContext<TState>? Present => _historyManager.Present as IMementoStateContext<TState>;
 
-    public IReadOnlyCollection<IMementoStateContext<Context<TState, TCommand>>> FutureHistories => _historyManager
+    public IReadOnlyCollection<IMementoStateContext<MementoStoreContext<TState>>> FutureHistories => _historyManager
         .FutureHistories
-        .Select(x => x as IMementoStateContext<Context<TState, TCommand>>)
+        .Select(x => x as IMementoStateContext<MementoStoreContext<TState>>)
         .Where(x => x is not null)
         .Select(x => x!)
         .ToList()
         .AsReadOnly();
 
-    public IReadOnlyCollection<IMementoStateContext<Context<TState, TCommand>>> PastHistories => _historyManager
+    public IReadOnlyCollection<IMementoStateContext<MementoStoreContext<TState>>> PastHistories => _historyManager
         .PastHistories
-        .Select(x => x as IMementoStateContext<Context<TState, TCommand>>)
+        .Select(x => x as IMementoStateContext<MementoStoreContext<TState>>)
         .Where(x => x is not null)
         .Select(x => x!)
         .ToList()
