@@ -25,7 +25,7 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
 
     readonly Regex _stackTraceFilterRegex = new(_stackTraceFilterExpression, RegexOptions.Compiled);
     readonly ConcatAsyncOperationExecutor _concatExecutor = new();
-    readonly ThrottledExecutor<HistoryStateContextJson> _throttledExecutor = new();
+    readonly ThrottledExecutor<HistoryStateContextJson> _throttledExecutor = new() {LatencyMs=1000 };
     readonly LiftedHistoryContainer _liftedStore;
     readonly StoreProvider _storeProvider;
     readonly IDevtoolInteropHandler _interopHandler;

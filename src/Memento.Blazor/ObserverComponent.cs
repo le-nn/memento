@@ -26,7 +26,7 @@ public class ObserverComponent : ComponentBase, IDisposable {
     /// will be suppressed, and observers will be notified of the last.
     /// state when the time window has elapsed to allow another notification.
     /// </summary>
-    protected ushort LatencyMs { get; set; } = 255;
+    protected ushort LatencyMs { get; set; } = 100;
 
     /// <summary>
     /// Disposes of the component and unsubscribes from any state
