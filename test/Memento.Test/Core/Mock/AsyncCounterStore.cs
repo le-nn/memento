@@ -58,6 +58,10 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> 
         }
     }
 
+    public void CountUp() {
+        Dispatch(new Increment());
+    }
+
     // "Dispatch" method can called outside of store via action (public method)
     // Action can be async method.
     public async Task CountUpAsync() {

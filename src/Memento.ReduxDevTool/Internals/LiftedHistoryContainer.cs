@@ -41,7 +41,7 @@ internal sealed class LiftedHistoryContainer : IDisposable {
 
     HistoryState CurrentHistory => _histories.Where(x => x.Id == _currentCursorId).First();
 
-    public Action<HistoryStateContextJson>? SyncReqested { get; set; }
+    public Action<HistoryStateContextJson>? SyncRequested { get; set; }
 
     public bool IsPaused { get; set; }
 
@@ -250,7 +250,7 @@ internal sealed class LiftedHistoryContainer : IDisposable {
     }
 
     public Task SyncWithPlugin() {
-        SyncReqested?.Invoke(Serialize());
+        SyncRequested?.Invoke(Serialize());
 
         return Task.CompletedTask;
     }

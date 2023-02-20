@@ -88,10 +88,10 @@ public abstract class MementoStore<TState, TMessages>
 
                 var lastState = State;
                 State = state.State;
-                InvokeObserver(new StateChangedEventArgs {
+                InvokeObserver(new StateChangedEventArgs<TState> {
                     LastState = lastState,
                     State = State,
-                    Command = new Command.Restores(),
+                    Command = new Command.Restored(),
                     Sender = this,
                 });
             },

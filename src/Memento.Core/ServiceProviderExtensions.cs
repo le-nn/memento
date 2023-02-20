@@ -5,7 +5,7 @@ public static class ServiceProviderExtensions {
         return provider.GetServices<IStore>();
     }
 
-    public static IEnumerable<Middleware> GetAllMiddlewares(this IServiceProvider provider) {
+    public static IEnumerable<Middleware> GetAllMiddleware(this IServiceProvider provider) {
         return provider.GetServices<Middleware>();
     }
 

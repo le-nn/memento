@@ -65,7 +65,7 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> 
         Dispatch(new SetCount(count));
     }
 
-    public void CountUpWithAmount(int ammount) {
-        Dispatch(new AddWithAmount(ammount));
+    public void CountUpWithAmount(int amount) {
+        Dispatch(new AddWithAmount(amount));
     }
 }

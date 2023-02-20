@@ -21,14 +21,8 @@ public record StateChangedEventArgs {
     }
 }
 
-public record StateChangedEventArgs<TState, TCommand> : StateChangedEventArgs
-    where TState : class
-    where TCommand : Command {
-
-    public new required TCommand Command {
-        get => (TCommand)base.Command!;
-        init => base.Command = value;
-    }
+public record StateChangedEventArgs<TState> : StateChangedEventArgs
+    where TState : class{
 
     public new required TState LastState {
         get => (TState)base.LastState!;
@@ -38,10 +32,5 @@ public record StateChangedEventArgs<TState, TCommand> : StateChangedEventArgs
     public new required TState State {
         get => (TState)base.State!;
         init => base.State = value;
-    }
-
-    public new required Store<TState, TCommand> Sender {
-        get => (Store<TState, TCommand>)base.sender!;
-        init => base.sender = value;
     }
 }

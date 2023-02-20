@@ -67,12 +67,12 @@ public class DevToolWebSocketConnection : IDisposable {
                     }
 
                     var json = JsonSerializer.Deserialize<JsonDocument>(message);
-                    var eventname = json?.RootElement.GetProperty("event").GetString();
+                    var eventName = json?.RootElement.GetProperty("event").GetString();
                     var cid = json?.RootElement.TryGetProperty("cid", out var p) is true
                         ? p.GetInt32()
                         : 0;
 
-                    switch (eventname) {
+                    switch (eventName) {
                         case "#handshake":
                             HandshakeRequested?.Invoke(cid);
                             break;
@@ -94,9 +94,9 @@ public class DevToolWebSocketConnection : IDisposable {
                             SendStartRequested?.Invoke();
                             break;
                         default:
-                            if (eventname?.StartsWith("sc-") is true) {
+                            if (eventName?.StartsWith("sc-") is true) {
                                 if (json?.RootElement.GetProperty("data").GetProperty("type").GetString() is "START") {
-                                    SyncRequested?.Invoke(eventname);
+                                    SyncRequested?.Invoke(eventName);
                                 }
                                 else {
                                     var data = json?.RootElement.GetProperty("data");
@@ -106,7 +106,7 @@ public class DevToolWebSocketConnection : IDisposable {
                                             d.GetProperty("action"),
                                             null
                                         );
-                                        MessageHandled?.Invoke(eventname, JsonSerializer.Serialize(actualAction));
+                                        MessageHandled?.Invoke(eventName, JsonSerializer.Serialize(actualAction));
                                     }
                                 }
                             }

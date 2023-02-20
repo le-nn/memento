@@ -1,9 +1,11 @@
 namespace Memento.Core;
 
 public abstract record Command {
-    public record ForceReplace(object State) : Command;
+    public record ForceReplaced(object State) : Command;
 
-    public record Restores : Command;
+    public record Restored : Command;
+
+    public record StateHasChanged(object State) : Command;
 
     public virtual string Type {
         get {

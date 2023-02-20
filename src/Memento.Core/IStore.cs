@@ -3,8 +3,7 @@ namespace Memento.Core;
 public interface IStore : IObservable<StateChangedEventArgs> {
     object State { get; }
 
-    TStore ToStore<TStore>()
-            where TStore : IStore;
+    TStore ToStore<TStore>() where TStore : IStore;
 
     internal protected Task OnInitializedAsync(StoreProvider provider);
 

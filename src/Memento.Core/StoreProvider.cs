@@ -11,14 +11,14 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
     readonly object _locker = new();
 
     readonly ImmutableArray<IStore> _stores;
-    readonly ImmutableArray<Middleware> _middlewares;
+    readonly ImmutableArray<Middleware> _middleware;
 
     public bool IsInitialized { get; private set; }
 
     public StoreProvider(IServiceProvider container) {
         _serviceContainer = container;
         _stores = _serviceContainer.GetAllStores().ToImmutableArray();
-        _middlewares = _serviceContainer.GetAllMiddlewares().ToImmutableArray();
+        _middleware = _serviceContainer.GetAllMiddleware().ToImmutableArray();
     }
 
     public RootState CaptureRootState() {
@@ -33,7 +33,7 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
         (x, y) => x.Add(y.GetType().Name, y)
     );
 
-    public async Task InitializAsync() {
+    public async Task InitializeAsync() {
         if (IsInitialized) {
             throw new InvalidOperationException("Already initialized.");
         }
@@ -41,7 +41,7 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
         IsInitialized = true;
         // observe all stores.
         foreach (var store in ResolveAllStores()) {
-            var subscription = store.Subscribe(new StoreObeserver(e => {
+            var subscription = store.Subscribe(new StoreObserver(e => {
                 var handler = GetMiddlewareInvokeHandler();
                 var rootState = handler(CaptureRootState(), e);
                 if (rootState is not null) {
@@ -55,13 +55,13 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
             _subscriptions.Add(subscription);
         }
 
-        // Initalize all middlewares.
-        foreach (var middleware in GetAllMiddlewares()) {
+        // Initialize all middleware.
+        foreach (var middleware in GetAllMiddleware()) {
             try {
                 await middleware.InitializeAsync(_serviceContainer);
             }
             catch (Exception ex) {
-                throw new Exception($@"Failed to initalize memento middleware ""{ex.Message}""", ex);
+                throw new Exception($@"Failed to initialize memento middleware ""{ex.Message}""", ex);
             }
         }
 
@@ -71,7 +71,7 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
                 await store.OnInitializedAsync(this);
             }
             catch (Exception ex) {
-                throw new Exception(@$"Failed to initalize memento provider ""{ex.Message}""", ex);
+                throw new Exception(@$"Failed to initialize memento provider ""{ex.Message}""", ex);
             }
         }
     }
@@ -89,8 +89,8 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
         return _stores;
     }
 
-    public IEnumerable<Middleware> GetAllMiddlewares() {
-        return _middlewares;
+    public IEnumerable<Middleware> GetAllMiddleware() {
+        return _middleware;
     }
 
     public IDisposable Subscribe(IObserver<RootStateChangedEventArgs> observer) {
@@ -109,10 +109,10 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
         => Subscribe(new StoreProviderObserver(observer));
 
     internal Func<RootState, StateChangedEventArgs, RootState?> GetMiddlewareInvokeHandler() {
-        // process middlewares
-        var middlewares = GetAllMiddlewares()
+        // process middleware
+        var middleware = GetAllMiddleware()
             ?? Array.Empty<Middleware>();
-        return middlewares.Aggregate(
+        return middleware.Aggregate(
             (RootState s, StateChangedEventArgs _) => s,
             (before, middleware) =>
                 (RootState s, StateChangedEventArgs m) => middleware.Handler.HandleProviderDispatch(
@@ -134,8 +134,8 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
             subscription.Dispose();
         }
 
-        // Initalize all middlewares.
-        foreach (var middleware in GetAllMiddlewares()) {
+        // Initialize all middleware.
+        foreach (var middleware in GetAllMiddleware()) {
             middleware.Dispose();
         }
     }

@@ -57,7 +57,6 @@ internal sealed class JavascriptDevToolInteropHandler : IDevtoolInteropHandler, 
 
     /// <inheritdoc/>
     public async Task SendAsync(Command? command, HistoryStateContextJson context) {
-        await _jsRuntime.InvokeVoidAsync("console.log", context);
         await _jsRuntime.InvokeVoidAsync(
             _sendToReduxDevToolDirectly,
             JsonSerializer.Serialize(command, _jsonSerializerOptions),

@@ -46,7 +46,7 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
                 ?? throw new Exception("Please register 'StoreProvider' to ServiceProvider")
         );
         _liftedStore = new(_storeProvider, option) {
-            SyncReqested = _throttledExecutor.Invoke
+            SyncRequested = _throttledExecutor.Invoke
         };
         _subscription = _throttledExecutor.Subscribe(async sended => {
             await _interopHandler.SendAsync(null, sended);
@@ -82,7 +82,7 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
     }
 
     public async Task SendAsync(StateChangedEventArgs e, RootState rootState, string stackTrace) {
-        if (e.Command is ForceReplace) {
+        if (e.Command is ForceReplaced) {
             return;
         }
 

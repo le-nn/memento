@@ -4,7 +4,7 @@ using Memento.Core.Store.Internals;
 namespace Memento.Core;
 
 public abstract class Store<TState, TCommand>
-    : IStore, IObservable<StateChangedEventArgs<TState, TCommand>>
+    : IStore, IObservable<StateChangedEventArgs<TState>>
     where TState : class
     where TCommand : Command {
     StoreProvider? _provider;
@@ -49,7 +49,7 @@ public abstract class Store<TState, TCommand>
         throw new InvalidCastException();
     }
 
-    internal virtual (TState? NewState, StateChangedEventArgs<TState, TCommand>? Event) ComputeNewState(
+    internal virtual (TState? NewState, StateChangedEventArgs<TState>? Event) ComputeNewState(
         TState state,
         TCommand command
     ) {
@@ -59,7 +59,7 @@ public abstract class Store<TState, TCommand>
         var middlewareProcessedState = GetMiddlewareInvokeHandler()(postState, command);
         if (middlewareProcessedState is TState s) {
             var newState = OnAfterDispatch(s, command);
-            var e = new StateChangedEventArgs<TState, TCommand> {
+            var e = new StateChangedEventArgs<TState> {
                 LastState = previous,
                 Command = command,
                 State = newState,
@@ -85,17 +85,17 @@ public abstract class Store<TState, TCommand>
         }
     }
 
-    protected virtual void Dispatch(TCommand command) {
+    public virtual void Dispatch(TCommand command) {
         ApplyComputedState(State, command);
     }
 
-    protected virtual void Dispatch(Func<TState, TCommand> messageLoader) {
+    public virtual void Dispatch(Func<TState, TCommand> messageLoader) {
         ApplyComputedState(State, messageLoader(State));
     }
 
-    public IDisposable Subscribe(IObserver<StateChangedEventArgs<TState, TCommand>> observer) {
-        var obs = new StoreObeserver(e => {
-            if (e is StateChangedEventArgs<TState, TCommand> o) {
+    public IDisposable Subscribe(IObserver<StateChangedEventArgs<TState>> observer) {
+        var obs = new StoreObserver(e => {
+            if (e is StateChangedEventArgs<TState> o) {
                 observer.OnNext(o);
             }
         });
@@ -123,8 +123,8 @@ public abstract class Store<TState, TCommand>
         });
     }
 
-    public IDisposable Subscribe(Action<StateChangedEventArgs<TState, TCommand>> observer) {
-        return Subscribe(new StoreObeserver<TState, TCommand>(observer));
+    public IDisposable Subscribe(Action<StateChangedEventArgs<TState>> observer) {
+        return Subscribe(new GeneralObserver<StateChangedEventArgs<TState>>(observer));
     }
 
     async Task IStore.OnInitializedAsync(StoreProvider provider) {
@@ -141,10 +141,10 @@ public abstract class Store<TState, TCommand>
     }
 
     internal Func<TState, TCommand, object?> GetMiddlewareInvokeHandler() {
-        // process middlewares
-        var middlewares = _provider?.GetAllMiddlewares()
+        // process middleware
+        var middleware = _provider?.GetAllMiddleware()
             ?? Array.Empty<Middleware>();
-        return middlewares.Aggregate(
+        return middleware.Aggregate(
             (object s, Command m) => {
                 if ((s, m) is not (TState _s, TCommand _m)) {
                     throw new Exception();
@@ -185,7 +185,7 @@ public abstract class Store<TState, TCommand>
         return state;
     }
 
-    internal void InvokeObserver(StateChangedEventArgs<TState, TCommand> e) {
+    internal void InvokeObserver(StateChangedEventArgs<TState> e) {
         foreach (var obs in _observers) {
             obs.OnNext(e);
         }
@@ -198,26 +198,26 @@ public abstract class Store<TState, TCommand>
     }
 
     void IStore.SetStateForceSilently(object state) {
-        if (state is not TState tstate) {
+        if (state is not TState tState) {
             throw new InvalidDataException($"'{state.GetType().FullName}' is not compatible with '{typeof(TState).FullName}'.");
         }
 
-        State = tstate;
+        State = tState;
     }
 
     void IStore.SetStateForce(object state) {
-        if (state is not TState tstate) {
+        if (state is not TState tState) {
             throw new InvalidDataException($"'{state.GetType().FullName}' is not compatible with '{typeof(TState).FullName}'.");
         }
 
         var previous = State;
-        State = tstate;
-        var command = new Command.ForceReplace(state);
-        InvokeObserver(new StateChangedEventArgs() {
+        State = tState;
+        var command = new Command.ForceReplaced(state);
+        InvokeObserver(new StateChangedEventArgs<TState>() {
             Command = command,
             LastState = previous,
             Sender = this,
-            State = state,
+            State = tState,
         });
     }
 

@@ -3,6 +3,7 @@ using Memento.Test.Core.Mock;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -85,5 +86,64 @@ public class StoreTest {
             AsyncCounterCommands.Increment,
             AsyncCounterCommands.EndLoading
         ]);
+    }
+
+    [Fact]
+    public async Task Force_ReplaceState() {
+        var store = new AsyncCounterStore();
+
+        var commands = new List<Command>();
+
+        var lastState = store.State;
+        using var subscription = store.Subscribe(e => {
+            Assert.Equal(e.Sender, store);
+            Assert.NotEqual(e.State, lastState);
+            Assert.Equal(e.LastState, lastState);
+            lastState = e.State;
+            commands.Add(e.Command);
+        });
+
+        await store.CountUpAsync();
+        store.SetCount(1234);
+        if (store is IStore iStore) {
+            iStore.SetStateForce(store.State with {
+                Count = 5678
+            });
+        }
+
+        await store.CountUpAsync();
+
+        Assert.True(commands is [
+            AsyncCounterCommands.BeginLoading,
+            AsyncCounterCommands.Increment,
+            AsyncCounterCommands.EndLoading,
+            AsyncCounterCommands.ModifyCount(1234),
+            Command.ForceReplaced { State: AsyncCounterState { Count: 5678 } },
+            AsyncCounterCommands.BeginLoading,
+            AsyncCounterCommands.Increment,
+            AsyncCounterCommands.EndLoading,
+        ]);
+    }
+
+    [Fact]
+    public async Task Performance() {
+        var store = new AsyncCounterStore();
+
+        var commands = new List<Command>();
+
+        var lastState = store.State;
+        using var subscription = store.Subscribe(e => {
+            commands.Add(e.Command);
+        });
+
+        var sw = Stopwatch.StartNew();
+
+        for (var i = 0; i < 10000; i++) {
+            store.CountUp();
+        }
+
+        sw.Stop();
+
+        Assert.True(sw.ElapsedMilliseconds < 100);
     }
 }
