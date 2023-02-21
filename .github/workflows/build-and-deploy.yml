@@ -35,11 +35,11 @@ jobs:
 
       - name: Pack NuGet Package
         if: (github.event_name == 'release')
-        run: dotnet pack ./src/Memento.Blazor/Memento.Blazor.csproj -c Release -o ./artifacts --include-symbols --include-source -p:PackageVersion=${VERSION}
+        run: dotnet pack -c Release --include-symbols --include-source -p:PackageVersion=${VERSION}
 
       - name: Publish NuGet Package
         if: (github.event_name == 'release')
-        run: dotnet nuget push ./artifacts/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ./*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
 
       # Generate the website
       - name: Publish Sample Page
