@@ -7,14 +7,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9B9FF1D5-F47
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{AD16691B-0034-4F49-8F90-0932C029DA3C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E9CA5D2D-621D-408E-AB95-E602DD3CA8FA}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_root", "_root", "{E9CA5D2D-621D-408E-AB95-E602DD3CA8FA}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		src\Directory.Build.props = src\Directory.Build.props
 		README.md = README.md
-		release-notes.dotnet.md = release-notes.dotnet.md
-		update-manual.md = update-manual.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{4EBD97E1-0380-4F7F-A7EF-92FD6B82FAE6}"
