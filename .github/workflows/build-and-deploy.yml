@@ -39,7 +39,7 @@ jobs:
 
       - name: Publish NuGet Package
         if: (github.event_name == 'release')
-        run: dotnet nuget push ./artifacts/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json --version-sufix ${VERSION}
+        run: dotnet nuget push ./artifacts/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json --version-suffix ${VERSION}
 
       # Generate the website
       - name: Publish Sample Page
