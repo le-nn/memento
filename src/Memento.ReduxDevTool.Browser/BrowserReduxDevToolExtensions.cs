@@ -13,12 +13,16 @@ public static class BrowserReduxDevToolExtensions {
     /// It will be registered with AddScoped when true specified, otherwise AddSingleton.
     /// </param>
     /// <returns>The service collection.</returns>
-    public static IServiceCollection AddBrowserReduxDevToolMiddleware(this IServiceCollection services, bool isScoped = false) {
+    public static IServiceCollection AddBrowserReduxDevToolMiddleware(
+        this IServiceCollection services,
+        ReduxDevToolOption? option = null,
+        bool isScoped = false
+    ) {
         if (isScoped) {
-            services.AddScoped<Middleware>(_ => new BrowserReduxDevToolMiddleware());
+            services.AddScoped<Middleware>(_ => new BrowserReduxDevToolMiddleware(option));
         }
         else {
-            services.AddSingleton<Middleware>(_ => new BrowserReduxDevToolMiddleware());
+            services.AddSingleton<Middleware>(_ => new BrowserReduxDevToolMiddleware(option));
         }
 
         return services;

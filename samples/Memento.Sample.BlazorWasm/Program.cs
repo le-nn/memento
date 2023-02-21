@@ -13,7 +13,10 @@ builder.Services
     .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
     .AddScoped<ITodoService, MockTodoService>()
     .AddMemento()
-    .AddBrowserReduxDevToolMiddleware()
+    .AddBrowserReduxDevToolMiddleware(new() {
+        StackTraceEnabled = true,
+        OpenDevtool = true,
+    })
     .ScanAssemblyAndAddStores(typeof(App).Assembly);
 
 var app = builder.Build();
