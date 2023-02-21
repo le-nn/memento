@@ -29,7 +29,9 @@ jobs:
       
       - name : Set Version variable from tag
         if: (github.event_name == 'release')
-        run: echo "VERSION=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+        run: |
+          TAG=${{ github.event.release.tag_name }}
+          echo "VERSION=${TAG#v}" >> $GITHUB_ENV
 
       - name: Pack NuGet Package
         if: (github.event_name == 'release')
