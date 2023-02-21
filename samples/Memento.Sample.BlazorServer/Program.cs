@@ -9,7 +9,7 @@ builder.Services
     .AddRemoteReduxDevToolMiddleware()
     .AddMemento()
     .AddMiddleware(() => new LoggerMiddleware())
-    .ScanAssembyAndAddStores(typeof(App).Assembly);
+    .ScanAssemblyAndAddStores(typeof(App).Assembly);
 
 builder.Services.AddScoped<ITodoService, MockTodoService>();
 builder.Services.AddSingleton(p => new HttpClient {

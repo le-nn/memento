@@ -17,7 +17,7 @@ public static class StoreConfigExtension {
         return collection;
     }
 
-    public static void ScanAssembyAndAddStores(this IServiceCollection services, Assembly assembly) {
+    public static void ScanAssemblyAndAddStores(this IServiceCollection services, Assembly assembly) {
         foreach (var type in assembly.GetTypes().Where(t => t.IsAssignableTo(typeof(IStore)))) {
             services.AddScoped(type)
                 .AddScoped(p => (IStore)p.GetRequiredService(type));
