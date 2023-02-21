@@ -15,6 +15,7 @@ public record FluxAsyncCounterState {
 // Define command to change state and observe state change event in detail.
 public record FluxAsyncCounterCommands : Command {
     public record Increment : FluxAsyncCounterCommands;
+    public record IncrementWithoutHistory : FluxAsyncCounterCommands;
     public record BeginLoading : FluxAsyncCounterCommands;
     public record EndLoading : FluxAsyncCounterCommands;
     public record ModifyCount(int Value) : FluxAsyncCounterCommands;
@@ -37,6 +38,9 @@ public class FluxAsyncCounterStore : FluxStore<FluxAsyncCounterState, FluxAsyncC
                 IsLoading = false
             },
             Increment => HandleIncrement(state),
+            IncrementWithoutHistory => state with {
+                Count = state.Count + 1,
+            },
             ModifyCount payload => state with {
                 Count = payload.Value,
                 History = state.History.Add(payload.Value),
@@ -53,8 +57,13 @@ public class FluxAsyncCounterStore : FluxStore<FluxAsyncCounterState, FluxAsyncC
         }
     }
 
+
     public void CountUp() {
         Dispatch(new Increment());
+    }
+
+    public void CountUpWithoutHistory() {
+        Dispatch(new IncrementWithoutHistory());
     }
 
     // "Dispatch" method can called outside of store via action (public method)

@@ -16,6 +16,12 @@ public class AsyncCounterStore : Store<AsyncCounterState> {
     public AsyncCounterStore() : base(() => new()) {
     }
 
+    public void CountUpWithoutHistory() {
+        Mutate(state => state with {
+            Count = state.Count + 1,
+        });
+    }
+
     public void CountUp() {
         Mutate(state => state with {
             Count = state.Count + 1,

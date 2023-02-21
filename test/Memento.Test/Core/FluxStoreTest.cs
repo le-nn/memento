@@ -132,14 +132,14 @@ public class FluxStoreTest {
 
         var sw = Stopwatch.StartNew();
 
-        for (var i = 0; i < 10000; i++) {
-            store.CountUp();
+        for (var i = 0; i < 100000; i++) {
+            store.CountUpWithoutHistory();
         }
 
         sw.Stop();
 
-        Assert.Equal(10000, commands.Count);
-        Assert.True(sw.ElapsedMilliseconds < 500);
+        Assert.Equal(100000, commands.Count);
+        Assert.True(sw.ElapsedMilliseconds < 50);
     }
 
     [Fact]
