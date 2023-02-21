@@ -19,7 +19,7 @@ public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState> {
 
     public async Task CreateNewAsync(string text) {
         await CommitAsync(
-            async () => Guid.NewGuid(),
+            () => ValueTask.FromResult(Guid.NewGuid()),
             async id => {
                 var item = await TodoService.CreateItemAsync(id, text);
                 Mutate(state => state with {

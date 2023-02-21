@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Memento.Test.Core.Mock;
 
 public class MockMiddleware : Middleware {
-    public MockMiddlewarehandler? Handler { get; set; }
+    public new MockMiddlewarehandler? Handler { get; set; }
 
     protected override MiddlewareHandler Create(IServiceProvider provider) {
         Handler = new MockMiddlewarehandler();

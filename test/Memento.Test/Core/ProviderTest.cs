@@ -13,7 +13,7 @@ public class ProviderTest {
         var collection = new ServiceCollection();
         collection.AddMemento()
             .AddStore<Mock.AsyncCounterStore>();
-        var provider = collection.BuildServiceProvider();
+        using var provider = collection.BuildServiceProvider();
 
         var store = provider.GetRequiredService<Mock.AsyncCounterStore>();
         var mementoProvider = provider.GetStoreProvider();
