@@ -8,7 +8,7 @@ namespace Memento.ReduxDevTool.Browser;
 /// <summary>
 /// Interop for dev tools
 /// </summary>
-internal sealed class JavascriptDevToolInteropHandler : IDevtoolInteropHandler, IDisposable {
+internal sealed class JavaScriptDevToolInteropHandler : IDevtoolInteropHandler, IDisposable {
     private const string _sendToReduxDevToolDirectly = "mementoReduxDispatch";
     private const string _toJsInitMethodName = "mementoReduxDevToolInit";
     private const string _reduxDevToolsVariableName = "mementoReduxDevTool";
@@ -22,7 +22,7 @@ internal sealed class JavascriptDevToolInteropHandler : IDevtoolInteropHandler, 
     private bool _disposed;
     private bool _isInitializing;
     private readonly IJSRuntime _jsRuntime;
-    private readonly DotNetObjectReference<JavascriptDevToolInteropHandler> _dotNetRef;
+    private readonly DotNetObjectReference<JavaScriptDevToolInteropHandler> _dotNetRef;
 
     public bool IsInitializing => _isInitializing;
 
@@ -33,7 +33,7 @@ internal sealed class JavascriptDevToolInteropHandler : IDevtoolInteropHandler, 
     /// Creates an instance of the dev tools interop.
     /// </summary>
     /// <param name="jsRuntime">The jsRuntime.</param>
-    public JavascriptDevToolInteropHandler(IJSRuntime jsRuntime) {
+    public JavaScriptDevToolInteropHandler(IJSRuntime jsRuntime) {
         _jsRuntime = jsRuntime;
         _dotNetRef = DotNetObjectReference.Create(this);
     }
@@ -61,13 +61,11 @@ internal sealed class JavascriptDevToolInteropHandler : IDevtoolInteropHandler, 
             JsonSerializer.Serialize(command, _jsonSerializerOptions),
             JsonSerializer.Serialize(context, _jsonSerializerOptions)
         );
-
     }
 
     /// <inheritdoc/>
     [JSInvokable(DevToolsCallbackId)]
     public void HandleMessage(string json) {
-        _jsRuntime.InvokeVoidAsync("console.log", json);
         MessageHandled?.Invoke(json);
     }
 

@@ -22,16 +22,22 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
     }
 
     public RootState CaptureRootState() {
-        return new(ResolveAllStores().Aggregate(
-            ImmutableDictionary.Create<string, object>(),
-            (x, y) => x.Add(y.GetType().Name, y.State)
-        ));
+        var map = new Dictionary<string, object>();
+        foreach (var item in ResolveAllStores()) {
+            map.Add(item.GetType().Name, item.State);
+        }
+
+        return new RootState(map);
     }
 
-    public ImmutableDictionary<string, IStore> CaptureStoreBag() => ResolveAllStores().Aggregate(
-        ImmutableDictionary.Create<string, IStore>(),
-        (x, y) => x.Add(y.GetType().Name, y)
-    );
+    public Dictionary<string, IStore> CaptureStoreBag() {
+        var map = new Dictionary<string, IStore>();
+        foreach (var item in ResolveAllStores()) {
+            map.Add(item.GetType().Name, item);
+        }
+
+        return map;
+    }
 
     public async Task InitializeAsync() {
         if (IsInitialized) {
