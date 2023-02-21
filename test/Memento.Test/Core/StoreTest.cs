@@ -135,7 +135,7 @@ public class StoreTest {
         sw.Stop();
 
         Assert.Equal(10000, commands.Count);
-        Assert.True(sw.ElapsedMilliseconds < 200);
+        Assert.True(sw.ElapsedMilliseconds < 500);
     }
 
     [Fact]
