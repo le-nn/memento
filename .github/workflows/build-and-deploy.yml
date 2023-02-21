@@ -35,7 +35,7 @@ jobs:
 
       - name: Pack NuGet Package
         if: (github.event_name == 'release')
-        run: dotnet pack ./src/Memento.Blazor/Memento.Blazor.csproj -c Release -o ./artifacts --include-symbols --include-source --version-suffix ${VERSION}
+        run: dotnet pack ./src/Memento.Blazor/Memento.Blazor.csproj -c Release -o ./artifacts --include-symbols --include-source -p:PackageVersion=${VERSION}
 
       - name: Publish NuGet Package
         if: (github.event_name == 'release')
