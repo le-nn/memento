@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-  release:
+  release: [published, created, edited, prereleased, released]
 
 jobs:
   build:
