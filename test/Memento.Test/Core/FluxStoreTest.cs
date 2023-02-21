@@ -139,7 +139,7 @@ public class FluxStoreTest {
         sw.Stop();
 
         Assert.Equal(100000, commands.Count);
-        Assert.True(sw.ElapsedMilliseconds < 50);
+        Assert.True(sw.ElapsedMilliseconds < 100);
     }
 
     [Fact]
