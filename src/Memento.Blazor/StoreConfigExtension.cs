@@ -34,7 +34,8 @@ public static class StoreConfigExtension {
 
     public static IServiceCollection AddMiddleware<TMiddleware>(this IServiceCollection collection)
         where TMiddleware : Middleware {
-        collection.AddScoped<Middleware, TMiddleware>();
+        collection.AddScoped<TMiddleware>();
+        collection.AddScoped<Middleware, TMiddleware>(p => p.GetRequiredService<TMiddleware>());
         return collection;
     }
 

@@ -39,6 +39,13 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
         return map;
     }
 
+    /// <summary>
+    /// Initializes a provider.
+    /// You must invoke once.
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException">Throws when provider has initialized.</exception>
+    /// <exception cref="InvalidDataException">Throws when registered middleware and stores are incorrect.</exception>
     public async Task InitializeAsync() {
         if (IsInitialized) {
             throw new InvalidOperationException("Already initialized.");
@@ -67,7 +74,7 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
                 await middleware.InitializeAsync(_serviceContainer);
             }
             catch (Exception ex) {
-                throw new Exception($@"Failed to initialize memento middleware ""{ex.Message}""", ex);
+                throw new InvalidDataException($@"Failed to initialize memento middleware ""{ex.Message}""", ex);
             }
         }
 
@@ -77,7 +84,7 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
                 await store.InitializeAsync(this);
             }
             catch (Exception ex) {
-                throw new Exception(@$"Failed to initialize memento provider ""{ex.Message}""", ex);
+                throw new InvalidDataException(@$"Failed to initialize memento provider ""{ex.Message}""", ex);
             }
         }
     }
