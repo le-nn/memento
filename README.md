@@ -28,6 +28,10 @@ State can be time traveled and history can be viewed in DevTools.
 
 https://le-nn.github.io/memento/
 
+If you have ReduxDevTool installed,
+DevTool will launch automatically.
+You can do state history and time travel.
+
 ## React or TS/JS bindings
 
 Currently, moved to here
