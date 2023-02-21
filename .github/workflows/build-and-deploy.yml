@@ -21,21 +21,13 @@ jobs:
       - name: Install wasm tool
         run: dotnet workload install wasm-tools
 
-      #- name: Build and Test
-      #  run: | 
-      #      dotnet build -c Release
-      #      dotnet test
-      ## Generate the website
-      #- name: Publish
-      #  run: dotnet publish ./samples/BlazorTransitionGroup.Samples/BlazorTransitionGroup.Samples.csproj -c Release -p:GHPages=true
-
       - name: Build and Test
         run: |
             dotnet build
             dotnet test
       
       - name : Set Version variable from tag
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: (github.event_name == 'release')
         run: echo "VERSION=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
 
       - name: Pack NuGet Package
@@ -44,7 +36,7 @@ jobs:
 
       - name: Publish NuGet Package
         if: (github.event_name == 'release')
-        run: dotnet nuget push ./artifacts/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json --version-sufix ${{ VERSION }}
+        run: dotnet nuget push ./artifacts/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json --version-sufix ${VERSION}
 
       # Generate the website
       - name: Publish Sample Page
