@@ -7,7 +7,7 @@ on:
     types: [published, created, edited, prereleased, released]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       # Checkout the code
