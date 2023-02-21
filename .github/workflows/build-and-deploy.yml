@@ -1,7 +1,7 @@
 name: "Publish BlazorApp"
 on:
   release: 
-    types: [published, created, edited, prereleased, released]
+    types: [published]
   push:
     branches:
       - main
