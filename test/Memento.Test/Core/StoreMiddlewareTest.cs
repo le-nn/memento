@@ -25,7 +25,7 @@ public class StoreMiddlewareTest {
         store.CountUp();
         store.CountUp();
 
-        //Assert.Equal(5, middleware.Handler?.HandleStoreDispatchCalledCount);
-        //Assert.Equal(5, middleware.Handler?.ProviderDispatchCalledCount);
+        Assert.Equal(5, middleware.Handler?.HandleStoreDispatchCalledCount);
+        Assert.Equal(5, middleware.Handler?.ProviderDispatchCalledCount);
     }
 }
