@@ -23,6 +23,7 @@ internal sealed class JavaScriptDevToolInteropHandler : IDevtoolInteropHandler, 
     private bool _isInitializing;
     private readonly IJSRuntime _jsRuntime;
     private readonly DotNetObjectReference<JavaScriptDevToolInteropHandler> _dotNetRef;
+    private readonly ReduxDevToolOption _option;
 
     public bool IsInitializing => _isInitializing;
 
@@ -33,15 +34,16 @@ internal sealed class JavaScriptDevToolInteropHandler : IDevtoolInteropHandler, 
     /// Creates an instance of the dev tools interop.
     /// </summary>
     /// <param name="jsRuntime">The jsRuntime.</param>
-    public JavaScriptDevToolInteropHandler(IJSRuntime jsRuntime) {
+    public JavaScriptDevToolInteropHandler(IJSRuntime jsRuntime, ReduxDevToolOption option) {
         _jsRuntime = jsRuntime;
         _dotNetRef = DotNetObjectReference.Create(this);
+        _option = option;
     }
 
     public async Task InitializeAsync(RootState state) {
         _isInitializing = true;
         try {
-            var script = GetClientScripts(new());
+            var script = GetClientScripts(_option);
             await _jsRuntime.InvokeVoidAsync("eval", script);
             await _jsRuntime.InvokeVoidAsync(
                 _toJsInitMethodName,
@@ -79,7 +81,7 @@ internal sealed class JavaScriptDevToolInteropHandler : IDevtoolInteropHandler, 
 
     static string GetClientScripts(ReduxDevToolOption options) {
         var optionsJson = BuildOptionsJson(options);
-        var isOpenDevtool = options.OpenDevtool ? "true" : "false";
+        var isOpenDevtool = options.OpenDevTool ? "true" : "false";
         var code = $$"""
             const config = {
                 {{optionsJson}},

@@ -11,5 +11,5 @@ public record ReduxDevToolOption {
 
     public int StackTraceLinesLimit { get; init; } = 30;
 
-    public bool OpenDevtool { get; init; } = false;
+    public bool OpenDevTool { get; init; } = false;
 }

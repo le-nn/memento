@@ -15,7 +15,7 @@ builder.Services
     .AddMemento()
     .AddBrowserReduxDevToolMiddleware(new() {
         StackTraceEnabled = true,
-        OpenDevtool = true,
+        OpenDevTool = true,
     })
     .ScanAssemblyAndAddStores(typeof(App).Assembly);
 
