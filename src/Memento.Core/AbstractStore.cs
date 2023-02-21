@@ -1,5 +1,7 @@
 ﻿using Memento.Core.Internals;
 using Memento.Core.Store.Internals;
+using System.Dynamic;
+using System.Threading.Channels;
 
 namespace Memento.Core;
 
@@ -76,6 +78,20 @@ public abstract class AbstractStore<TState, TCommand>
             lock (_locker) {
                 _observers.Remove(obs);
             }
+        });
+    }
+
+    /// <summary>
+    /// Notifies that the state of the Store has changed.
+    /// Usually, you don't need to call when you change the state
+    /// via <see cref="FluxStore{TState, TCommand}.Dispatch"/> or <see cref="Store{TState}.Mutate"/>.
+    /// </summary>
+    public void StateHasChanged() {
+        InvokeObserver(new StateChangedEventArgs<TState>() {
+            State = State,
+            LastState = State,
+            Command = new Command.StateHasChanged(State),
+            Sender = this,
         });
     }
 
