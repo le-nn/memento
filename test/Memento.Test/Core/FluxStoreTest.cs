@@ -10,16 +10,19 @@ using System.Threading.Tasks;
 
 namespace Memento.Test.Core;
 
-public class StoreTest {
+public class FluxStoreTest {
     [Theory]
     [InlineData(10)]
     [InlineData(50)]
     [InlineData(100)]
     public async Task Ensure_StateChanges(int count) {
-        var store = new AsyncCounterStore();
+        var store = new FluxAsyncCounterStore();
+
         var list = new List<int>();
+
         var actual = 0;
         for (var i = 0; i < count; i++) {
+
             await store.CountUpAsync();
             actual++;
             list.Add(actual);
@@ -34,6 +37,7 @@ public class StoreTest {
             Assert.Equal(actual, store.State.Count);
             Assert.Equal(list, store.State.History);
         }
+
     }
 
     [Theory]
@@ -41,7 +45,7 @@ public class StoreTest {
     [InlineData(20)]
     [InlineData(100)]
     public async Task Ensure_CanChangeStateAsync(int count) {
-        var store = new AsyncCounterStore();
+        var store = new FluxAsyncCounterStore();
 
         var list = new List<int>();
         for (var i = 0; i < count; i++) {
@@ -57,7 +61,7 @@ public class StoreTest {
 
     [Fact]
     public async Task Command_CouldBeSubscribeCorrectly() {
-        var store = new AsyncCounterStore();
+        var store = new FluxAsyncCounterStore();
 
         var commands = new List<Command>();
         var lastState = store.State;
@@ -74,19 +78,19 @@ public class StoreTest {
         await store.CountUpAsync();
 
         Assert.True(commands is [
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
+            FluxAsyncCounterCommands.BeginLoading,
+            FluxAsyncCounterCommands.Increment,
+            FluxAsyncCounterCommands.EndLoading,
+            FluxAsyncCounterCommands.ModifyCount(1234),
+            FluxAsyncCounterCommands.BeginLoading,
+            FluxAsyncCounterCommands.Increment,
+            FluxAsyncCounterCommands.EndLoading
         ]);
     }
 
     [Fact]
     public async Task Force_ReplaceState() {
-        var store = new AsyncCounterStore();
+        var store = new FluxAsyncCounterStore();
 
         var commands = new List<Command>();
 
@@ -110,20 +114,20 @@ public class StoreTest {
         await store.CountUpAsync();
 
         Assert.True(commands is [
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.ForceReplaced { State: AsyncCounterState { Count: 5678 } },
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
+            FluxAsyncCounterCommands.BeginLoading,
+            FluxAsyncCounterCommands.Increment,
+            FluxAsyncCounterCommands.EndLoading,
+            FluxAsyncCounterCommands.ModifyCount(1234),
+            Command.ForceReplaced { State: FluxAsyncCounterState { Count: 5678 } },
+            FluxAsyncCounterCommands.BeginLoading,
+            FluxAsyncCounterCommands.Increment,
+            FluxAsyncCounterCommands.EndLoading
         ]);
     }
 
     [Fact]
     public void Performance() {
-        var store = new AsyncCounterStore();
+        var store = new FluxAsyncCounterStore();
 
         var commands = new List<Command>();
 
