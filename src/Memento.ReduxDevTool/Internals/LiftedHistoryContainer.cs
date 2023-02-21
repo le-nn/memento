@@ -1,5 +1,4 @@
 ﻿using Memento.Core;
-using Memento.Core.Store;
 using System.Collections.Immutable;
 using System.Data;
 using System.Text.Json;
@@ -10,7 +9,7 @@ internal record HistoryState {
     public required int Id { get; set; }
     public required Command Command { get; init; }
     public required string StoreBagKey { get; init; }
-    public required ImmutableDictionary<string, object> RootState { get; init; }
+    public required Dictionary<string, object> RootState { get; init; }
     public required string? Stacktrace { get; init; }
     public required long Timestamp { get; init; }
     public required bool IsSkipped { get; init; }
@@ -41,7 +40,7 @@ internal sealed class LiftedHistoryContainer : IDisposable {
 
     HistoryState CurrentHistory => _histories.Where(x => x.Id == _currentCursorId).First();
 
-    public Action<HistoryStateContextJson>? SyncReqested { get; set; }
+    public Action<HistoryStateContextJson>? SyncRequested { get; set; }
 
     public bool IsPaused { get; set; }
 
@@ -61,7 +60,7 @@ internal sealed class LiftedHistoryContainer : IDisposable {
                 Command = new Init(),
                 StoreBagKey = "",
                 Id = 0,
-                RootState = _rootState.AsImmutableDictionary(),
+                RootState = _rootState.AsDictionary(),
                 Stacktrace = "",
                 Timestamp = ToUnixTimeStamp(DateTime.UtcNow),
                 IsSkipped = false,
@@ -101,7 +100,7 @@ internal sealed class LiftedHistoryContainer : IDisposable {
             Command = e.Command,
             StoreBagKey = e.Sender?.GetType().Name ?? "Error",
             Id = _sequence,
-            RootState = rootState.AsImmutableDictionary(),
+            RootState = rootState.AsDictionary(),
             Stacktrace = stackTrace,
             Timestamp = ToUnixTimeStamp(DateTime.UtcNow),
             IsSkipped = false,
@@ -238,7 +237,7 @@ internal sealed class LiftedHistoryContainer : IDisposable {
                     history.Command
                 );
 
-                beforeState = beforeState.SetItem(history.StoreBagKey, state);
+                beforeState[history.StoreBagKey] = state;
 
                 newHistories.Add(history with {
                     RootState = beforeState
@@ -250,7 +249,7 @@ internal sealed class LiftedHistoryContainer : IDisposable {
     }
 
     public Task SyncWithPlugin() {
-        SyncReqested?.Invoke(Serialize());
+        SyncRequested?.Invoke(Serialize());
 
         return Task.CompletedTask;
     }
@@ -278,16 +277,16 @@ internal sealed class LiftedHistoryContainer : IDisposable {
                   .ToDictionary(x => x.Key, x => x.Value),
             ComputedStates = _histories
                   .Select(history => new ComputedState(history.RootState))
-                  .ToImmutableArray(),
+                  .ToArray(),
             NextActionId = NextActionId,
             CurrentStateIndex = _currentCursorId,
             SkippedActionIds = _histories
                   .Where(x => x.IsSkipped)
                   .Select(x => x.Id)
-                  .ToImmutableArray(),
+                  .ToArray(),
             StagedActionIds = _histories
                   .Select(x => x.Id)
-                  .ToImmutableArray(),
+                  .ToArray(),
             IsLocked = IsLocked,
             IsPaused = IsPaused,
         };
@@ -329,8 +328,8 @@ internal sealed class LiftedHistoryContainer : IDisposable {
         _subscription = null;
     }
 
-    static ImmutableDictionary<string, object> DeserializeStates(ImmutableDictionary<string, IStore> storeBag, JsonElement stateJson) {
-        var rootState = ImmutableDictionary.CreateBuilder<string, object>();
+    static Dictionary<string, object> DeserializeStates(Dictionary<string, IStore> storeBag, JsonElement stateJson) {
+        var rootState = new Dictionary<string, object>();
         foreach (var key in stateJson.EnumerateObject()) {
             var storeState = key.Value.Deserialize(storeBag[key.Name].GetStateType())
                 ?? throw new Exception("failed to deserialize state.");
@@ -338,7 +337,7 @@ internal sealed class LiftedHistoryContainer : IDisposable {
             rootState.Add(key.Name, storeState);
         }
 
-        return rootState.ToImmutable();
+        return rootState;
     }
 
     static Command DeserializeCommand(string? typeName, object? payload) {

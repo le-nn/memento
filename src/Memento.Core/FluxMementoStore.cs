@@ -1,10 +1,11 @@
 namespace Memento.Core;
 
-public record MementoStoreContext<TState>(TState State);
+public record Context<TState, TMessage>(TState State, TMessage Message);
 
-public abstract class MementoStore<TState>
-    : Store<TState>
-        where TState : class {
+public abstract class FluxMementoStore<TState, TCommand>
+    : FluxStore<TState, TCommand>
+        where TState : class
+        where TCommand : Command, new() {
     readonly HistoryManager _historyManager;
 
     public bool CanReDo => _historyManager.CanReDo;
@@ -13,32 +14,37 @@ public abstract class MementoStore<TState>
 
     public IMementoStateContext<TState>? Present => _historyManager.Present as IMementoStateContext<TState>;
 
-    public IReadOnlyCollection<IMementoStateContext<MementoStoreContext<TState>>> FutureHistories => _historyManager
+    public IReadOnlyCollection<IMementoStateContext<Context<TState, TCommand>>> FutureHistories => _historyManager
         .FutureHistories
-        .Select(x => x as IMementoStateContext<MementoStoreContext<TState>>)
+        .Select(x => x as IMementoStateContext<Context<TState, TCommand>>)
         .Where(x => x is not null)
         .Select(x => x!)
         .ToList()
         .AsReadOnly();
 
-    public IReadOnlyCollection<IMementoStateContext<MementoStoreContext<TState>>> PastHistories => _historyManager
+    public IReadOnlyCollection<IMementoStateContext<Context<TState, TCommand>>> PastHistories => _historyManager
         .PastHistories
-        .Select(x => x as IMementoStateContext<MementoStoreContext<TState>>)
+        .Select(x => x as IMementoStateContext<Context<TState, TCommand>>)
         .Where(x => x is not null)
         .Select(x => x!)
         .ToList()
         .AsReadOnly();
 
-    public MementoStore(
+    public FluxMementoStore(
         StateInitializer<TState> initializer,
+        Reducer<TState, TCommand> Reducer,
         HistoryManager historyManager
     ) : base(
-        initializer
+        initializer,
+        (state, command) => command switch {
+            TCommand => Reducer(state, command),
+            _ => state,
+        }
     ) {
         _historyManager = historyManager;
     }
 
-    public virtual ValueTask OnContextSavedAsync(IMementoStateContext<MementoStoreContext<TState>> command) {
+    public virtual ValueTask OnContextSavedAsync(IMementoStateContext<Context<TState, TCommand>> command) {
         if (IsInitialized is false) {
             throw new Exception("Store is not initialized.");
         }
@@ -46,7 +52,7 @@ public abstract class MementoStore<TState>
         return ValueTask.CompletedTask;
     }
 
-    public virtual ValueTask OnContextLoadedAsync(IMementoStateContext<MementoStoreContext<TState>> command) {
+    public virtual ValueTask OnContextLoadedAsync(IMementoStateContext<Context<TState, TCommand>> command) {
         if (IsInitialized is false) {
             throw new Exception("Store is not initialized.");
         }
@@ -54,7 +60,7 @@ public abstract class MementoStore<TState>
         return ValueTask.CompletedTask;
     }
 
-    public virtual void OnContextDisposed(IMementoStateContext<MementoStoreContext<TState>> command) {
+    public virtual void OnContextDisposed(IMementoStateContext<Context<TState, TCommand>> command) {
         if (IsInitialized is false) {
             throw new Exception("Store is not initialized.");
         }
@@ -75,7 +81,7 @@ public abstract class MementoStore<TState>
             async () => {
                 var state = State;
                 await onExecuted(data);
-                return new MementoStoreContext<TState>(state);
+                return new Context<TState, TCommand>(state, new TCommand());
             },
             async state => {
                 await onUnexecuted(data);
@@ -110,6 +116,19 @@ public abstract class MementoStore<TState>
         async _ => await onUnexecuted(),
         name
     );
+
+    public async ValueTask CommitAsync(TCommand command, string? name = null) {
+        if (IsInitialized is false) {
+            throw new Exception("Store is not initialized.");
+        }
+
+        await CommitAsync(
+            () => ValueTask.FromResult(command),
+            _ => ValueTask.CompletedTask,
+            _ => ValueTask.CompletedTask,
+            name
+        );
+    }
 
     public async ValueTask UnExecuteAsync() {
         if (IsInitialized is false) {

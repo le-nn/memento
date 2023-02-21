@@ -27,7 +27,7 @@ public static class StateSubscriber {
         var subscriptions = (
             from getStateChangedNotifierPropertyValue in GetStateChangedNotifierPropertyDelegatesForType(subject.GetType())
             let store = getStateChangedNotifierPropertyValue(subject)
-            select store.Subscribe(new StoreObeserver(e => callback(e)))
+            select store.Subscribe(new StoreObserver(e => callback(e)))
         ).ToArray();
 
         return new StoreSubscription(

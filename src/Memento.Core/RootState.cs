@@ -6,11 +6,11 @@ using System.Text.Json;
 namespace Memento.Core;
 
 public record RootState : IReadOnlyDictionary<string, object?> {
-    readonly ImmutableDictionary<string, object> _rootState;
+    readonly Dictionary<string, object> _rootState;
 
-    public ImmutableDictionary<string, object> AsImmutableDictionary() => _rootState;
+    public Dictionary<string, object> AsDictionary() => _rootState;
 
-    internal RootState(ImmutableDictionary<string, object> rootState) {
+    internal RootState(Dictionary<string, object> rootState) {
         _rootState = rootState;
     }
 

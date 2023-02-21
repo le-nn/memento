@@ -1,6 +1,5 @@
 ﻿using Memento.Core;
 using Memento.Core.Executors;
-using Memento.Core.Store;
 using Memento.ReduxDevTool.Internal;
 using System.Diagnostics;
 using System.Text.Json;
@@ -25,7 +24,7 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
 
     readonly Regex _stackTraceFilterRegex = new(_stackTraceFilterExpression, RegexOptions.Compiled);
     readonly ConcatAsyncOperationExecutor _concatExecutor = new();
-    readonly ThrottledExecutor<HistoryStateContextJson> _throttledExecutor = new();
+    readonly ThrottledExecutor<HistoryStateContextJson> _throttledExecutor = new() {LatencyMs=1000 };
     readonly LiftedHistoryContainer _liftedStore;
     readonly StoreProvider _storeProvider;
     readonly IDevtoolInteropHandler _interopHandler;
@@ -46,7 +45,7 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
                 ?? throw new Exception("Please register 'StoreProvider' to ServiceProvider")
         );
         _liftedStore = new(_storeProvider, option) {
-            SyncReqested = _throttledExecutor.Invoke
+            SyncRequested = _throttledExecutor.Invoke
         };
         _subscription = _throttledExecutor.Subscribe(async sended => {
             await _interopHandler.SendAsync(null, sended);
@@ -82,7 +81,7 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
     }
 
     public async Task SendAsync(StateChangedEventArgs e, RootState rootState, string stackTrace) {
-        if (e.Command is ForceReplace) {
+        if (e.Command is ForceReplaced) {
             return;
         }
 

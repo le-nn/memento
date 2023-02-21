@@ -14,7 +14,7 @@ builder.Services
     .AddScoped<ITodoService, MockTodoService>()
     .AddMemento()
     .AddBrowserReduxDevToolMiddleware()
-    .ScanAssembyAndAddStores(typeof(App).Assembly);
+    .ScanAssemblyAndAddStores(typeof(App).Assembly);
 
 var app = builder.Build();
 await app.RunAsync();

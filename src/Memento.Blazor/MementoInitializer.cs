@@ -9,7 +9,7 @@ public class MementoInitializer : ComponentBase, IDisposable {
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
         await base.OnAfterRenderAsync(firstRender);
-        await StoreProvider.InitializAsync();
+        await StoreProvider.InitializeAsync();
     }
 
     public void Dispose() {

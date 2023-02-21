@@ -40,7 +40,7 @@ public record HistoryStateContextJson {
     public required Dictionary<int, StoreAction> ActionsById { get; init; }
 
     [JsonPropertyName("computedStates")]
-    public required ImmutableArray<ComputedState> ComputedStates { get; init; }
+    public required ComputedState[] ComputedStates { get; init; }
 
     [JsonPropertyName("currentStateIndex")]
     public required int CurrentStateIndex { get; init; }
@@ -49,10 +49,10 @@ public record HistoryStateContextJson {
     public required int NextActionId { get; init; }
 
     [JsonPropertyName("skippedActionIds")]
-    public required ImmutableArray<int> SkippedActionIds { get; init; }
+    public required int[] SkippedActionIds { get; init; }
 
     [JsonPropertyName("stagedActionIds")]
-    public required ImmutableArray<int> StagedActionIds { get; init; }
+    public required int[] StagedActionIds { get; init; }
 
     [JsonPropertyName("isLocked")]
     public bool IsLocked { get; init; }

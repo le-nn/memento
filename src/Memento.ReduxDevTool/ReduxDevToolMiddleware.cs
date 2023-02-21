@@ -1,5 +1,4 @@
 ﻿using Memento.Core;
-using Memento.Core.Store;
 using Memento.ReduxDevTool.Internal;
 
 namespace Memento.ReduxDevTool;

@@ -67,7 +67,7 @@ public record AsyncCounterCommands : Command {
     public record ModifyCount(int Value) : AsyncCounterCommands;
 }
 
-public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> {
+public class AsyncCounterStore : FluxStore<AsyncCounterState, AsyncCounterCommands> {
     public AsyncCounterStore() : base(() => new(), Reducer) {
     }
 

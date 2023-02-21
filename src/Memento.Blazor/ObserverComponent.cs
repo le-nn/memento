@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Memento.Blazor;
 
-public class ObserverComponet : ComponentBase, IDisposable {
+public class ObserverComponent : ComponentBase, IDisposable {
     private bool _isDisposed;
     private IDisposable? _stateSubscription;
     private readonly IDisposable _invokerSubscription;
@@ -12,7 +12,7 @@ public class ObserverComponet : ComponentBase, IDisposable {
     /// <summary>
     /// Creates a new instance
     /// </summary>
-    public ObserverComponet() {
+    public ObserverComponent() {
         _invokerSubscription = _stateHasChangedThrottler.Subscribe(e => {
             if (_isDisposed is false) {
                 base.InvokeAsync(StateHasChanged);
@@ -23,10 +23,10 @@ public class ObserverComponet : ComponentBase, IDisposable {
     /// <summary>
     /// If greater than 0, the feature will not execute state changes
     /// more often than this many times per second. Additional notifications
-    /// will be surpressed, and observers will be notified of the last.
+    /// will be suppressed, and observers will be notified of the last.
     /// state when the time window has elapsed to allow another notification.
     /// </summary>
-    protected byte LatencyMs { get; set; } = 1000 / 30;
+    protected ushort LatencyMs { get; set; } = 100;
 
     /// <summary>
     /// Disposes of the component and unsubscribes from any state
@@ -53,7 +53,7 @@ public class ObserverComponet : ComponentBase, IDisposable {
     protected virtual void Dispose(bool disposing) {
         if (disposing) {
             if (_stateSubscription is null) {
-                throw new NullReferenceException("Have you forgotten to call base.OnInitializedAsync() in your component?");
+                throw new NullReferenceException("Have you forgotten to call base.InitializeAsync() in your component?");
             }
 
             _invokerSubscription.Dispose();

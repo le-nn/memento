@@ -6,5 +6,6 @@
 
     <ItemGroup>
         <InternalsVisibleTo Include="Memento.ReduxDevTool" />
+        <InternalsVisibleTo Include="Memento.Test" />
     </ItemGroup>
 </Project>

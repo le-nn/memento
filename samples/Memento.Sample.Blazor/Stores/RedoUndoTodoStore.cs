@@ -3,57 +3,28 @@ using System.Collections.Immutable;
 
 namespace Memento.Sample.Blazor.Stores;
 
-using static RedoUndoTodoCommands;
-
 public record RedoUndoTodoState {
     public ImmutableArray<Todo> Todos { get; init; } = ImmutableArray.Create<Todo>();
 
     public bool IsLoading { get; init; }
 }
 
-public record RedoUndoTodoCommands : Command {
-    public record SetItems(ImmutableArray<Todo> Items) : RedoUndoTodoCommands;
-    public record Append(Todo Item) : RedoUndoTodoCommands;
-    public record Replace(Guid Id, Todo Item) : RedoUndoTodoCommands;
-    public record BeginLoading : RedoUndoTodoCommands;
-    public record EndLoading : RedoUndoTodoCommands;
-}
-
-public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState, RedoUndoTodoCommands> {
+public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState> {
     ITodoService TodoService { get; }
 
-    public RedoUndoTodoStore(ITodoService todoService) : base(() => new(), Reducer, new() { MaxHistoryCount = 200 }) {
+    public RedoUndoTodoStore(ITodoService todoService)
+        : base(() => new(), new() { MaxHistoryCount = 20 }) {
         TodoService = todoService;
-    }
-
-    static RedoUndoTodoState Reducer(RedoUndoTodoState state, RedoUndoTodoCommands command) {
-        return command switch {
-            SetItems payload => state with {
-                Todos = payload.Items,
-            },
-            Append payload => state with {
-                Todos = state.Todos.Add(payload.Item)
-            },
-            Replace payload => state with {
-                Todos = state.Todos.Replace(
-                    state.Todos.Where(x => payload.Id == x.TodoId).First(),
-                    payload.Item
-                )
-            },
-            BeginLoading => state with { IsLoading = true },
-            EndLoading => state with { IsLoading = false },
-            _ => throw new Exception("The command is not handled."),
-        };
     }
 
     public async Task CreateNewAsync(string text) {
         await CommitAsync(
-            () => {
-                return ValueTask.FromResult(Guid.NewGuid());
-            },
+            async () => Guid.NewGuid(),
             async id => {
                 var item = await TodoService.CreateItemAsync(id, text);
-                Dispatch(new RedoUndoTodoCommands.Append(item));
+                Mutate(state => state with {
+                    Todos = state.Todos.Add(item),
+                });
             },
             async id => {
                 await TodoService.RemoveAsync(id);
@@ -62,10 +33,10 @@ public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState, RedoUndoTodoCom
     }
 
     public async Task LoadAsync() {
-        Dispatch(new BeginLoading());
+        Mutate(state => state with { IsLoading = true });
         var items = await TodoService.FetchItemsAsync();
-        Dispatch(new SetItems(items));
-        Dispatch(new EndLoading());
+        Mutate(state => state with { Todos = items, });
+        Mutate(state => state with { IsLoading = false });
     }
 
     public async Task ToggleIsCompletedAsync(Guid id) {
@@ -73,7 +44,12 @@ public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState, RedoUndoTodoCom
             async () => {
                 var item = await TodoService.ToggleCompleteAsync(id)
                     ?? throw new Exception();
-                Dispatch(new Replace(id, item));
+                Mutate(state => state with {
+                    Todos = state.Todos.Replace(
+                        state.Todos.Where(x => id == x.TodoId).First(),
+                        item
+                    )
+                });
             },
             async () => {
                 var item = await TodoService.ToggleCompleteAsync(id)

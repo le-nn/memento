@@ -10,8 +10,6 @@
 
     <!-- package info -->
     <PropertyGroup>
-        <Version>1.0.0</Version>
-
         <Title>$(ProjectName)</Title>
         <PackageId>$(AssemblyName)</PackageId>
         <AssemblyName>$(AssemblyName)</AssemblyName>

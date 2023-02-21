@@ -11,7 +11,7 @@ public class ThrottledExecutor<T> : IObservable<T> {
     readonly List<IObserver<T>> _observers = new();
     readonly object _locker = new();
 
-    public short LatencyMs { get; set; } = 180;
+    public ushort LatencyMs { get; set; } = 100;
 
     public ThrottledExecutor() {
         _lastInvokeTime = DateTime.UtcNow - TimeSpan.FromMilliseconds(ushort.MaxValue);
@@ -30,7 +30,7 @@ public class ThrottledExecutor<T> : IObservable<T> {
     }
 
     public IDisposable Subscribe(Action<T> action) {
-        var observer = new GeneralObeserver<T>(action);
+        var observer = new GeneralObserver<T>(action);
         return Subscribe(observer);
     }
 
@@ -48,8 +48,6 @@ public class ThrottledExecutor<T> : IObservable<T> {
 
                 var millisecondsSinceLastInvoke =
                     (int)(DateTime.UtcNow - _lastInvokeTime).TotalMilliseconds;
-
-
 
                 // If last execute was outside the throttle window then execute immediately
                 if (millisecondsSinceLastInvoke >= LatencyMs) {
