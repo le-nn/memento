@@ -79,6 +79,15 @@ public abstract class AbstractStore<TState, TCommand>
         });
     }
 
+    public void StateHasChanged() {
+        InvokeObserver(new StateChangedEventArgs<TState>() {
+            State = State,
+            LastState = State,
+            Command = new Command.StateHasChanged(State),
+            Sender = this,
+        });
+    }
+
     public Type GetStateType() {
         return typeof(TState);
     }

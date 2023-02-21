@@ -137,4 +137,32 @@ public class StoreTest {
         Assert.Equal(10000, commands.Count);
         Assert.True(sw.ElapsedMilliseconds < 200);
     }
+
+    [Fact]
+    public void Ensure_StateHasChangedInvoked() {
+        var store = new AsyncCounterStore();
+
+        var commands = new List<Command>();
+
+        var lastState = store.State;
+        using var subscription = store.Subscribe(e => {
+            commands.Add(e.Command);
+        });
+
+        store.StateHasChanged();
+        store.StateHasChanged();
+        store.StateHasChanged();
+        store.StateHasChanged();
+        store.StateHasChanged();
+        store.StateHasChanged();
+
+        Assert.True(commands is [
+            Command.StateHasChanged,
+            Command.StateHasChanged,
+            Command.StateHasChanged,
+            Command.StateHasChanged,
+            Command.StateHasChanged,
+            Command.StateHasChanged,
+        ]);
+    }
 }
