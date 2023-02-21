@@ -27,6 +27,8 @@ internal sealed class JavaScriptDevToolInteropHandler : IDevtoolInteropHandler, 
 
     public bool IsInitializing => _isInitializing;
 
+    public bool IsReduxDevToolInstalled { get; private set; }
+
     public Action<string>? MessageHandled { get; set; }
     public Action? SyncRequested { get; set; }
 
@@ -44,6 +46,18 @@ internal sealed class JavaScriptDevToolInteropHandler : IDevtoolInteropHandler, 
         _isInitializing = true;
         try {
             var script = GetClientScripts(_option);
+
+            await _jsRuntime.InvokeVoidAsync("eval", """
+                function isDevToolInstalled(){
+                    return !!window.__REDUX_DEVTOOLS_EXTENSION__
+                }
+                """);
+
+            IsReduxDevToolInstalled = await _jsRuntime.InvokeAsync<bool>("isDevToolInstalled");
+            if (IsReduxDevToolInstalled is false) {
+                return;
+            }
+
             await _jsRuntime.InvokeVoidAsync("eval", script);
             await _jsRuntime.InvokeVoidAsync(
                 _toJsInitMethodName,
@@ -58,6 +72,10 @@ internal sealed class JavaScriptDevToolInteropHandler : IDevtoolInteropHandler, 
 
     /// <inheritdoc/>
     public async Task SendAsync(Command? command, HistoryStateContextJson context) {
+        if (IsReduxDevToolInstalled is false) {
+            return;
+        }
+
         await _jsRuntime.InvokeVoidAsync(
             _sendToReduxDevToolDirectly,
             JsonSerializer.Serialize(command, _jsonSerializerOptions),
@@ -68,6 +86,10 @@ internal sealed class JavaScriptDevToolInteropHandler : IDevtoolInteropHandler, 
     /// <inheritdoc/>
     [JSInvokable(DevToolsCallbackId)]
     public void HandleMessage(string json) {
+        if(IsReduxDevToolInstalled is false) {
+            return;
+        }
+
         MessageHandled?.Invoke(json);
     }
 
