@@ -1,6 +1,5 @@
 ﻿using Memento.Core;
 using Memento.Core.Executors;
-using Memento.Core.Store;
 using Memento.ReduxDevTool.Internal;
 using System.Diagnostics;
 using System.Text.Json;

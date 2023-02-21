@@ -1,5 +1,4 @@
 ﻿using Memento.Core;
-using Memento.Core.Store;
 using Memento.ReduxDevTool;
 using Memento.ReduxDevTool.Browser;
 using Microsoft.JSInterop;

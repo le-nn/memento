@@ -1,5 +1,4 @@
 using Memento.Core;
-using Memento.Core.Store;
 using Microsoft.JSInterop;
 
 namespace Memento.Sample.Blazor;

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Memento.Sample.Blazor.Stores;
+﻿namespace Memento.Sample.Blazor.Stores;
 
 public record WeatherForecast {
     public required DateTime Date { get; init; }
