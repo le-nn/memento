@@ -7,14 +7,14 @@ Easy unidirectional store and redo/undo library for state management for fronten
 # Basic Concept
 
 We provides a Store that allows you to share state between components.
-Stores are managed by a single Provider and can subscribe to state change notifications.
+All stores are managed by a single provider and can subscribe to state change notifications.
 Undirectional flow and immutable change of state provides a predictable architecture.
-In addition, we provide a store that easily implements Redo/Undo by managing in an immutable state.
+In addition, we provide a store that easily implements Redo/Undo by managing in immutable states.
 
 ### For patterns like Flux or MVU
 
-Besides a simple store pattern, we also provide patterns inspired by MVU patterns such as Flux and Elm.
-Since we change the state through the Reducer, we can change the state based on stricter rules and observe the state in detail.
+Besides simple store pattern, we also provide patterns inspired by MVU patterns such as Flux and Elm.
+Since you should change the state via the Reducer, you can change the state based on stricter rules and observe the state in detail.
 
 ### Devtool
 
@@ -61,13 +61,45 @@ https://github.com/le-nn/memento-js
 
 This is an C# and Blazor example that implements counter.
 
-Store 
+Simple Store Pattern
+
+```csharp
+using Memento.Core;
+using System.Collections.Immutable;
+
+namespace Memento.Sample.Blazor;
+
+public record AsyncCounterState {
+    public int Count { get; init; } = 0;
+
+    public bool IsLoading { get; init; } = false;
+
+    public ImmutableArray<int> Histories { get; init; } = ImmutableArray.Create<int>();
+}
+
+public class AsyncCounterStore : Store<AsyncCounterStore> {
+    public AsyncCounterStore() : base(() => new()) { }
+
+    public async Task CountUpAsync() {
+        Mutate(state => state with { IsLoading = true, });
+        await Task.Delay(800);
+        Mutate(state => state with {
+            IsLoading = false,
+            Count = state.Count + 1,
+            Histories = state.Histories.Add(state.Count + 1),        
+        });
+    }
+}
+
+```
+
+Flux Store Pattern
 ```csharp
 using Memento.Core;
 using System.Collections.Immutable;
 using static Memento.Sample.Blazor.Stores.AsyncCounterCommands;
 
-namespace Memento.Sample.Blazor.Stores;
+namespace Memento.Sample.Blazor;
 
 public record AsyncCounterState {
     public int Count { get; init; } = 0;
@@ -78,13 +110,12 @@ public record AsyncCounterState {
 }
 
 public record AsyncCounterCommands: Command {
-    public record CountUp : AsyncCounterCommands;
     public record Increment : AsyncCounterCommands;
     public record SetCount(int Count) : AsyncCounterCommands;
     public record BeginLoading : AsyncCounterCommands;
 }
 
-public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> {
+public class AsyncCounterStore : FluxStore<AsyncCounterState, AsyncCounterCommands> {
     public AsyncCounterStore() : base(() => new(), Reducer) { }
 
     static AsyncCounterState Reducer(AsyncCounterState state, AsyncCounterCommands command) {
@@ -93,12 +124,6 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> 
                 Count = state.Count + 1,
                 IsLoading = false,
                 Histories = state.Histories.Add(state.Count + 1),
-            },
-            SetCount payload => state with {
-                Count = payload.Count,
-            },
-            Increment => state with {
-                Count = state.Count + 1,
             },
             BeginLoading => state with {
                 IsLoading = true,
@@ -112,25 +137,12 @@ public class AsyncCounterStore : Store<AsyncCounterState, AsyncCounterCommands> 
         await Task.Delay(800);
         Dispatch(new CountUp());
     }
-
-    public void CountUpManyTimes(int count) {
-        for (int i = 0; i < count; i++) {
-            Dispatch(new Increment());
-        }
-    }
-
-    public void SetCount(int c) {
-        Dispatch(new SetCount(c));
-    }
 }
 
 ```
 
 Razor view
 ```razor
-@using Memento.Sample.Blazor.Stores
-@using System.Text.Json
-
 @page "/counter"
 @inherits ObserverComponet
 @inject AsyncCounterStore AsyncCounterStore
@@ -148,15 +160,10 @@ Razor view
     ]
 </div>
 <button class="mt-3 btn btn-primary" @onclick="IncrementCount">Count up</button>
-<button class="mt-3 btn btn-primary" @onclick="CountupMany">Count up 10000 times</button>
 
 @code {
     async Task IncrementCount() {
-        await this.AsyncCounterStore.CountUpAsync();
-    }
-
-    void CountupMany() {
-        this.AsyncCounterStore.CountUpManyTimes(10000);
+        await AsyncCounterStore.CountUpAsync();
     }
 }
 
