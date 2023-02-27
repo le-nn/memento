@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Easy unidirectional store and red/undo library for state management for frontend apps on Blazor/.NET
+Easy unidirectional store and redo/undo library for state management for frontend apps on Blazor/.NET
 
 # Basic Concept
 
