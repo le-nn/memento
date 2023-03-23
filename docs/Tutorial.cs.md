@@ -218,7 +218,7 @@ The Reducer uses the current state and command to create a new state; define a R
                 Count = payload.Value,
                 History = state.History.Add(payload.Value),
             },
-            _ => throw new Exception("Message is not handled"),
+            _ => throw new CommandNotHandledException(command),
         };
     }
     
