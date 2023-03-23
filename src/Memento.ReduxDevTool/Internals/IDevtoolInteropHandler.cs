@@ -1,6 +1,6 @@
 ﻿using Memento.Core;
 
-namespace Memento.ReduxDevTool.Internal;
+namespace Memento.ReduxDevTool.Internals;
 
 public interface IDevtoolInteropHandler {
     Action<string>? MessageHandled { get; set; }

@@ -20,7 +20,7 @@ internal class GeneralObserver<T> : IObserver<T> {
     }
 }
 
-internal class StoreObserver 
+internal class StoreObserver
     : IObserver<StateChangedEventArgs> {
     readonly Action<StateChangedEventArgs> _action;
 

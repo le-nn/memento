@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 using System.Data;
 using System.Text.Json;
 
-namespace Memento.ReduxDevTool.Internal;
+namespace Memento.ReduxDevTool.Internals;
 
 internal record HistoryState {
     public required int Id { get; set; }
@@ -31,12 +31,13 @@ internal sealed class LiftedHistoryContainer : IDisposable {
     ImmutableArray<HistoryState> _histories = ImmutableArray.Create<HistoryState>();
     int _currentCursorId = 0;
     int _sequence = 0;
-    int NextActionId => _sequence + 1;
     IDisposable? _subscription;
 
     readonly RootState _rootState;
     readonly StoreProvider _provider;
     readonly ReduxDevToolOption _options;
+
+    int NextActionId => _sequence + 1;
 
     HistoryState CurrentHistory => _histories.Where(x => x.Id == _currentCursorId).First();
 
@@ -45,6 +46,8 @@ internal sealed class LiftedHistoryContainer : IDisposable {
     public bool IsPaused { get; set; }
 
     public bool IsLocked { get; set; }
+
+    public bool IsJumping => _histories.Max(x => x.Id) > _currentCursorId;
 
     public LiftedHistoryContainer(StoreProvider provider, ReduxDevToolOption options) {
         _provider = provider;
@@ -134,16 +137,17 @@ internal sealed class LiftedHistoryContainer : IDisposable {
         if (history is not null) {
             var storeBag = _provider.CaptureStoreBag();
             foreach (var storeName in storeBag.Keys) {
+                var targetStore = storeBag[storeName];
                 if (storeName == history.StoreBagKey
                     || history.Command is Init
-                    || history.RootState[storeName].Equals(storeBag[storeName].State) is false
+                    || history.RootState[storeName].Equals(targetStore.State) is false
                 ) {
                     // target store should invoke change event
-                    storeBag[storeName].SetStateForce(history.RootState[storeName]);
+                    targetStore.SetStateForce(history.RootState[storeName]);
                 }
                 else {
                     // ignore to invoke change event because updating ui is heavy
-                    storeBag[storeName].SetStateForceSilently(history.RootState[storeName]);
+                    targetStore.SetStateForceSilently(history.RootState[storeName]);
                 }
             }
         }

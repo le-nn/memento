@@ -1,3 +1,5 @@
+using Memento.Core.History;
+
 namespace Memento.Core;
 
 public record MementoStoreContext<TState>(TState State);

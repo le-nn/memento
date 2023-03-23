@@ -1,4 +1,4 @@
-namespace Memento.Core;
+namespace Memento.Core.History;
 
 public class PastHistoryStack<T> : List<T> {
     public void Push(T item) {

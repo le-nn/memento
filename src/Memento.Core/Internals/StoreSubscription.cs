@@ -1,4 +1,4 @@
-namespace Memento.Core.Store.Internals;
+namespace Memento.Core.Internals;
 
 internal sealed class StoreSubscription : IDisposable {
     private bool _isDisposed;

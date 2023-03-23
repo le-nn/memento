@@ -1,8 +1,7 @@
-﻿using System.Collections.Immutable;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Memento.ReduxDevTool.Internal;
+namespace Memento.ReduxDevTool.Internals;
 
 public record StoreAction {
     [JsonPropertyName("action")]

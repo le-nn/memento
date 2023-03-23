@@ -1,5 +1,5 @@
-﻿using Memento.Core;
-using Memento.ReduxDevTool.Internal;
+﻿using DomainHelpers.Blazor.Store.Core;
+using Memento.ReduxDevTool.Internals;
 using Microsoft.JSInterop;
 using System.Text.Json;
 
@@ -86,7 +86,7 @@ internal sealed class JavaScriptDevToolInteropHandler : IDevtoolInteropHandler, 
     /// <inheritdoc/>
     [JSInvokable(DevToolsCallbackId)]
     public void HandleMessage(string json) {
-        if(IsReduxDevToolInstalled is false) {
+        if (IsReduxDevToolInstalled is false) {
             return;
         }
 

@@ -1,5 +1,5 @@
 ﻿using Memento.Core;
-using Memento.ReduxDevTool.Internal;
+using Memento.ReduxDevTool.Internals;
 
 namespace Memento.ReduxDevTool.Remote;
 

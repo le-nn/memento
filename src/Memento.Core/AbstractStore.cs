@@ -1,21 +1,19 @@
 ﻿using Memento.Core.Internals;
-using Memento.Core.Store.Internals;
-using System.Dynamic;
-using System.Threading.Channels;
+using System.Collections.Immutable;
 
 namespace Memento.Core;
 
-
 public abstract class AbstractStore<TState, TCommand>
-    : IStore, IObservable<StateChangedEventArgs<TState>>
+    : IStore, IObservable<StateChangedEventArgs<TState>>, IDisposable
         where TState : class
         where TCommand : Command {
-    StoreProvider? _provider;
-    Func<TState, TCommand, object?>? _middlewareHandler;
-
     readonly List<IObserver<StateChangedEventArgs>> _observers = new();
     readonly object _locker = new();
     readonly Reducer<TState, TCommand> _reducer;
+
+    StoreProvider? _provider;
+    Func<TState, TCommand, object?>? _middlewareHandler;
+    ImmutableArray<IDisposable>? _disposables;
 
     Func<object, Command, object> IStore.Reducer => (o, m) => _reducer((TState)o, (TCommand)m);
 
@@ -49,6 +47,18 @@ public abstract class AbstractStore<TState, TCommand>
         _reducer = (state, command) => {
             return Reducer(state, command);
         };
+    }
+
+    public void Dispose() {
+        foreach (var d in _disposables ?? ImmutableArray.Create<IDisposable>()) {
+            d.Dispose();
+        }
+
+        OnDisposed();
+    }
+
+    protected virtual IEnumerable<IDisposable> OnHandleDisposable() {
+        return Enumerable.Empty<IDisposable>();
     }
 
     public IDisposable Subscribe(Action<StateChangedEventArgs<TState>> observer) {
@@ -118,12 +128,12 @@ public abstract class AbstractStore<TState, TCommand>
 
         var previous = State;
         State = tState;
-        var command = new Command.ForceReplaced(state);
+        var command = new Command.ForceReplaced(State);
         InvokeObserver(new StateChangedEventArgs<TState>() {
             Command = command,
             LastState = previous,
             Sender = this,
-            State = tState,
+            State = State,
         });
     }
 
@@ -132,7 +142,7 @@ public abstract class AbstractStore<TState, TCommand>
     }
 
     /// <summary>
-    /// Called before invoke _reducer and return value overrides current state.
+    /// Called before invoke state changed and return value overrides current state.
     /// </summary>
     /// <param name="state"> The current state.</param>
     /// <param name="command"> The command for mutating the state.</param>
@@ -142,7 +152,7 @@ public abstract class AbstractStore<TState, TCommand>
     }
 
     /// <summary>
-    /// Called before invoke _reducer and return value overrides current state.
+    /// Called before invoke state changed and return value overrides current state.
     /// </summary>
     /// <param name="state"> The computed state via _reducer.</param>
     /// <param name="command"> The command for mutating the state.</param>
@@ -151,15 +161,16 @@ public abstract class AbstractStore<TState, TCommand>
         return state;
     }
 
+    protected virtual void OnDisposed() {
+
+    }
+
     internal void ComputedAndApplyState(TState state, TCommand command) {
         if (ComputeNewState() is ( { } s, { } e)) {
             lock (_locker) {
                 State = s;
                 InvokeObserver(e);
             }
-        }
-        else {
-            throw new Exception("State is invalid.");
         }
 
         (TState?, StateChangedEventArgs<TState>?) ComputeNewState() {
@@ -196,7 +207,7 @@ public abstract class AbstractStore<TState, TCommand>
 
     async Task IStore.InitializeAsync(StoreProvider provider) {
         _provider = provider;
-
+        _disposables = OnHandleDisposable().ToImmutableArray();
         try {
             await OnInitializedAsync(provider);
         }
@@ -208,20 +219,20 @@ public abstract class AbstractStore<TState, TCommand>
         }
     }
 
-    internal Func<TState, TCommand, object?> GetMiddlewareInvokeHandler() {
+    internal Func<TState?, TCommand, object?> GetMiddlewareInvokeHandler() {
         // process middleware
         var middleware = _provider?.GetAllMiddleware()
             ?? Array.Empty<Middleware>();
         return middleware.Aggregate(
-            (object s, Command m) => {
-                if ((s, m) is not (TState _s, TCommand _m)) {
-                    throw new Exception();
+            (object? s, Command m) => {
+                if ((s, m) is (TState ss, TCommand cc)) {
+                    return (object?)_reducer.Invoke(ss, cc);
                 }
 
-                return (object)_reducer.Invoke(_s, _m);
+                return null;
             },
             (before, middleware) =>
-                (object s, Command m) => middleware.Handler.HandleStoreDispatch(
+                (object? s, Command m) => middleware.Handler.HandleStoreDispatch(
                     s,
                     m,
                     (_s, _m) => before(_s, m)

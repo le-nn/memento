@@ -1,5 +1,4 @@
 using Memento.Core.Internals;
-using Memento.Core.Store.Internals;
 using System.Collections.Immutable;
 
 namespace Memento.Core;
@@ -121,14 +120,14 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
     public IDisposable Subscribe(Action<RootStateChangedEventArgs> observer)
         => Subscribe(new StoreProviderObserver(observer));
 
-    internal Func<RootState, StateChangedEventArgs, RootState?> GetMiddlewareInvokeHandler() {
+    internal Func<RootState?, StateChangedEventArgs, RootState?> GetMiddlewareInvokeHandler() {
         // process middleware
         var middleware = GetAllMiddleware()
             ?? Array.Empty<Middleware>();
         return middleware.Aggregate(
-            (RootState s, StateChangedEventArgs _) => s,
+            (RootState? s, StateChangedEventArgs _) => s,
             (before, middleware) =>
-                (RootState s, StateChangedEventArgs m) => middleware.Handler.HandleProviderDispatch(
+                (RootState? s, StateChangedEventArgs m) => middleware.Handler.HandleProviderDispatch(
                     s,
                     m,
                     (_s, _m) => before(_s, m)
@@ -147,9 +146,12 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
             subscription.Dispose();
         }
 
-        // Initialize all middleware.
         foreach (var middleware in GetAllMiddleware()) {
             middleware.Dispose();
+        }
+
+        foreach (var store in _stores) {
+            store.Dispose();
         }
     }
 }

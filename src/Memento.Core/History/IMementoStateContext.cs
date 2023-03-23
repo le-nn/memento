@@ -1,4 +1,4 @@
-namespace Memento.Core;
+namespace Memento.Core.History;
 
 public interface IMementoCommandContext : IDisposable, IMementoStateContext {
     ValueTask InvokeContextSavedAsync();

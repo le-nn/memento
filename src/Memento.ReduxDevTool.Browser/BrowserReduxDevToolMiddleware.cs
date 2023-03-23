@@ -1,9 +1,8 @@
-﻿using Memento.Core;
-using Memento.ReduxDevTool;
-using Memento.ReduxDevTool.Browser;
+﻿using DomainHelpers.Blazor.Store.ReduxDevTools;
+using Memento.Core;
 using Microsoft.JSInterop;
 
-namespace Memento.Blazor.Devtools.Browser;
+namespace Memento.ReduxDevTool.Browser;
 
 /// <summary>
 /// A middleware that connect to Redux devtool.

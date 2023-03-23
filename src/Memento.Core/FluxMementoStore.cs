@@ -1,8 +1,11 @@
+using Memento.Core.History;
+
 namespace Memento.Core;
 
 public record Context<TState, TMessage>(TState State, TMessage Message);
 
-public abstract class FluxMementoStore<TState, TCommand>
+public abstract class FluxMementoStore
+    <TState, TCommand>
     : FluxStore<TState, TCommand>
         where TState : class
         where TCommand : Command, new() {

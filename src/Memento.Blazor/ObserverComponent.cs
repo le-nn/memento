@@ -1,5 +1,7 @@
 using Memento.Core;
+using Memento.Core.Executors;
 using Microsoft.AspNetCore.Components;
+using System.Collections.Immutable;
 
 namespace Memento.Blazor;
 
@@ -8,6 +10,7 @@ public class ObserverComponent : ComponentBase, IDisposable {
     private IDisposable? _stateSubscription;
     private readonly IDisposable _invokerSubscription;
     private readonly ThrottledExecutor<StateChangedEventArgs> _stateHasChangedThrottler = new();
+    private ImmutableArray<IDisposable>? _disposables;
 
     /// <summary>
     /// Creates a new instance
@@ -15,7 +18,7 @@ public class ObserverComponent : ComponentBase, IDisposable {
     public ObserverComponent() {
         _invokerSubscription = _stateHasChangedThrottler.Subscribe(e => {
             if (_isDisposed is false) {
-                base.InvokeAsync(StateHasChanged);
+                InvokeAsync(StateHasChanged);
             }
         });
     }
@@ -48,6 +51,7 @@ public class ObserverComponent : ComponentBase, IDisposable {
             _stateHasChangedThrottler.LatencyMs = LatencyMs;
             _stateHasChangedThrottler.Invoke(e);
         });
+        _disposables = OnHandleDisposable().ToImmutableArray();
     }
 
     protected virtual void Dispose(bool disposing) {
@@ -58,6 +62,14 @@ public class ObserverComponent : ComponentBase, IDisposable {
 
             _invokerSubscription.Dispose();
             _stateSubscription.Dispose();
+
+            foreach (var d in _disposables ?? ImmutableArray.Create<IDisposable>()) {
+                d.Dispose();
+            }
         }
+    }
+
+    protected virtual IEnumerable<IDisposable> OnHandleDisposable() {
+        return Enumerable.Empty<IDisposable>();
     }
 }
