@@ -1,6 +1,6 @@
-# Tutorial for typescript on node.js or browser
+# Tutorial for C# with Console Application
 
-Let's take a look at an example of a simple console application to experience the Basic Concept.
+Take a look at an example of a simple console application to experience the Basic Concept.
 
 # Install
 
@@ -10,10 +10,6 @@ Prease install via nuget package manager.
 dotnet add package Mement.Core
 dotnet add package Microsoft.Extensions.DependencyInjection
 ```
-
-```Microsoft.Extensions.DependencyInjection``` is an Dependency Inhjection Library.
-Blazor is provided by ```Microsoft.Extensions.DependencyInjection``` as a standard helper with Dependency Injection,
- but it needs to be installed in the Console App project.
 
 ## Define store, state and messages.
 
