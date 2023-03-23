@@ -22,6 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{95938898-9
 		docs\Blazor\DependencyInjection.md = docs\Blazor\DependencyInjection.md
 		docs\README.md = docs\README.md
 		docs\Tutorial.cs.md = docs\Tutorial.cs.md
+		docs\ReduxDevTools.md = docs\ReduxDevTools.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "middlewares", "middlewares", "{9D40EFD1-EE24-4985-B286-7C99ABA9AAC0}"
@@ -49,7 +50,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Blazor", "Blazor", "{395CB6B4-8E41-46EA-B984-F8C38FD4D482}"
 	ProjectSection(SolutionItems) = preProject
 		docs\Blazor\DependencyInjection.md = docs\Blazor\DependencyInjection.md
-		docs\README.md = docs\README.md
 		docs\Blazor\README.md = docs\Blazor\README.md
 	EndProjectSection
 EndProject

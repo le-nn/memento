@@ -17,6 +17,9 @@ Interact with ReduxDevTools via JavaScript interop on `Microsoft.JSInterop`.
 
 Connect and Interact with applications via WebSocket.
 You can use ReduxDevTool even in environments that do not use a direct browser, such as Blazor Hybrid, Native Application, and Blazor Server.
+Not available for Browser applications such as Blazor WASM as it must support System.Net
+
+# Usage
 
 To enable develop integration, follow these steps
 
@@ -36,14 +39,17 @@ https://addons.mozilla.org/en-US/firefox/addon/reduxdevtools/
 You can see the all docs for extension on official Github repos.
 https://github.com/reduxjs/redux-devtools
 
-## 2. Install the memento middleware from Nuget package
+##  2. Install the memento middleware from Nuget package
 
-### Via CLI
+### CLI
+
+Case of Blazor WASM or Blazor Server
+
 ```
 dotnet add package Memento.ReduxDevTool.Browser
 ```
 
-or 
+Case of Native app, Blazor MAUI or Blazor Server
 
 ```
 dotnet add package Memento.ReduxDevTool.Remote
@@ -62,7 +68,7 @@ https://www.nuget.org/packages/Memento.ReduxDevTool.Remote
 
 This might be a security flaw, so you should only reference this package in Debug builds.
 
-### Case of Memento.ReduxDevTool.Browser
+#### Case of Memento.ReduxDevTool.Browser
 ```cs
 using Memento.ReduxDevTool.Browser;
 
@@ -91,9 +97,9 @@ builder.Services.AddRemoteReduxDevToolMiddleware(
 #endif
 ```
 
-## API Reference
+# Redux Dev Tools middleware API Reference
 
-### AddBrowserReduxDevToolMiddleware Extension
+## AddBrowserReduxDevToolMiddleware Extension
 
 Register the middleware to services for browser.
 
@@ -109,7 +115,7 @@ Register the middleware to services for browser.
 
 The service collection.
 
-### AddRemoteReduxDevToolMiddleware Extension
+## AddRemoteReduxDevToolMiddleware Extension
 
 Register the middleware to services for via remote connection.
 
@@ -128,9 +134,7 @@ Register the middleware to services for via remote connection.
 
 The service collection.
 
-
-
-### ReduxDevToolOption
+## ReduxDevToolOption
 
 | Property              | Type       | Default Value                 | Description                                                      |
 |-----------------------|------------|-------------------------------|------------------------------------------------------------------|

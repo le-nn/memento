@@ -16,7 +16,7 @@ In addition, we provide a store that easily implements Redo/Undo by managing in 
 Besides simple store pattern, we also provide patterns inspired by MVU patterns such as Flux and Elm.
 Since you should change the state via the Reducer, you can change the state based on stricter rules and observe the state in detail.
 
-### Devtool
+### ReduxDevTool
 
 [Redux DevTools](https://github.com/reduxjs/redux-devtools) is supported.
 Redux DevTools is a tool for debugging application's state changes.
