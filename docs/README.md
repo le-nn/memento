@@ -46,17 +46,36 @@ The state you want to manage and observe.
 #### Services 
 It is a concept that summarizes the features with side effects, used with Dependency Injection.
 
-# Tutorials
+## Compatibility and bindings
+
+| Package Name                                                                                | Platform            | Desctiption                                                 |
+| ------------------------------------------------------------------------------------------- | ------------------- | ----------------------------------------------------------- |
+| [Memento.Core](https://www.nuget.org/packages/Memento.Core)                                 | .NET 6 or later     | Core Package of Memento                                     |
+| [Memento.Blazor](https://www.nuget.org/packages/Memento.Blazor)                             | .NET 6 or later     | Provides Observing state changes on Blazor Component.       |
+| [Memento.ReduxDevTool.Remote](https://www.nuget.org/packages/Memento.ReduxDevTool.Remote)   | .NET 6 or later     | Connect and Interact with applications via WebSocket.       |
+| [Memento.ReduxDevTool.Browser](https://www.nuget.org/packages/Memento.ReduxDevTool.Browser) | .NET 6 or later     | Interact with ReduxDevTools via JavaScript interop.         |
+| [Memento.ReduxDevTool](https://www.nuget.org/packages/Memento.ReduxDevTool)                 | .NET 6 or later     | Provides basic functionality to interact with ReduxDevTools. Interop is required. |
+
+## Tutorials
 
 The tutorials implemented in each language and simple console application are following
 
-[Typescript](./Tutorial.ts.md)
-[C#](./Tutorial.cs.md)
+[Tutorials with plane C#](./Tutorial.cs.md)
 
-# Practical usage on the Framework
-
+Practical usage on the Framework
 In reality, most of them will be used together with the UI framework.
-Describes the concepts common to all languages ​​and frameworks is following.
+Describes the concepts common to all languages and frameworks is following.
 
-[React](./React/GettingStandard.md)
-[Blazor](./Blazor/GettingStandard.md)
+[Tutorials with Blazor](./Blazor/GettingStandard.md)
+
+## Samples
+
+[C# with Console App](../samples/Memento.Sample.ConsoleApp)
+
+[Blazor App Shared](../samples/Memento.Sample.Blazor)
+
+[Blazor Wasm App](../samples/Memento.Sample.BlazorWasm)
+
+[Blazor Server App](../samples/Memento.Sample.BlazorServer)
+
+
