@@ -171,9 +171,7 @@ Razor view
 
 # Documentation
 
-[Basic Concept with C#](./docs/Tutorial.cs.md)
-
-[Blazor](./docs/Blazor/GettingStandard.md)
+[See](./docs/README.md)
 
 # License
 Designed with ♥ by le-nn. Licensed under the MIT License.
