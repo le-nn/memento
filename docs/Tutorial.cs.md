@@ -9,33 +9,31 @@ First, there is a simple store that only fires immutable state and state change 
 Besides the simple store pattern, we also provide patterns inspired by MVU patterns such as Flux and Elm. Since you should change the state via the Reducer, you can change the state based on stricter rules and observe the state in detail.
 
 ### Store class
-
 * Provides a way to change state directly.
-* Suitable when simpler state management is required.
-* State management may be intuitive and easy to understand because state is changed by directly applying reducer functions.
+*Suitable when simpler state management is required.
+*State management may be intuitive and easy to understand because the state is changed by directly applying reducer functions.
 
-### FluxStore class:.
+### FluxStore class
 * Based on the Flux architecture, this class is suitable when more rigorous state management is required.
-* state changes via commands, so actions and state changes are separated. This facilitates logging and debugging of state changes.
+* State changes via commands, so actions and state changes are separated. This facilitates logging and debugging of state changes.
 * It facilitates consistent state management in complex applications and team development.
 
 ## Install
 
-Prease install via package manager.
+Please install via package manager.
 
 ```
 dotnet add package Mement.Core
 dotnet add package Microsoft.Extensions.DependencyInjection
 ```
 
-or 
+Or install from Nuget
 
-Install from Nuget
 https://www.nuget.org/packages/Memento.Core
 
 ## Define Store pattern
 
-In this section you will learn the basic patterns of state management.
+In this section, you will learn the basic patterns of state management.
 Try to initialize state in your application, subscribe to it, and call actions to output state changes.
 Create a store for a simple counter application. This store, named AsyncCounterStore, will handle the count-up process and set-count process.
 
@@ -58,7 +56,7 @@ public record AsyncCounterState {
 ### Define Store
 
 Next, create a store class named AsyncCounterStore. This class inherits from Store<AsyncCounterState>.
-    
+
 ```cs
 public class AsyncCounterStore : Store<AsyncCounterState> {
     public AsyncCounterStore() : base(() => new()) {
@@ -345,8 +343,8 @@ var provider = new StoreProvider(serviceProvider);
 ### Subscribe
 
 A listener is registered for state change events so that processing can be performed each time the state changes. In this example, logs are output to the console each time the state changes.
-The provider subscribes to all store state change events and output in json to console.
-The store subscribes to the store state change events and output in json to console.
+The provider subscribes to all store state change events and outputs in JSON to the console.
+The store subscribes to the store state change events and output in JSON to console.
 Whenever a state change occurs, an event is emitted from the monitored store (all stores or a specific store) and information related to that event is printed to the console. This output includes event types, state changes, and is presented in formatted JSON using the JsonSerializer.
 
 
@@ -387,7 +385,7 @@ Console.WriteLine(JsonSerializer.Serialize(
 ```
 ## Call actions
 
-The application calls the store's actions to change its state. In this example, two actions are called, CountUpAsync and SetCount.
+The application calls the store's actions to change the state. In this example, two actions are called, CountUpAsync and SetCount.
 
 ```cs
 // Call action and countup async.
