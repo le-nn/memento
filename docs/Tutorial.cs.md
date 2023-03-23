@@ -1,12 +1,12 @@
 # Tutorial for C# with Console Application
 
-Take a look at an example of a simple console application to experience the Basic Concept.
+Take a look at an example of a simple console application to experience the basic concept.
 
-We provides a Store that allows you to share state between components. All stores are managed by a single provider and can subscribe to state change notifications. Undirectional flow and immutable change of state provides a predictable architecture. In addition, we provide a store that easily implements Redo/Undo by managing in immutable states.
+We provide a Store that allows you to share state between components. All stores are managed by a single provider and can subscribe to state change notifications. Unidirectional flow and immutable change of state provide a predictable architecture. In addition, we offer a store that easily implements Redo/Undo by managing immutable states.
 
 There are two ways to define a Store class that manages state.
-First, it is a simple store that only fires immutable state and state change events.
-Besides simple store pattern, we also provide patterns inspired by MVU patterns such as Flux and Elm. Since you should change the state via the Reducer, you can change the state based on stricter rules and observe the state in detail.
+First, there is a simple store that only fires immutable state and state change events.
+Besides the simple store pattern, we also provide patterns inspired by MVU patterns such as Flux and Elm. Since you should change the state via the Reducer, you can change the state based on stricter rules and observe the state in detail.
 
 ### Store class
 
