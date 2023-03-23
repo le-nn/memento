@@ -7,7 +7,7 @@ namespace Memento.Blazor;
 using GetStateChangedPropertyDelegate = Func<object, IStore>;
 
 /// <summary>
-/// A utility class that automaticaly subscribes to all <see cref="IStateChangedNotifier"/> properties
+/// A utility class that automatically subscribes to all <see cref="IStateChangedNotifier"/> properties
 /// on a specific object
 /// </summary>
 public static class StateSubscriber {

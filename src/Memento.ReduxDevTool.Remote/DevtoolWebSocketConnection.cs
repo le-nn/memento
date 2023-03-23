@@ -1,11 +1,12 @@
 ﻿using Fleck;
 using Memento.Core;
-using Memento.ReduxDevTool.Internal;
+using Memento.ReduxDevTool.Internals;
 using System.Text.Json;
 
 namespace Memento.ReduxDevTool.Remote;
 
-public class DevToolWebSocketConnection : IDisposable {
+public class DevToolWebSocketConnection
+    : IDisposable {
     const int _pingTimeout = 600000;
 
     readonly WebSocketServer _server;

@@ -1,4 +1,4 @@
-﻿using DomainHelpers.Blazor.Store.Core;
+﻿using Memento.Core;
 using Memento.ReduxDevTool.Internals;
 using Microsoft.JSInterop;
 using System.Text.Json;
@@ -8,7 +8,7 @@ namespace Memento.ReduxDevTool.Browser;
 /// <summary>
 /// Interop for dev tools
 /// </summary>
-internal sealed class JavaScriptDevToolInteropHandler : IDevtoolInteropHandler, IDisposable {
+internal sealed class JavaScriptDevToolInteropHandler : IDevToolInteropHandler, IDisposable {
     private const string _sendToReduxDevToolDirectly = "mementoReduxDispatch";
     private const string _toJsInitMethodName = "mementoReduxDevToolInit";
     private const string _reduxDevToolsVariableName = "mementoReduxDevTool";

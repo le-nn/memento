@@ -27,12 +27,12 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
     readonly ThrottledExecutor<HistoryStateContextJson> _throttledExecutor = new() { LatencyMs = 1000 };
     readonly LiftedHistoryContainer _liftedStore;
     readonly StoreProvider _storeProvider;
-    readonly IDevtoolInteropHandler _interopHandler;
+    readonly IDevToolInteropHandler _interopHandler;
     readonly ReduxDevToolOption _option;
 
     IDisposable? _subscription;
 
-    public ReduxDevToolMiddlewareHandler(IDevtoolInteropHandler devtoolInteropHandler, IServiceProvider provider, ReduxDevToolOption option) {
+    public ReduxDevToolMiddlewareHandler(IDevToolInteropHandler devtoolInteropHandler, IServiceProvider provider, ReduxDevToolOption option) {
         _option = option;
         _interopHandler = devtoolInteropHandler;
         _interopHandler.MessageHandled = HandleMessage;

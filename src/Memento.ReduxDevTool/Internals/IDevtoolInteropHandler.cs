@@ -2,7 +2,7 @@
 
 namespace Memento.ReduxDevTool.Internals;
 
-public interface IDevtoolInteropHandler {
+public interface IDevToolInteropHandler {
     Action<string>? MessageHandled { get; set; }
 
     Action? SyncRequested { get; set; }

@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace Memento.Blazor;
 
+/// <summary>
+/// The component for initializing Memento instance.
+/// </summary>
 public class MementoInitializer : ComponentBase, IDisposable {
     [Inject]
     public required StoreProvider StoreProvider { get; set; }
