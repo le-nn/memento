@@ -1,13 +1,14 @@
 ﻿using Memento.Core;
-using Memento.ReduxDevTool.Internal;
+using Memento.ReduxDevTool.Internals;
 
 namespace Memento.ReduxDevTool.Remote;
 
-internal class RemoteDevtoolInteropHandler : IDevtoolInteropHandler, IAsyncDisposable {
+internal class RemoteDevToolInteropHandler
+    : IDevToolInteropHandler, IAsyncDisposable {
     readonly string _instanceId = Guid.NewGuid().ToString();
     readonly DevToolWebSocketConnection _webSocketConnection;
 
-    public RemoteDevtoolInteropHandler(DevToolWebSocketConnection webSocketConnection) {
+    public RemoteDevToolInteropHandler(DevToolWebSocketConnection webSocketConnection) {
         _webSocketConnection = webSocketConnection;
 
         _webSocketConnection.MessageHandled += (id, json) => {

@@ -22,7 +22,7 @@ Since you should change the state via the Reducer, you can change the state base
 Redux DevTools is a tool for debugging application's state changes.
 State can be time traveled and history can be viewed in DevTools.
 
-[See documentation](./docs/DevTools.md) for details of usage.
+[See documentation](./docs\ReduxDevTool.md) for details of usage.
 
 ## DEMO Page
 
@@ -39,12 +39,12 @@ https://github.com/le-nn/memento-js
 
 ## Features
 
-* Less boilarplate, less rule and simple usage 
-* Immutable and Unidirectional data flow
+* Less boilerplate, less rule and simple usage 
+* Immutable state and Unidirectional flow
 * Multiple stores but manged by single provider, so can observe and manage as one state tree
 * Observe detailed status with command patterns and makes it easier to monitor what happened within the application 
 
-## Concepts and Data Flow
+## Concepts and Flow
 
 <img width="800px" src="./Architecture.jpg"/>
 
@@ -171,10 +171,13 @@ Razor view
 
 ## Compatibility and bindings
 
-| Package Name    | Version | Lang       | Platform            | Package manager | Release Notes                      | Package provider                                       |
-| --------------- | ------- | ---------- | ------------------- | --------------- | ---------------------------------- | ------------------------------------------------------ |
-| Memento.Core    | 1.0.0   | C#         | .NET 6 or later     | NuGet           | [Notes](./release-notes.dotnet.md) | [NuGet](https://www.nuget.org/packages/Memento.Core)   |
-| Memento.Blazor  | 1.0.0   | Blazor     | .NET 6 or later     | NuGet           | [Notes](./release-notes.dotnet.md) | [NuGet](https://www.nuget.org/packages/Memento.Blazor) |
+| Package Name                                                                                | Platform            | Desctiption                                                 |
+| ------------------------------------------------------------------------------------------- | ------------------- | ----------------------------------------------------------- |
+| [Memento.Core](https://www.nuget.org/packages/Memento.Core)                                 | .NET 6 or later     | Core Package of Memento                                     |
+| [Memento.Blazor](https://www.nuget.org/packages/Memento.Blazor)                             | .NET 6 or later     | Provides Observing state changes on Blazor Component.       |
+| [Memento.ReduxDevTool.Remote](https://www.nuget.org/packages/Memento.ReduxDevTool.Remote)   | .NET 6 or later     | Connect and Interact with applications via WebSocket.       |
+| [Memento.ReduxDevTool.Browser](https://www.nuget.org/packages/Memento.ReduxDevTool.Browser) | .NET 6 or later     | Interact with ReduxDevTools via JavaScript interop.         |
+| [Memento.ReduxDevTool](https://www.nuget.org/packages/Memento.ReduxDevTool)                 | .NET 6 or later     | Provides basic functionality to interact with ReduxDevTools. Interop is required. |
 
 # Documentation
 

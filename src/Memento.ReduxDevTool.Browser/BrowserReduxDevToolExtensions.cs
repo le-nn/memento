@@ -1,5 +1,4 @@
-﻿using Memento.Blazor.Devtools.Browser;
-using Memento.Core;
+﻿using Memento.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Memento.ReduxDevTool.Browser;

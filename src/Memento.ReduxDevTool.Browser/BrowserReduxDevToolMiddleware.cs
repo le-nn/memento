@@ -1,21 +1,29 @@
 ﻿using Memento.Core;
-using Memento.ReduxDevTool;
-using Memento.ReduxDevTool.Browser;
 using Microsoft.JSInterop;
 
-namespace Memento.Blazor.Devtools.Browser;
+namespace Memento.ReduxDevTool.Browser;
 
 /// <summary>
-/// A middleware that connect to Redux devtool.
+/// Represents the Redux Developer Tool middleware used for debugging and profiling Redux stores on Browser.
+/// Interact with ReduxDevTools via JavaScript interop on `Microsoft.JSInterop`.
 /// </summary>
 public sealed class BrowserReduxDevToolMiddleware : Middleware {
     readonly ReduxDevToolOption _chromiumDevToolOption;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BrowserReduxDevToolMiddleware" /> class with the specified options and interop handler.
+    /// </summary>
+    /// <param name="chromiumDevToolOption">The configuration options for the Redux Developer Tool middleware (optional).</param>
     public BrowserReduxDevToolMiddleware(ReduxDevToolOption? chromiumDevToolOption = null) {
         _chromiumDevToolOption = chromiumDevToolOption ?? new();
     }
 
-    protected override MiddlewareHandler Create(IServiceProvider provider) {
+    /// <summary>
+    /// Creates a new <see cref="ReduxDevToolMiddlewareHandler"/> instance for the Redux Developer Tool middleware.
+    /// </summary>
+    /// <param name="provider">The service provider used to resolve dependencies.</param>
+    /// <returns>A new <see cref="ReduxDevToolMiddlewareHandler"/> instance for the Redux Developer Tool middleware.</returns>
+    protected override ReduxDevToolMiddlewareHandler Create(IServiceProvider provider) {
         var jsHandler = new JavaScriptDevToolInteropHandler(
             (IJSRuntime)(
                 provider.GetService(typeof(IJSRuntime)) ?? throw new Exception()

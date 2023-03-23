@@ -1,3 +1,5 @@
+using System;
+
 namespace Memento.Core;
 
 internal class StoreObserver
@@ -9,11 +11,11 @@ internal class StoreObserver
     }
 
     public void OnCompleted() {
-        throw new NotImplementedException();
+        throw new NotSupportedException();
     }
 
     public void OnError(Exception error) {
-        throw new NotImplementedException();
+        throw new NotSupportedException();
     }
 
     public void OnNext(StateChangedEventArgs value) {

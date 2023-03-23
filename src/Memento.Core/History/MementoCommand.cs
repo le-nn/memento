@@ -1,10 +1,10 @@
-namespace Memento.Core;
+namespace Memento.Core.History;
 
 public record MementoCommandContext<T> : IMementoCommandContext<T> {
     public bool IsDisposed { get; private set; }
 
     public T? State { get; set; } = default;
-    
+
     object? IMementoStateContext.State {
         get => State;
         set => State = (T?)value;

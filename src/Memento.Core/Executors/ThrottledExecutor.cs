@@ -1,7 +1,6 @@
 using Memento.Core.Internals;
-using Memento.Core.Store.Internals;
 
-namespace Memento.Core;
+namespace Memento.Core.Executors;
 
 public class ThrottledExecutor<T> : IObservable<T> {
     volatile int _lockFlag;

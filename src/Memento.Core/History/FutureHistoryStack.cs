@@ -1,4 +1,4 @@
-namespace Memento.Core;
+namespace Memento.Core.History;
 
 internal class FutureHistoryStack<T> : List<T> {
     public void Push(T item) {

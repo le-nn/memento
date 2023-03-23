@@ -1,6 +1,6 @@
 ﻿using Memento.Core;
 using Memento.Core.Executors;
-using Memento.ReduxDevTool.Internal;
+using Memento.ReduxDevTool.Internals;
 using System.Diagnostics;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -24,15 +24,15 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
 
     readonly Regex _stackTraceFilterRegex = new(_stackTraceFilterExpression, RegexOptions.Compiled);
     readonly ConcatAsyncOperationExecutor _concatExecutor = new();
-    readonly ThrottledExecutor<HistoryStateContextJson> _throttledExecutor = new() {LatencyMs=1000 };
+    readonly ThrottledExecutor<HistoryStateContextJson> _throttledExecutor = new() { LatencyMs = 1000 };
     readonly LiftedHistoryContainer _liftedStore;
     readonly StoreProvider _storeProvider;
-    readonly IDevtoolInteropHandler _interopHandler;
+    readonly IDevToolInteropHandler _interopHandler;
     readonly ReduxDevToolOption _option;
 
     IDisposable? _subscription;
 
-    public ReduxDevToolMiddlewareHandler(IDevtoolInteropHandler devtoolInteropHandler, IServiceProvider provider, ReduxDevToolOption option) {
+    public ReduxDevToolMiddlewareHandler(IDevToolInteropHandler devtoolInteropHandler, IServiceProvider provider, ReduxDevToolOption option) {
         _option = option;
         _interopHandler = devtoolInteropHandler;
         _interopHandler.MessageHandled = HandleMessage;
@@ -52,11 +52,23 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
         });
     }
 
+    public override object? HandleStoreDispatch(object? state, Command command, NextStoreMiddlewareCallback next) {
+        if (_liftedStore.IsJumping) {
+            return next(null, command);
+        }
+
+        return next(state, command);
+    }
+
     public override RootState? HandleProviderDispatch(
-        RootState state,
+        RootState? state,
         StateChangedEventArgs e,
         NextProviderMiddlewareCallback next
     ) {
+        if (state is null) {
+            return next(state, e);
+        }
+
         var stackTrace = _option.StackTraceEnabled
             ? string.Join(
                 "\r\n",
@@ -64,13 +76,17 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
                     .GetFrames()
                     .Select(x => $"at {x.GetMethod()?.DeclaringType?.FullName}.{x.GetMethod()?.Name} ({x.GetFileName()}:{x.GetFileLineNumber()}:{x.GetFileColumnNumber()})")
                     .Where(x => _stackTraceFilterRegex?.IsMatch(x) is not false)
-                    .Take((int)_option.StackTraceLinesLimit)
+                    .Take(_option.StackTraceLinesLimit)
             )
             : "";
 
         _ = _concatExecutor.ExecuteAsync(async () => {
             await SendAsync(e, state, stackTrace);
         });
+
+        if (_liftedStore.IsJumping) {
+            return next(null, e);
+        }
 
         return next(state, e);
     }
@@ -145,7 +161,12 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
         }
         catch (Exception ex) {
             // TODO: HandleProviderDispatch logger
+            Console.WriteLine("Redux DevTool Error :");
+            Console.WriteLine(ex.Message);
+            Console.WriteLine("StackTrace");
             Console.WriteLine(ex.StackTrace);
+            Console.WriteLine("json :");
+            Console.WriteLine(json);
         }
     }
 

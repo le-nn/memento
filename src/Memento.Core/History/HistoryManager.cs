@@ -1,6 +1,6 @@
 using Memento.Core.Executors;
 
-namespace Memento.Core;
+namespace Memento.Core.History;
 
 public class HistoryManager {
     private int _maxHistoryCount = 8;

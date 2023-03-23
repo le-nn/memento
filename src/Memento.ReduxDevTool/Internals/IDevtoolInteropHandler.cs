@@ -1,8 +1,8 @@
 ﻿using Memento.Core;
 
-namespace Memento.ReduxDevTool.Internal;
+namespace Memento.ReduxDevTool.Internals;
 
-public interface IDevtoolInteropHandler {
+public interface IDevToolInteropHandler {
     Action<string>? MessageHandled { get; set; }
 
     Action? SyncRequested { get; set; }

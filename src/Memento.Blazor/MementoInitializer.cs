@@ -3,13 +3,18 @@ using Microsoft.AspNetCore.Components;
 
 namespace Memento.Blazor;
 
+/// <summary>
+/// The component for initializing Memento instance.
+/// </summary>
 public class MementoInitializer : ComponentBase, IDisposable {
     [Inject]
     public required StoreProvider StoreProvider { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
         await base.OnAfterRenderAsync(firstRender);
-        await StoreProvider.InitializeAsync();
+        if (firstRender) {
+            await StoreProvider.InitializeAsync();
+        }
     }
 
     public void Dispose() {

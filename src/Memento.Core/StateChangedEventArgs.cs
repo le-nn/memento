@@ -22,7 +22,7 @@ public record StateChangedEventArgs {
 }
 
 public record StateChangedEventArgs<TState> : StateChangedEventArgs
-    where TState : class{
+    where TState : class {
 
     public new required TState LastState {
         get => (TState)base.LastState!;
