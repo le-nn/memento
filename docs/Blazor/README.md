@@ -1,61 +1,55 @@
 # Getting Standard
 
-This tutorials is for [BlazorWeb](https://docs.microsoft.com/ja-jp/aspnet/core/blazor/?view=aspnetcore-6.0) or [MobileBlazorBindings](https://github.com/dotnet/MobileBlazorBindings).
+In this tutorial, you will learn how to update the actual UI in Blazor !
 
-# Install
+Install `Memento.Blazor` in the Blazor component to update the Store state.
 
-### Blazor Project
+`Memento.Blazor` contains components that allow UI components to know about state updates and automatically update the UI.
+`Memento.Core` is included in the dependencies and does not need to be installed additionally.
+`Memento.Core` is a core library consisting of pure .NET code only.
+NET class library or for console apps that do not use a UI framework such as Blazor, install `Memento.Core`.
 
-Memento.Blazor includes helpers and DI support for use with Blazor.
-It depends on Memento.Core.
+Depends on Microsoft.AspNetCore.Components.
+It can also be used with native UI frameworks such as MobileBlazorBindings and BlazorBindings.Maui because it does not depend on Microsoft.AspNetCore.Components.Web.
+
+Blazor
+
+[https://docs.microsoft.com/ja-jp/aspnet/core/blazor/?view=aspnetcore-6.0](https://dotnet.microsoft.com/ja-jp/apps/aspnet/web-apps/blazor)
+
+MobileBlazorBindings
+
+https://github.com/dotnet/MobileBlazorBindings
+
+BlazorBindings.Maui
+
+https://github.com/Dreamescaper/BlazorBindings.Maui
+
+## Install
+
+Install `Memento.Blazor` for the Blazor projects.
+Install `Memento.Core` for the pure NET project that do not use the UI framework like .NET Class library or Console App.
+
+### Install with CLI
+
+Memento.Blazor
 
 ```
 dotnet add package Memento.Blazor
 ```
 
-### .NET Project
-
-Memento.Core is a core library that consists of pure .NET code only.
-Install this for the .NET Class library or Console App.
+Memento.Core
 
 ```
 dotnet add package Memento.Core
 ```
 
-# Supported platform
+### Install from Nuget
 
-.NET 7 or later
+Memento.Blazor Nuget
 
-Currently requires following options in ```Project.csproj```
+https://www.nuget.org/packages/Memento.Blazor
 
-```xml
-<PropertyGroup>
-    <LangVersion>Preview</LangVersion>
-    <EnablePreviewFeatures>True</EnablePreviewFeatures>
-</PropertyGroup>
-```
+Memento.Core Nuget
 
-# Tutorial Overview
+https://www.nuget.org/packages/Memento.Core
 
-As a example, implement counters in various patterns.
-
-## Usage
-
-The standard usecase is as a flux like store container.
-Memento is supported observe detailed with command pattern.
-To change the state, you must dispatch a Message and go through Reducer.
-So, you can observe state detailed.
-
-[See](./Flux.md)
-
-## Dependency Injection
-
-[See](./DependencyInjection.md)
-
-## API Refelence
-
-Comming soon.
-
-## DevTools
-
-Comming soon.
