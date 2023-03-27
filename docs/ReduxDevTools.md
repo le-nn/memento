@@ -28,15 +28,19 @@ To enable develop integration, follow these steps
 It can be used as a browser extension for Edge, Chrome and FireFox.
 
 Chrome
+
 https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd
 
 Edge
+
 https://microsoftedge.microsoft.com/addons/detail/redux-devtools/nnkgneoiohoecpdiaponcejilbhhikei
 
 FireFox
+
 https://addons.mozilla.org/en-US/firefox/addon/reduxdevtools/
 
 You can see the all docs for extension on official Github repos.
+
 https://github.com/reduxjs/redux-devtools
 
 ##  2. Install the memento middleware from Nuget package
@@ -98,6 +102,8 @@ builder.Services.AddRemoteReduxDevToolMiddleware(
 ```
 
 # Redux Dev Tools middleware API Reference
+
+API Reference for ReduxDevTools middleware.
 
 ## AddBrowserReduxDevToolMiddleware Extension
 
