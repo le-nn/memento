@@ -16,7 +16,7 @@ DevTool will launch automatically.
 You can do state history and time travel.
 
 
-[See documentation](./docs\ReduxDevTool.md) for details of usage.
+[See ReduxDevTools Docs](./ReduxDevTool.md) for details of usage.
 
 ### Features
 
