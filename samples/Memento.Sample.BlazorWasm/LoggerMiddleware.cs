@@ -17,12 +17,16 @@ public sealed class LoggerMiddleware : Middleware {
             _jSRuntime = jSRuntime;
         }
 
-        public override RootState? HandleProviderDispatch(RootState state, StateChangedEventArgs e, NextProviderMiddlewareCallback next) {
+        public override RootState? HandleProviderDispatch(RootState? state, StateChangedEventArgs e, NextProviderMiddlewareCallback next) {
             _ = HandleLog(state, e);
-            return base.HandleProviderDispatch(state, e, next);
+            return next(state, e); ;
         }
 
-        public async Task HandleLog(object state, StateChangedEventArgs e) {
+        public async Task HandleLog(object? state, StateChangedEventArgs e) {
+            if (state is null) {
+                return;
+            }
+
             await _jSRuntime.InvokeVoidAsync("console.log", new {
                 StateName = state.GetType().Name,
                 State = state,
