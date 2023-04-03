@@ -11,14 +11,24 @@ Besides the simple store pattern, we also provide patterns inspired by MVU patte
 ### Store class
 
 * Provides a way to change state directly.
-*Suitable when simpler state management is required.
-*State management may be intuitive and easy to understand because the state is changed by directly applying reducer functions.
+* Suitable when simpler state management is required.
+* State management may be intuitive and easy to understand because the state is changed by directly applying reducer functions.
 
 ### FluxStore class
 
 * Based on the Flux architecture, this class is suitable when more rigorous state management is required.
 * State changes via commands, so actions and state changes are separated. This facilitates logging and debugging of state changes.
 * It facilitates consistent state management in complex applications and team development.
+
+### Rules
+
+* State should always be read-only.
+* The UI then uses the new state to render its display.
+
+#### For patterns like Flux
+
+* Every Reducer that processes in the action will create new state to reflect the old state combined with the changes expected for the action.
+* To change state our app should Dispatch via Reducer in the action method
 
 ## Install
 
