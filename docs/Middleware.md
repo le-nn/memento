@@ -84,16 +84,16 @@ Implement your own Middleware by inheriting from ```Middleware``` abstract class
 The ```Middleware``` abstract class can only inherit from
 Create a ```MiddlewareHandler``` by simply overriding ```MiddlewareHandler Create(IServiceProvider provider)``` .
 The actual functionality and implementation is delegated to ```MiddlewareHandler```.
-To interrupt state updates, override ```HandleProviderDispatch()`` or ```HandleStoreDispatch`` .
+To interrupt state updates, override ```HandleProviderDispatch()``` or ```HandleStoreDispatch``` .
 
-```HandleProviderDispatch(...) ```HandleProviderDispatch(...)''' overrides ```StoreProviderDispatch()`` when ```StoreProvider`` detects a state update.
+```HandleProviderDispatch(...)``` overrides ```StoreProviderDispatch()``` when ```StoreProvider``` detects a state update.
 ```StoreProvider``` handles when it detects a state update, that is, when the state of one of the application's Stores changes.
 
 ```HandleStoreDispatch(...)``` handles only the Store whose state has been updated.
 
-The following example overrides ``HandleProviderDispatch(...) overrides ```StoreProvider``` and interrupts the state change with ```StoreProvider``` . The log is handled when the state of any Store is changed.
+The following example overrides ```HandleProviderDispatch(...)``` overrides ```StoreProvider``` and interrupts the state change with ```StoreProvider``` . The log is handled when the state of any Store is changed.
 
-The argument RootState is an ```IDictionary<TKey, TValue>``` that represents all StateTrees managed by ``StoreProvider`` .
+The argument RootState is an ```IDictionary<TKey, TValue>``` that represents all StateTrees managed by ```StoreProvider``` .
 
 The ```next``` of ```NextProviderMiddlewareCallback``` argument is a delegate handler that calls the next connected middleware.
 
