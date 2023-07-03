@@ -47,7 +47,7 @@ internal sealed class LiftedHistoryContainer : IDisposable {
 
     public bool IsLocked { get; set; }
 
-    public bool IsJumping => _histories.Max(x => x.Id) > _currentCursorId;
+    public bool IsJumping => _histories is not [] && _histories.Max(x => x.Id) > _currentCursorId;
 
     public LiftedHistoryContainer(StoreProvider provider, ReduxDevToolOption options) {
         _provider = provider;
