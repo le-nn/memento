@@ -9,21 +9,33 @@ First, there is a simple store that only fires immutable state and state change 
 Besides the simple store pattern, we also provide patterns inspired by MVU patterns such as Flux and Elm. Since you should change the state via the Reducer, you can change the state based on stricter rules and observe the state in detail.
 
 ### Store class
+
 * Provides a way to change state directly.
-*Suitable when simpler state management is required.
-*State management may be intuitive and easy to understand because the state is changed by directly applying reducer functions.
+* Suitable when simpler state management is required.
+* State management may be intuitive and easy to understand because the state is changed by directly applying reducer functions.
 
 ### FluxStore class
+
 * Based on the Flux architecture, this class is suitable when more rigorous state management is required.
 * State changes via commands, so actions and state changes are separated. This facilitates logging and debugging of state changes.
 * It facilitates consistent state management in complex applications and team development.
+
+### Rules
+
+* State should always be read-only.
+* The UI then uses the new state to render its display.
+
+#### For patterns like Flux
+
+* Every Reducer that processes in the action will create new state to reflect the old state combined with the changes expected for the action.
+* To change state our app should Dispatch via Reducer in the action method
 
 ## Install
 
 Please install via package manager.
 
 ```
-dotnet add package Mement.Core
+dotnet add package Memento.Core
 dotnet add package Microsoft.Extensions.DependencyInjection
 ```
 
@@ -322,12 +334,17 @@ public class AsyncCounterStore : FluxStore<AsyncCounterState, AsyncCounterComman
 
 ```
  
-## Usage of store
+## Usage of Store
 
 You seemed to create Store or FluxStore the usage is the same for both.
 
-### Initialize
-Initialize the store in your application so that you can manage its state.
+### StoreProvider
+
+The ```StoreProvider``` provides centralized management of related Stores and a single StateTree representation of the related Stores' States. It also centrally manages Stores' state change notifications and events.
+
+### Initializing Store and StoreProvider
+
+StoreProvider initialization requires an IServiceProvider with the associated services and stores registered.
 
 ```cs
 var services = new ServiceCollection();
@@ -338,9 +355,41 @@ var serviceProvider = new ServiceCollection()
     .BuildServiceProvider();
 
 var provider = new StoreProvider(serviceProvider);
+
 ```
 
-### Subscribe
+Capture the StateTree that consists from all aggregated store states
+The StateTree is represented by a ```IDictionary<string, object>```.
+The key is store name and the value is store state.
+
+```cs
+
+var rootState = provider.CaptureRootState();
+
+```
+
+rootState is following
+
+```json
+
+{
+    "Store1" : {
+       "Count1" : 1234,
+       "Count2" : 4567,
+    },
+
+    // other stores ...
+
+    "AsyncCounterStore" : {
+        "Count": 0,
+        "History": [],
+        "IsLoading": false
+    }
+}
+
+```
+
+### Subscribing
 
 A listener is registered for state change events so that processing can be performed each time the state changes. In this example, logs are output to the console each time the state changes.
 The provider subscribes to all store state change events and outputs in JSON to the console.

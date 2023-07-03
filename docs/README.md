@@ -16,7 +16,7 @@ DevTool will launch automatically.
 You can do state history and time travel.
 
 
-[See documentation](./docs\ReduxDevTool.md) for details of usage.
+[See ReduxDevTools Docs](./ReduxDevTool.md) for details of usage.
 
 ### Features
 
@@ -39,20 +39,19 @@ You can do state history and time travel.
 
 ## Tutorials
 
-The tutorials implemented in each language and simple console application are following
 
-[Tutorials with plane C#](./Tutorial.cs.md)
 
-Practical usage on the Framework
-In reality, most of them will be used together with the UI framework.
-Describes the concepts common to all languages and frameworks is following.
+| Link | Summary | 
+| -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | 
+| [BasicConcept with C#](./BasicConcept.md)              | The tutorials for implemented with pure C# in simple console application.                                                                                                                                 | 
+| <br>[Update UI with Blazor](./Blazor.md) | Practical Uses of the Framework. In practice, it is mostly used with UI frameworks.<br>Here is a tutorial on how to use it with Blazor.                                                             | 
+| [Middleware](./Middleware.md)                             | Middleware can be implemented to interrupt the process when updating the state.<br>Middleware can be extended for various purposes, such as implementing your own Logger or supporting ReduxDevTools. | 
+| [Redux Dev Tools](./ReduxDevTools.md)                    | ReduxDevTools is a tool for debugging application's state changes.<br><br>State can be time traveled and history can be viewed in ReduxDevTools.<br>                                                      | 
 
-[Tutorials with Blazor](./Blazor/GettingStandard.md)
 
-ReduxDevTools is a tool for debugging application's state changes.
-State can be time traveled and history can be viewed in ReduxDevTools.
 
-[Redux Dev Tools](./ReduxDevTools.md)
+
+
 
 ## Samples
 
