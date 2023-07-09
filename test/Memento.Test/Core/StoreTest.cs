@@ -1,5 +1,6 @@
 ﻿using Memento.Core;
 using Memento.Test.Core.Mock;
+using System.Data;
 using System.Diagnostics;
 
 namespace Memento.Test.Core;
@@ -53,7 +54,7 @@ public class StoreTest {
     public async Task Command_CouldBeSubscribeCorrectly() {
         var store = new AsyncCounterStore();
 
-        var commands = new List<Command>();
+        var commands = new List<Command?>();
         var lastState = store.State;
         using var subscription = store.Subscribe(e => {
             Assert.Equal(e.Sender, store);
@@ -82,7 +83,7 @@ public class StoreTest {
     public async Task Force_ReplaceState() {
         var store = new AsyncCounterStore();
 
-        var commands = new List<Command>();
+        var commands = new List<StateChangedEventArgs>();
 
         var lastState = store.State;
         using var subscription = store.Subscribe(e => {
@@ -90,7 +91,7 @@ public class StoreTest {
             Assert.NotEqual(e.State, lastState);
             Assert.Equal(e.LastState, lastState);
             lastState = e.State;
-            commands.Add(e.Command);
+            commands.Add(e);
         });
 
         await store.CountUpAsync();
@@ -104,14 +105,14 @@ public class StoreTest {
         await store.CountUpAsync();
 
         Assert.True(commands is [
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.ForceReplaced { State: AsyncCounterState { Count: 5678 } },
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
+            { Command: Command.StateHasChanged },
+            { Command: Command.StateHasChanged },
+            { Command: Command.StateHasChanged },
+            { Command: Command.StateHasChanged },
+            { Command: null, State : AsyncCounterState { Count: 5678 } ,StateChangeType: StateChangeType.ForceReplaced},
+            { Command: Command.StateHasChanged },
+            { Command: Command.StateHasChanged },
+            { Command: Command.StateHasChanged },
         ]);
     }
 
@@ -119,7 +120,7 @@ public class StoreTest {
     public void Performance() {
         var store = new AsyncCounterStore();
 
-        var commands = new List<Command>();
+        var commands = new List<Command?>();
 
         var lastState = store.State;
         using var subscription = store.Subscribe(e => {
@@ -142,11 +143,11 @@ public class StoreTest {
     public void Ensure_StateHasChangedInvoked() {
         var store = new AsyncCounterStore();
 
-        var commands = new List<Command>();
+        var commands = new List<StateChangedEventArgs>();
 
         var lastState = store.State;
         using var subscription = store.Subscribe(e => {
-            commands.Add(e.Command);
+            commands.Add(e);
         });
 
         store.StateHasChanged();
@@ -157,12 +158,12 @@ public class StoreTest {
         store.StateHasChanged();
 
         Assert.True(commands is [
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
+            { StateChangeType: StateChangeType.StateHasChanged },
+            { StateChangeType: StateChangeType.StateHasChanged },
+            { StateChangeType: StateChangeType.StateHasChanged },
+            { StateChangeType: StateChangeType.StateHasChanged },
+            { StateChangeType: StateChangeType.StateHasChanged },
+            { StateChangeType: StateChangeType.StateHasChanged },
         ]);
     }
 }

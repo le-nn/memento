@@ -30,7 +30,7 @@ var store = provider.ResolveStore<AsyncCounterStore>();
 // Observe a store state
 store.Subscribe(e => {
     Console.WriteLine();
-    Console.WriteLine($"// {e.Command.GetType().Name}");
+    Console.WriteLine($"// {e.Command?.GetType().Name}");
     Console.WriteLine(JsonSerializer.Serialize(
         e.State,
         new JsonSerializerOptions() {

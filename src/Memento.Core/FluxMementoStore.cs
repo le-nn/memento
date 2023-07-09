@@ -91,10 +91,11 @@ public abstract class FluxMementoStore
 
                 var lastState = State;
                 State = state.State;
-                InvokeObserver(new StateChangedEventArgs<TState> {
+                InvokeObserver(new StateChangedEventArgs<TState,TCommand> {
                     LastState = lastState,
                     State = State,
-                    Command = new Command.Restored(),
+                    Command = null,
+                    StateChangeType = StateChangeType.Restored,
                     Sender = this,
                 });
             },

@@ -1,9 +1,18 @@
 namespace Memento.Core;
 
+public enum StateChangeType {
+    Command,
+    StateHasChanged,
+    ForceReplaced,
+    Restored,
+}
+
 public record StateChangedEventArgs {
     protected object? sender;
 
-    public Command Command { get; init; } = default!;
+    public StateChangeType StateChangeType { get; init; }
+
+    public Command? Command { get; init; } = default!;
 
     public object? LastState { get; init; }
 
@@ -21,15 +30,21 @@ public record StateChangedEventArgs {
     }
 }
 
-public record StateChangedEventArgs<TState> : StateChangedEventArgs
-    where TState : class {
+public record StateChangedEventArgs<TState, TCommand> : StateChangedEventArgs
+    where TState : class
+    where TCommand : Command {
 
-    public new required TState LastState {
+    public new TCommand? Command {
+        get => (TCommand)base.Command!;
+        init => base.Command = value;
+    }
+
+    public new required TState? LastState {
         get => (TState)base.LastState!;
         init => base.LastState = value;
     }
 
-    public new required TState State {
+    public new required TState? State {
         get => (TState)base.State!;
         init => base.State = value;
     }
