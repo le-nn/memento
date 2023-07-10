@@ -4,9 +4,10 @@ namespace Memento.Core;
 
 public record MementoStoreContext<TState>(TState State);
 
-public abstract class MementoStore<TState>
-    : Store<TState>
-        where TState : class {
+public abstract class MementoStore<TState, TMessage>
+    : Store<TState, TMessage>
+        where TState : class
+        where TMessage : notnull {
     readonly HistoryManager _historyManager;
 
     public bool CanReDo => _historyManager.CanReDo;
@@ -84,10 +85,11 @@ public abstract class MementoStore<TState>
 
                 var lastState = State;
                 State = state.State;
-                InvokeObserver(new StateChangedEventArgs<TState> {
+                InvokeObserver(new StateChangedEventArgs<TState, Command.StateHasChanged<TState, TMessage>> {
                     LastState = lastState,
                     State = State,
-                    Command = new Command.Restored(),
+                    Command = null,
+                    StateChangeType = StateChangeType.Restored,
                     Sender = this,
                 });
             },
@@ -127,5 +129,11 @@ public abstract class MementoStore<TState>
         }
 
         await _historyManager.ReExecuteAsync();
+    }
+}
+
+public class MementoStore<TState> : MementoStore<TState, string>
+    where TState : class {
+    public MementoStore(StateInitializer<TState> initializer, HistoryManager historyManager) : base(initializer, historyManager) {
     }
 }

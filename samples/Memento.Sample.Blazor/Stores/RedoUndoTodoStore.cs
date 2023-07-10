@@ -9,7 +9,7 @@ public record RedoUndoTodoState {
     public bool IsLoading { get; init; }
 }
 
-public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState> {
+public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState, string> {
     ITodoService TodoService { get; }
 
     public RedoUndoTodoStore(ITodoService todoService)

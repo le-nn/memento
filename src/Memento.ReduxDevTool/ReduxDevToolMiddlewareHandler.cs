@@ -97,7 +97,7 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
     }
 
     public async Task SendAsync(StateChangedEventArgs e, RootState rootState, string stackTrace) {
-        if (e.Command is ForceReplaced) {
+        if (e.StateChangeType is StateChangeType.ForceReplaced) {
             return;
         }
 

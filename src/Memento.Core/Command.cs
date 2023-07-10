@@ -1,23 +1,73 @@
+using System.Text.Json.Serialization;
+
 namespace Memento.Core;
+
+public enum StateHasChangedType {
+    StateHasChanged,
+    ForceReplaced,
+    Restored,
+}
 
 /// <summary>
 /// Represents an abstract base class for commands that mutate the state of a store.
 /// </summary>
-public abstract record Command {
+public record Command {
     /// <summary>
-    /// Represents a command that forces a state replacement.
+    /// Represents a command that indicates a state change has occurred.
     /// </summary>
-    public record ForceReplaced(object State) : Command;
+    public record StateHasChanged : Command {
+        public StateHasChangedType StateHasChangedType { get; internal set; }
 
-    /// <summary>
-    /// Represents a command that restores the previous state.
-    /// </summary>
-    public record Restored : Command;
+        public object State { get; }
+
+        public object? Message { get; }
+
+        [JsonIgnore]
+        public Type? StoreType { get; } = null;
+
+        public override string Type => $"{StoreType?.Name ?? "Store"}+{GetType().Name}";
+
+        public StateHasChanged(object state, object? message = null, Type? storeType = null) {
+            State = state;
+            Message = message;
+            StoreType = storeType;
+        }
+
+        public static StateHasChanged CreateForceReplaced(object State) => new(State) {
+            StateHasChangedType = StateHasChangedType.ForceReplaced
+        };
+
+        public static StateHasChanged CreateRestored(object State) => new(State) {
+            StateHasChangedType = StateHasChangedType.Restored
+        };
+    }
 
     /// <summary>
     /// Represents a command that indicates a state change has occurred.
     /// </summary>
-    public record StateHasChanged(object State) : Command;
+    public record StateHasChanged<TState, TMessage> : StateHasChanged
+        where TState : notnull
+        where TMessage : notnull {
+
+        public new TState State => (TState)base.State;
+
+        public new TMessage? Message => (TMessage?)base.Message;
+
+        public override string Type => $"{StoreType?.Name ?? "Store"}+{GetType().Name}";
+
+        public StateHasChanged(TState mutateState, TMessage? message = default, Type? storeType = null)
+            : base(mutateState, message, storeType) {
+
+        }
+
+        public static StateHasChanged<TState, TMessage> CreateForceReplaced(TState State) => new(State) {
+            StateHasChangedType = StateHasChangedType.ForceReplaced
+        };
+
+        public static StateHasChanged<TState, TMessage> CreateRestored(TState State) => new(State) {
+            StateHasChangedType = StateHasChangedType.Restored
+        };
+    }
 
     /// <summary>
     /// Gets the type of the command, excluding the assembly name.

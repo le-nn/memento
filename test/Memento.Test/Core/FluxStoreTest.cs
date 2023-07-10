@@ -57,7 +57,7 @@ public class FluxStoreTest {
     public async Task Command_CouldBeSubscribeCorrectly() {
         var store = new FluxAsyncCounterStore();
 
-        var commands = new List<Command>();
+        var commands = new List<Command?>();
         var lastState = store.State;
         using var subscription = store.Subscribe(e => {
             Assert.Equal(e.Sender, store);
@@ -86,7 +86,7 @@ public class FluxStoreTest {
     public async Task Force_ReplaceState() {
         var store = new FluxAsyncCounterStore();
 
-        var commands = new List<Command>();
+        var commands = new List<StateChangedEventArgs>();
 
         var lastState = store.State;
         using var subscription = store.Subscribe(e => {
@@ -94,7 +94,7 @@ public class FluxStoreTest {
             Assert.NotEqual(e.State, lastState);
             Assert.Equal(e.LastState, lastState);
             lastState = e.State;
-            commands.Add(e.Command);
+            commands.Add(e);
         });
 
         await store.CountUpAsync();
@@ -108,14 +108,14 @@ public class FluxStoreTest {
         await store.CountUpAsync();
 
         Assert.True(commands is [
-            FluxAsyncCounterCommands.BeginLoading,
-            FluxAsyncCounterCommands.Increment,
-            FluxAsyncCounterCommands.EndLoading,
-            FluxAsyncCounterCommands.ModifyCount(1234),
-            Command.ForceReplaced { State: FluxAsyncCounterState { Count: 5678 } },
-            FluxAsyncCounterCommands.BeginLoading,
-            FluxAsyncCounterCommands.Increment,
-            FluxAsyncCounterCommands.EndLoading
+            { Command: FluxAsyncCounterCommands.BeginLoading },
+            { Command: FluxAsyncCounterCommands.Increment },
+            { Command: FluxAsyncCounterCommands.EndLoading },
+            { Command: FluxAsyncCounterCommands.ModifyCount(1234) },
+            { State: FluxAsyncCounterState { Count: 5678 }, StateChangeType: StateChangeType.ForceReplaced },
+            { Command: FluxAsyncCounterCommands.BeginLoading },
+            { Command: FluxAsyncCounterCommands.Increment },
+            { Command: FluxAsyncCounterCommands.EndLoading },
         ]);
     }
 
@@ -123,7 +123,7 @@ public class FluxStoreTest {
     public void Performance() {
         var store = new FluxAsyncCounterStore();
 
-        var commands = new List<Command>();
+        var commands = new List<Command?>();
 
         var lastState = store.State;
         using var subscription = store.Subscribe(e => {
@@ -145,11 +145,11 @@ public class FluxStoreTest {
     [Fact]
     public void Ensure_StateHasChangedInvoked() {
         var store = new FluxAsyncCounterStore();
-        var commands = new List<Command>();
+        var commands = new List<StateChangedEventArgs>();
 
         var lastState = store.State;
         using var subscription = store.Subscribe(e => {
-            commands.Add(e.Command);
+            commands.Add(e);
         });
 
         store.StateHasChanged();
@@ -160,12 +160,12 @@ public class FluxStoreTest {
         store.StateHasChanged();
 
         Assert.True(commands is [
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
+            { StateChangeType: StateChangeType.StateHasChanged },
+            { StateChangeType: StateChangeType.StateHasChanged },
+            { StateChangeType: StateChangeType.StateHasChanged },
+            { StateChangeType: StateChangeType.StateHasChanged },
+            { StateChangeType: StateChangeType.StateHasChanged },
+            { StateChangeType: StateChangeType.StateHasChanged },
         ]);
     }
 }

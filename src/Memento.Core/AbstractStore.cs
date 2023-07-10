@@ -10,7 +10,7 @@ namespace Memento.Core;
 /// <typeparam name="TState">The type of the state managed by the store.</typeparam>
 /// <typeparam name="TCommand">The type of the commands used to mutate the state.</typeparam>
 public abstract class AbstractStore<TState, TCommand>
-    : IStore, IObservable<StateChangedEventArgs<TState>>, IDisposable
+    : IStore, IObservable<StateChangedEventArgs<TState, TCommand>>, IDisposable
         where TState : class
         where TCommand : Command {
     readonly List<IObserver<StateChangedEventArgs>> _observers = new();
@@ -92,8 +92,8 @@ public abstract class AbstractStore<TState, TCommand>
     /// </summary>
     /// <param name="observer">The observer to subscribe to the store.</param>
     /// <returns>An IDisposable instance that can be used to unsubscribe from the store.</returns>
-    public IDisposable Subscribe(Action<StateChangedEventArgs<TState>> observer) {
-        return Subscribe(new GeneralObserver<StateChangedEventArgs<TState>>(observer));
+    public IDisposable Subscribe(Action<StateChangedEventArgs<TState, TCommand>> observer) {
+        return Subscribe(new GeneralObserver<StateChangedEventArgs<TState, TCommand>>(observer));
     }
 
     /// <summary>
@@ -115,9 +115,9 @@ public abstract class AbstractStore<TState, TCommand>
     /// </summary>
     /// <param name="observer">The observer to subscribe to the store.</param>
     /// <returns>An IDisposable instance that can be used to unsubscribe from the store.</returns>
-    public IDisposable Subscribe(IObserver<StateChangedEventArgs<TState>> observer) {
+    public IDisposable Subscribe(IObserver<StateChangedEventArgs<TState, TCommand>> observer) {
         var obs = new StoreObserver(e => {
-            if (e is StateChangedEventArgs<TState> o) {
+            if (e is StateChangedEventArgs<TState, TCommand> o) {
                 observer.OnNext(o);
             }
         });
@@ -139,10 +139,11 @@ public abstract class AbstractStore<TState, TCommand>
     /// via <see cref="FluxStore{TState, TCommand}.Dispatch"/> or <see cref="Store{TState}.Mutate"/>.
     /// </summary>
     public void StateHasChanged() {
-        InvokeObserver(new StateChangedEventArgs<TState>() {
+        InvokeObserver(new StateChangedEventArgs<TState, TCommand>() {
             State = State,
             LastState = State,
-            Command = new Command.StateHasChanged(State),
+            Command = null,
+            StateChangeType = StateChangeType.StateHasChanged,
             Sender = this,
         });
     }
@@ -178,9 +179,9 @@ public abstract class AbstractStore<TState, TCommand>
 
         var previous = State;
         State = tState;
-        var command = new Command.ForceReplaced(State);
-        InvokeObserver(new StateChangedEventArgs<TState>() {
-            Command = command,
+        InvokeObserver(new StateChangedEventArgs<TState, TCommand>() {
+            Command = null,
+            StateChangeType = StateChangeType.ForceReplaced,
             LastState = previous,
             Sender = this,
             State = State,
@@ -232,13 +233,13 @@ public abstract class AbstractStore<TState, TCommand>
             }
         }
 
-        (TState?, StateChangedEventArgs<TState>?) ComputeNewState() {
+        (TState?, StateChangedEventArgs<TState, TCommand>?) ComputeNewState() {
             var previous = state;
             var postState = OnBeforeDispatch(previous, command);
 
             if (MiddlewareHandler.Invoke(postState, command) is TState s) {
                 var newState = OnAfterDispatch(s, command);
-                var e = new StateChangedEventArgs<TState> {
+                var e = new StateChangedEventArgs<TState, TCommand> {
                     LastState = previous,
                     Command = command,
                     State = newState,
@@ -299,8 +300,8 @@ public abstract class AbstractStore<TState, TCommand>
         );
     }
 
-    internal void InvokeObserver(StateChangedEventArgs<TState> e) {
-        foreach (var obs in _observers) {
+    internal void InvokeObserver(StateChangedEventArgs<TState, TCommand> e) {
+        foreach (var obs in _observers.ToArray()) {
             obs.OnNext(e);
         }
     }

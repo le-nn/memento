@@ -19,9 +19,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{4EBD97E1-0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{95938898-9BDC-4379-BFFF-A70E72877728}"
 	ProjectSection(SolutionItems) = preProject
-		docs\Blazor\DependencyInjection.md = docs\Blazor\DependencyInjection.md
+		docs\BasicConcept.md = docs\BasicConcept.md
+		docs\Blazor.md = docs\Blazor.md
+		docs\Middleware.md = docs\Middleware.md
 		docs\README.md = docs\README.md
-		docs\Tutorial.cs.md = docs\Tutorial.cs.md
 		docs\ReduxDevTools.md = docs\ReduxDevTools.md
 	EndProjectSection
 EndProject
@@ -46,12 +47,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.Sample.BlazorWasm", "samples\Memento.Sample.BlazorWasm\Memento.Sample.BlazorWasm.csproj", "{8DA8C555-F65E-4419-8732-7CAD00507166}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.Sample.ConsoleApp", "samples\Memento.Sample.ConsoleApp\Memento.Sample.ConsoleApp.csproj", "{A089BC00-80C4-4074-8127-C414F2B79585}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Blazor", "Blazor", "{395CB6B4-8E41-46EA-B984-F8C38FD4D482}"
-	ProjectSection(SolutionItems) = preProject
-		docs\Blazor\DependencyInjection.md = docs\Blazor\DependencyInjection.md
-		docs\Blazor\README.md = docs\Blazor\README.md
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -116,7 +111,6 @@ Global
 		{4481A230-D66C-486F-B06A-29DECB3940FA} = {AD16691B-0034-4F49-8F90-0932C029DA3C}
 		{8DA8C555-F65E-4419-8732-7CAD00507166} = {AD16691B-0034-4F49-8F90-0932C029DA3C}
 		{A089BC00-80C4-4074-8127-C414F2B79585} = {AD16691B-0034-4F49-8F90-0932C029DA3C}
-		{395CB6B4-8E41-46EA-B984-F8C38FD4D482} = {95938898-9BDC-4379-BFFF-A70E72877728}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52122159-362B-41B0-BE89-5FC9BF19BE01}
