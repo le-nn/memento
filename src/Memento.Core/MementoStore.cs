@@ -123,11 +123,14 @@ public abstract class MementoStore<TState, TMessage>
         }
 
         await _historyManager.ReDoAsync();
+<<<<<<< Updated upstream
     }
 }
 
 public class MementoStore<TState> : MementoStore<TState, string>
     where TState : class {
     public MementoStore(StateInitializer<TState> initializer, HistoryManager historyManager) : base(initializer, historyManager) {
+=======
+>>>>>>> Stashed changes
     }
 }
