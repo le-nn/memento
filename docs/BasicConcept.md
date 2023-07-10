@@ -150,9 +150,96 @@ public class AsyncCounterStore : Store<AsyncCounterState> {
         });
     }
 }
-    
-    
+
 ```
+
+### Includes the typed Payload explaining what the change has been in StateHasChangedEventArgs 
+
+```Store<TState, TPayload>``` allows you to have a typed Payload explaining what the change has been in StateHasChangedEventArgs when mutating the State of the Store.
+
+
+## Usage
+
+Define the payload type.
+
+```cs
+
+public enum StateChangedType {
+    BeginLoading,
+    EndLoading,
+    SetCount,
+    Increment
+}
+
+```
+
+The Payload type is specified in Store Type params in the following way.
+
+```Store<AsyncCounterState, StateChangedType>```
+
+If you set Payload as the second argument of ```Mutate(..., StateChangedType.CountUp)```, you can have Payload in the StateHasChangedEventArgs.
+
+```cs
+
+store.Subscribe(e => {
+    Console.WriteLine(e.Command.Payload); // Specified Paylaod
+});
+
+```
+
+### Example AsyncCounterStore Overview
+
+```cs
+
+public record CounterStoreState {
+    public int Count { get; init; } = 0;
+    public ImmutableArray<int> History { get; init; } = ImmutableArray.Create<int>();
+    public bool IsLoading { get; init; } = false;
+}
+
+public enum StateChangedType {
+    BeginLoading,
+    EndLoading,
+    SetCount,
+    Increment
+}
+
+public class CounterStore: Store<CounterStoreState, StateChangedType> {
+    public CounterStore() : base(() => new()) {
+    }
+
+    public async Task CountUpAsync() {
+        Mutate(state => state with { IsLoading = true }, StateChangedType.BeginLoading);
+
+        await Task.Delay(500);
+
+        Mutate(HandleIncrement, StateChangedType.Increment);
+        Mutate(state => state with { IsLoading = false }, StateChangedType.EndLoading);
+    }
+
+    private static CounterStoreState HandleIncrement(CounterStoreState state) {
+        var count = state.Count + 1;
+        return state with {
+            Count = count,
+            History = state.History.Add(count),
+        };
+    }
+
+    public void SetCount(int num) {
+        Mutate(state => state with {
+            Count = num,
+            History = state.History.Add(num),
+        }, StateChangedType.SetCount);
+    }
+}
+
+```
+
+#### Sample Source
+
+https://github.com/le-nn/memento/blob/main/samples/Memento.Sample.Blazor/Stores/AsyncCounterStore.cs
+
+---
     
 ## Define FluxStore pattern
 
