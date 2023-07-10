@@ -82,11 +82,11 @@
     }
 
     async Task Redo() {
-        await this.RedoUndoTodoStore.ReExecuteAsync();
+        await this.RedoUndoTodoStore.ReDoAsync();
     }
 
     async Task Undo() {
-        await this.RedoUndoTodoStore.UnExecuteAsync();
+        await this.RedoUndoTodoStore.UnDoAsync();
     }
 
     async Task HandleToggleTodo(Guid id) {

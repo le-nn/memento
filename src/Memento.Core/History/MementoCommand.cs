@@ -12,11 +12,9 @@ public record MementoCommandContext<T> : IMementoCommandContext<T> {
 
     public string Name { get; }
 
-    private Func<T, ValueTask> Dataloader { get; }
+    private Func<ValueTask<T>> DoHandler { get; }
 
-    private Func<ValueTask<T>> Executed { get; }
-
-    private Func<T, ValueTask> UnExecuted { get; init; }
+    private Func<T, ValueTask> UnDoHandler { get; init; }
 
     public Func<IMementoStateContext<T?>, ValueTask>? ContextSaved { get; init; }
 
@@ -25,19 +23,17 @@ public record MementoCommandContext<T> : IMementoCommandContext<T> {
     public Action<IMementoCommandContext<T?>>? Disposed { get; init; }
 
     public MementoCommandContext(
-        Func<T, ValueTask> dataloader,
-        Func<ValueTask<T>> executed,
-        Func<T, ValueTask> unexecuted,
+        Func<ValueTask<T>> doHandler,
+        Func<T, ValueTask> undoHandler,
         string name
     ) {
-        Dataloader = dataloader;
-        UnExecuted = unexecuted;
-        Executed = executed;
+        UnDoHandler = undoHandler;
+        DoHandler = doHandler;
         Name = name;
     }
 
     public async ValueTask CommitAsync() {
-        State = await Executed();
+        State = await DoHandler();
     }
 
     public async ValueTask RestoreAsync() {
@@ -45,7 +41,7 @@ public record MementoCommandContext<T> : IMementoCommandContext<T> {
             throw new NullReferenceException("State is null.");
         }
 
-        await UnExecuted.Invoke(State);
+        await UnDoHandler.Invoke(State);
     }
 
     public async ValueTask InvokeContextSavedAsync() {
@@ -71,9 +67,5 @@ public record MementoCommandContext<T> : IMementoCommandContext<T> {
 
         IsDisposed = true;
         _ = ContextLoaded?.Invoke(this!);
-    }
-
-    public ValueTask LoadDataAsync() {
-        return Dataloader.Invoke(State!);
     }
 }

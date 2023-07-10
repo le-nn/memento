@@ -57,7 +57,7 @@ https://github.com/le-nn/memento-js
 * Every Reducer that processes in the action will create new state to reflect the old state combined with the changes expected for the action.
 * To change state our app should Dispatch via Reducer in the action method
 
-## Overview
+## Store Overview
 
 This is an C# and Blazor example that implements counter.
 
@@ -141,7 +141,7 @@ public class AsyncCounterStore : FluxStore<AsyncCounterState, AsyncCounterComman
 
 ```
 
-Razor view
+Blazor view in Razor
 ```razor
 @page "/counter"
 @inherits ObserverComponet
@@ -174,4 +174,5 @@ Razor view
 [See](./docs/README.md)
 
 # License
+
 Designed with ♥ by le-nn. Licensed under the MIT License.

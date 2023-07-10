@@ -80,7 +80,7 @@ public abstract class FluxMementoStore
         }
 
         var data = await dataCreator();
-        await _historyManager.ExcuteCommitAsync(
+        await _historyManager.CommitAsync(
             async () => {
                 var state = State;
                 await onExecuted(data);
@@ -98,10 +98,6 @@ public abstract class FluxMementoStore
                     StateChangeType = StateChangeType.Restored,
                     Sender = this,
                 });
-            },
-            state => {
-                //this.ComputedAndApplyState(state.State, state.Command);
-                return ValueTask.CompletedTask;
             },
             name ?? Guid.NewGuid().ToString(),
             context => OnContextSavedAsync(context!),
@@ -139,7 +135,7 @@ public abstract class FluxMementoStore
             throw new Exception("Store is not initialized.");
         }
 
-        await _historyManager.UnExecuteAsync();
+        await _historyManager.UnDoAsync();
     }
 
     public async ValueTask ReExecuteAsync() {
@@ -147,6 +143,6 @@ public abstract class FluxMementoStore
             throw new Exception("Store is not initialized.");
         }
 
-        await _historyManager.ReExecuteAsync();
+        await _historyManager.ReDoAsync();
     }
 }

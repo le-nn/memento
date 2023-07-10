@@ -26,18 +26,16 @@ public class HistoryManager {
         }
     }
 
-    public async ValueTask ExcuteCommitAsync<T>(
+    public async ValueTask CommitAsync<T>(
         Func<ValueTask<T>> execute,
         Func<T, ValueTask> unexecute,
-        Func<T, ValueTask> dataloader,
         string? name = null,
         Func<IMementoStateContext<T?>, ValueTask>? saved = null,
         Func<IMementoStateContext<T?>, ValueTask>? loaded = null,
         Action<IMementoStateContext<T?>>? onDispose = null
     ) {
-        await ExcuteAsync(
+        await CommitAsync(
             new MementoCommandContext<T>(
-                dataloader,
                 execute,
                 unexecute,
                 name ?? Guid.NewGuid().ToString()
@@ -49,7 +47,7 @@ public class HistoryManager {
         );
     }
 
-    public async ValueTask ExcuteAsync<T>(IMementoCommandContext<T> command) {
+    public async ValueTask CommitAsync<T>(IMementoCommandContext<T> command) {
         await _concatAsyncOperationExecutor.ExecuteAsync(async () => {
             if (CanReDo) {
                 ClearFutureHistoriesAsync();
@@ -61,7 +59,6 @@ public class HistoryManager {
             }
 
             await command.CommitAsync();
-            await command.LoadDataAsync();
 
             Present = command;
 
@@ -69,7 +66,7 @@ public class HistoryManager {
         });
     }
 
-    public async ValueTask<bool> ReExecuteAsync() {
+    public async ValueTask<bool> ReDoAsync() {
         return await _concatAsyncOperationExecutor.ExecuteAsync(async () => {
             if (CanReDo is false) {
                 return false;
@@ -83,14 +80,14 @@ public class HistoryManager {
             var item = _future.Pop()!;
             await item.InvokeContextLoadedAsync();
             await item.CommitAsync();
-            await item.LoadDataAsync();
+
             Present = item;
 
             return true;
         });
     }
 
-    public async ValueTask<bool> UnExecuteAsync() {
+    public async ValueTask<bool> UnDoAsync() {
         return await _concatAsyncOperationExecutor.ExecuteAsync(async () => {
             if (CanUnDo is false) {
                 return false;
@@ -105,7 +102,6 @@ public class HistoryManager {
             if (_past.Count is not 0) {
                 var item = _past.Pop()!;
                 await item.InvokeContextLoadedAsync();
-                await item.LoadDataAsync();
                 Present = item;
             }
             else {

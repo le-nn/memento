@@ -39,19 +39,13 @@ You can do state history and time travel.
 
 ## Tutorials
 
-
-
-| Link | Summary | 
+| Link                                                     | Summary | 
 | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | 
-| [BasicConcept with C#](./BasicConcept.md)              | The tutorials for implemented with pure C# in simple console application.                                                                                                                                 | 
-| <br>[Update UI with Blazor](./Blazor.md) | Practical Uses of the Framework. In practice, it is mostly used with UI frameworks.<br>Here is a tutorial on how to use it with Blazor.                                                             | 
-| [Middleware](./Middleware.md)                             | Middleware can be implemented to interrupt the process when updating the state.<br>Middleware can be extended for various purposes, such as implementing your own Logger or supporting ReduxDevTools. | 
+| [BasicConcept with C#](./BasicConcept.md)                | The tutorials for implemented with pure C# in simple console application.                                                                                                                                 | 
+| [Update UI with Blazor](./Blazor.md)                     | Practical Uses of the Framework. In practice, it is mostly used with UI frameworks.<br>Here is a tutorial on how to use it with Blazor.                                                             | 
+| [Middleware](./Middleware.md)                            | Middleware can be implemented to interrupt the process when updating the state.<br>Middleware can be extended for various purposes, such as implementing your own Logger or supporting ReduxDevTools. | 
 | [Redux Dev Tools](./ReduxDevTools.md)                    | ReduxDevTools is a tool for debugging application's state changes.<br><br>State can be time traveled and history can be viewed in ReduxDevTools.<br>                                                      | 
-
-
-
-
-
+| [Redo / Undo](./RedoUndo.md)                             | Redo/Undo is a feature that allows you to undo and redo state changes.                                                                                                                                |
 
 ## Samples
 
