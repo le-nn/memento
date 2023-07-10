@@ -187,7 +187,7 @@ store.Subscribe(e => {
 
 ```
 
-### Example AsyncCounterStore Overview
+### Sample CounterStore Overview
 
 ```cs
 

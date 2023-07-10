@@ -19,9 +19,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{4EBD97E1-0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{95938898-9BDC-4379-BFFF-A70E72877728}"
 	ProjectSection(SolutionItems) = preProject
+		docs\BasicConcept.md = docs\BasicConcept.md
+		docs\Blazor.md = docs\Blazor.md
+		docs\Middleware.md = docs\Middleware.md
 		docs\README.md = docs\README.md
 		docs\ReduxDevTools.md = docs\ReduxDevTools.md
-		docs\Tutorial.cs.md = docs\Tutorial.cs.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "middlewares", "middlewares", "{9D40EFD1-EE24-4985-B286-7C99ABA9AAC0}"
