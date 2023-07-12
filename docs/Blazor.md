@@ -59,7 +59,7 @@ Blazor uses Dependency Injection in the framework.
 
 Here is how to use Memento in your application.
 
-Registers all required modules with ```AddMemento()`` .
+Registers all required modules with ```AddMemento()``` .
 Registers all the stores present in the specified assembly with ```ScanAssemblyAndAddStores()``` .
 Specifically, all classes that inherit from ````IStore``` will be registered.
 
