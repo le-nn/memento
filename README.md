@@ -43,7 +43,7 @@ https://github.com/le-nn/memento-js
 
 * Less boilerplate, less rule and simple usage 
 * Immutable state and Unidirectional flow
-* Multiple stores but manged by single provider, so can observe and manage as one state tree
+* Multiple stores but managed by single provider, so can observe and manage as one state tree
 * Observe detailed status with command patterns and makes it easier to monitor what happened within the application 
 
 ## Concepts and Flow
