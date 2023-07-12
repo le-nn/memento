@@ -21,16 +21,14 @@ public abstract class MementoStore<TState, TMessage>
         .Select(x => x as IMementoStateContext<MementoStoreContext<TState>>)
         .Where(x => x is not null)
         .Select(x => x!)
-        .ToArray()
-        .AsReadOnly();
+        .ToArray();
 
     public IReadOnlyCollection<IMementoStateContext<MementoStoreContext<TState>>> PastHistories => _historyManager
         .PastHistories
         .Select(x => x as IMementoStateContext<MementoStoreContext<TState>>)
         .Where(x => x is not null)
         .Select(x => x!)
-        .ToArray()
-        .AsReadOnly();
+        .ToArray();
 
     public MementoStore(
         StateInitializer<TState> initializer,
@@ -123,14 +121,12 @@ public abstract class MementoStore<TState, TMessage>
         }
 
         await _historyManager.ReDoAsync();
-<<<<<<< Updated upstream
     }
 }
 
 public class MementoStore<TState> : MementoStore<TState, string>
     where TState : class {
     public MementoStore(StateInitializer<TState> initializer, HistoryManager historyManager) : base(initializer, historyManager) {
-=======
->>>>>>> Stashed changes
+
     }
 }
