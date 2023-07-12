@@ -4,6 +4,8 @@
 
 Easy unidirectional store and redo/undo library for state management for frontend apps on Blazor/.NET
 
+![](./docs/Assets/ReduxDevTools.gif)
+
 # Basic Concept
 
 We provides a Store that allows you to share state between components.
