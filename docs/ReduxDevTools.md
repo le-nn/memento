@@ -4,6 +4,8 @@ Redux DevTools is supported. Redux DevTools is a tool for debugging application'
 
 Currently, memento is supported most features of ReduxDevTools.
 
+![](./Assets/ReduxDevTools.gif)
+
 There are two types of Middleware for ReduxDevTools.
 
 One is Memento.ReduxDevTool.Browser that interacts via Javascript
@@ -100,6 +102,16 @@ builder.Services.AddRemoteReduxDevToolMiddleware(
 );
 #endif
 ```
+
+## Boot Redux DevTools
+
+Press F12 to open the developer tool and select the Redux tab.
+
+![](./Assets/ReduxDevTools.png)
+
+All Store states in an application are represented as a single StateTree.
+
+![](./Assets/StateTree.png)
 
 # Redux Dev Tools middleware API Reference
 
