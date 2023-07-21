@@ -4,18 +4,13 @@ namespace Memento.Core;
 /// Represents a store interface that maintains state and handles commands.
 /// Implements the IObservable and IDisposable interfaces.
 /// </summary>
-public interface IStore : IObservable<StateChangedEventArgs>, IDisposable {
+public interface IStore<out TState, out TCommand> : IObservable<IStateChangedEventArgs<TState, TCommand>>, IDisposable
+    where TState : class
+    where TCommand : Command {
     /// <summary>
     /// Gets the current state of the store.
     /// </summary>
-    object State { get; }
-
-    /// <summary>
-    /// Casts the current store to the specified type.
-    /// </summary>
-    /// <typeparam name="TStore">The desired store type.</typeparam>
-    /// <returns>The current store casted to the desired type.</returns>
-    TStore AsStore<TStore>() where TStore : IStore;
+    TState State { get; }
 
     /// <summary>
     /// Initializes the store asynchronously with the provided StoreProvider.
@@ -44,7 +39,7 @@ public interface IStore : IObservable<StateChangedEventArgs>, IDisposable {
     /// <summary>
     /// Gets the reducer function that takes a state object and a command object and returns a new state object.
     /// </summary>
-    Func<object, Command, object> Reducer { get; }
+    Reducer<object, Command> ReducerHandle { get; }
 
     /// <summary>
     /// Gets the type of the state managed by the store.

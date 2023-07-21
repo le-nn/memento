@@ -3,10 +3,10 @@ using System;
 namespace Memento.Core;
 
 internal class StoreObserver
-    : IObserver<StateChangedEventArgs> {
-    readonly Action<StateChangedEventArgs> _action;
+    : IObserver<IStateChangedEventArgs<object, Command>> {
+    readonly Action<IStateChangedEventArgs<object, Command>> _action;
 
-    public StoreObserver(Action<StateChangedEventArgs> action) {
+    public StoreObserver(Action<IStateChangedEventArgs<object, Command>> action) {
         _action = action;
     }
 
@@ -18,7 +18,7 @@ internal class StoreObserver
         throw new NotSupportedException();
     }
 
-    public void OnNext(StateChangedEventArgs value) {
+    public void OnNext(IStateChangedEventArgs<object, Command> value) {
         _action(value);
     }
 }

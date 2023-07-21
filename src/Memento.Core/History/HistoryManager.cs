@@ -4,19 +4,20 @@ namespace Memento.Core.History;
 
 public class HistoryManager {
     private int _maxHistoryCount = 8;
-    private readonly FutureHistoryStack<IMementoCommandContext> _future = new();
-    private readonly PastHistoryStack<IMementoCommandContext> _past = new();
+    private readonly FutureHistoryStack<IHistoryCommandItem<object>> _future = new();
+    private readonly PastHistoryStack<IHistoryCommandItem<object>> _past = new();
     private readonly ConcatAsyncOperationExecutor _concatAsyncOperationExecutor = new();
+    private IHistoryCommandItem<object>? _present;
 
-    public IMementoCommandContext? Present { get; private set; }
+    public IHistoryItem<object>? Present => _present;
 
-    public IReadOnlyCollection<IMementoStateContext> FutureHistories => _future.AsReadOnly();
+    public IReadOnlyCollection<IHistoryItem<object>> FutureHistories => _future.CloneAsReadOnly();
 
-    public IReadOnlyCollection<IMementoStateContext> PastHistories => _past.AsReadOnly();
+    public IReadOnlyCollection<IHistoryItem<object>> PastHistories => _past.CloneAsReadOnly();
 
-    public bool CanReDo => _future.Count is not 0;
+    public bool CanReDo => _future.GetCount() is not 0;
 
-    public bool CanUnDo => _past.Count is not 0 || Present is not null;
+    public bool CanUnDo => _past.GetCount() is not 0 || Present is not null;
 
     public int MaxHistoryCount {
         get => _maxHistoryCount;
@@ -26,20 +27,18 @@ public class HistoryManager {
         }
     }
 
-    public async ValueTask ExcuteCommitAsync<T>(
-        Func<ValueTask<T>> execute,
-        Func<T, ValueTask> unexecute,
-        Func<T, ValueTask> dataloader,
+    public async ValueTask CommitAsync<T>(
+        Func<ValueTask<T>> onDo,
+        Func<T, ValueTask> onUnDo,
         string? name = null,
-        Func<IMementoStateContext<T?>, ValueTask>? saved = null,
-        Func<IMementoStateContext<T?>, ValueTask>? loaded = null,
-        Action<IMementoStateContext<T?>>? onDispose = null
-    ) {
-        await ExcuteAsync(
-            new MementoCommandContext<T>(
-                dataloader,
-                execute,
-                unexecute,
+        Func<IHistoryItem<T?>, ValueTask>? saved = null,
+        Func<IHistoryItem<T?>, ValueTask>? loaded = null,
+        Action<IHistoryItem<T?>>? onDispose = null
+    ) where T : class {
+        await CommitAsync(
+            new HistoryCommandContext<T>(
+                onDo,
+                onUnDo,
                 name ?? Guid.NewGuid().ToString()
             ) {
                 ContextLoaded = loaded,
@@ -49,86 +48,87 @@ public class HistoryManager {
         );
     }
 
-    public async ValueTask ExcuteAsync<T>(IMementoCommandContext<T> command) {
+    public async ValueTask CommitAsync<T>(IHistoryCommandItem<T> command) where T : class {
         await _concatAsyncOperationExecutor.ExecuteAsync(async () => {
             if (CanReDo) {
-                ClearFutureHistoriesAsync();
+                ClearFutureHistories();
             }
 
-            if (Present is not null) {
-                await Present.InvokeContextSavedAsync();
-                _past.Push(Present);
+            if (_present is not null) {
+                await _present.InvokeContextSavedAsync();
+                _past.Push(_present);
             }
 
             await command.CommitAsync();
-            await command.LoadDataAsync();
 
-            Present = command;
+            _present = command;
 
             ReduceIfPastHistoriesOverflow();
         });
     }
 
-    public async ValueTask<bool> ReExecuteAsync() {
+    public async ValueTask<bool> ReDoAsync() {
         return await _concatAsyncOperationExecutor.ExecuteAsync(async () => {
             if (CanReDo is false) {
                 return false;
             }
 
-            if (Present is not null) {
-                await Present.InvokeContextSavedAsync();
-                _past.Push(Present);
+            if (_present is not null) {
+                await _present.InvokeContextSavedAsync();
+                _past.Push(_present);
             }
 
             var item = _future.Pop()!;
             await item.InvokeContextLoadedAsync();
             await item.CommitAsync();
-            await item.LoadDataAsync();
-            Present = item;
+
+            _present = item;
 
             return true;
         });
     }
 
-    public async ValueTask<bool> UnExecuteAsync() {
+    public async ValueTask<bool> UnDoAsync() {
         return await _concatAsyncOperationExecutor.ExecuteAsync(async () => {
             if (CanUnDo is false) {
                 return false;
             }
 
-            if (Present is not null) {
-                await Present.RestoreAsync();
-                await Present.InvokeContextSavedAsync();
-                _future.Push(Present);
+            if (_present is not null) {
+                await _present.RestoreAsync();
+                await _present.InvokeContextSavedAsync();
+                _future.Push(_present);
             }
 
-            if (_past.Count is not 0) {
+            if (_past.GetCount() is not 0) {
                 var item = _past.Pop()!;
                 await item.InvokeContextLoadedAsync();
-                await item.LoadDataAsync();
-                Present = item;
+                _present = item;
             }
             else {
-                Present = null;
+                _present = null;
             }
 
             return true;
         });
     }
 
-    private void ClearFutureHistoriesAsync() {
-        var items = _future.ToArray();
+    private void ClearFutureHistories() {
+        var items = _future.CloneAsReadOnly();
         _future.Clear();
+
         foreach (var item in items) {
             item.Dispose();
         }
     }
 
     private void ReduceIfPastHistoriesOverflow() {
-        if (_past.Count > MaxHistoryCount) {
-            for (var i = 0; i < _past.Count - MaxHistoryCount; i++) {
-                _past.RemoveLast()
-                    ?.Dispose();
+        lock (_past) {
+            if (_past.GetCount() > MaxHistoryCount) {
+                for (var i = 0; i < _past.GetCount() - MaxHistoryCount; i++) {
+                    _past.RemoveLast()
+                        ?.Dispose();
+                }
             }
         }
     }

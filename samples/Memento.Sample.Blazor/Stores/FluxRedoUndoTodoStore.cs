@@ -1,3 +1,4 @@
+using Memento.Core.History;
 using Memento.Sample.Blazor.Todos;
 using System.Collections.Immutable;
 
@@ -20,15 +21,10 @@ public record FluxRedoUndoTodoCommand : Command {
 }
 
 public class FluxRedoUndoTodoStore : FluxMementoStore<FluxRedoUndoTodoState, FluxRedoUndoTodoCommand> {
-    ITodoService TodoService { get; }
+    readonly ITodoService _todoService;
 
-    public FluxRedoUndoTodoStore(ITodoService todoService)
-        : base(
-            () => new(),
-            Reducer,
-            new() { MaxHistoryCount = 20 }
-        ) {
-        TodoService = todoService;
+    public FluxRedoUndoTodoStore(ITodoService todoService) : base(() => new(), new() { MaxHistoryCount = 20 }, Reducer) {
+        _todoService = todoService;
     }
 
     static FluxRedoUndoTodoState Reducer(FluxRedoUndoTodoState state, FluxRedoUndoTodoCommand command) {
@@ -53,22 +49,21 @@ public class FluxRedoUndoTodoStore : FluxMementoStore<FluxRedoUndoTodoState, Flu
 
     public async Task CreateNewAsync(string text) {
         await CommitAsync(
-            () => {
-                return ValueTask.FromResult(Guid.NewGuid());
-            },
-            async id => {
-                var item = await TodoService.CreateItemAsync(id, text);
+            async () => {
+                var id = Guid.NewGuid();
+                var item = await _todoService.CreateItemAsync(id, text);
                 Dispatch(new Append(item));
+                return item;
             },
-            async id => {
-                await TodoService.RemoveAsync(id);
+            async todo => {
+                await _todoService.RemoveAsync(todo.Payload.TodoId);
             }
         );
     }
 
     public async Task LoadAsync() {
         Dispatch(new BeginLoading());
-        var items = await TodoService.FetchItemsAsync();
+        var items = await _todoService.FetchItemsAsync();
         Dispatch(new SetItems(items));
         Dispatch(new EndLoading());
     }
@@ -76,12 +71,13 @@ public class FluxRedoUndoTodoStore : FluxMementoStore<FluxRedoUndoTodoState, Flu
     public async Task ToggleIsCompletedAsync(Guid id) {
         await CommitAsync(
             async () => {
-                var item = await TodoService.ToggleCompleteAsync(id)
+                var item = await _todoService.ToggleCompleteAsync(id)
                     ?? throw new Exception();
                 Dispatch(new Replace(id, item));
+                return item;
             },
-            async () => {
-                var item = await TodoService.ToggleCompleteAsync(id)
+            async todo => {
+                var item = await _todoService.ToggleCompleteAsync(todo.Payload.TodoId)
                     ?? throw new Exception();
             }
         );

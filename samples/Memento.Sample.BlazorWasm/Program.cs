@@ -12,11 +12,13 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services
     .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
     .AddScoped<ITodoService, MockTodoService>()
+    // Memento
     .AddMemento()
     .AddMiddleware(() => new LoggerMiddleware())
     .AddBrowserReduxDevToolMiddleware(new() {
         StackTraceEnabled = true,
         OpenDevTool = true,
+        
     })
     .ScanAssemblyAndAddStores(typeof(App).Assembly);
 

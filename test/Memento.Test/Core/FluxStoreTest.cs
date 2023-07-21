@@ -86,7 +86,7 @@ public class FluxStoreTest {
     public async Task Force_ReplaceState() {
         var store = new FluxAsyncCounterStore();
 
-        var commands = new List<StateChangedEventArgs>();
+        var commands = new List<IStateChangedEventArgs<object,Command>>();
 
         var lastState = store.State;
         using var subscription = store.Subscribe(e => {
@@ -99,7 +99,7 @@ public class FluxStoreTest {
 
         await store.CountUpAsync();
         store.SetCount(1234);
-        if (store is IStore iStore) {
+        if (store is IStore<object, Command> iStore) {
             iStore.SetStateForce(store.State with {
                 Count = 5678
             });
@@ -145,7 +145,7 @@ public class FluxStoreTest {
     [Fact]
     public void Ensure_StateHasChangedInvoked() {
         var store = new FluxAsyncCounterStore();
-        var commands = new List<StateChangedEventArgs>();
+        var commands = new List<IStateChangedEventArgs<object,Command>>();
 
         var lastState = store.State;
         using var subscription = store.Subscribe(e => {

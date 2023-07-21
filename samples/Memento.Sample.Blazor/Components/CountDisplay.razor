@@ -1,0 +1,8 @@
+﻿@using Memento.Sample.Blazor.Stores;
+@inherits ObserverComponent
+@inject AsyncCounterStore AsyncCounterStore
+
+<div class="p-4 bg-opacity-10 bg-dark rounded-2">
+    <h1 class="">Observed Store Component</h1>
+    <div>Observed Count: @AsyncCounterStore.State.Count</div>
+</div>

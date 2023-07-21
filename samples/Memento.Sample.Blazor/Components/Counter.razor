@@ -1,20 +1,17 @@
-@using Memento.Sample.Blazor.Stores
+﻿@using Memento.Sample.Blazor.Stores
 @using System.Text.Json
 
-@page "/counter"
 @inherits ObserverComponent
 @inject AsyncCounterStore AsyncCounterStore
 
-<PageTitle>Counter</PageTitle>
-
-<div>
-    <h1 class="mt-5">Async Counter</h1>
+<div class="p-4 mt-4 bg-opacity-10 bg-dark rounded-2">
+    <h1 class="">Async Counter Component</h1>
     <h2>Current count: @AsyncCounterStore.State.Count</h2>
     <p>Loading: @AsyncCounterStore.State.IsLoading</p>
 
     <div>
         <button class="mt-3 btn btn-primary" @onclick="IncrementCount">Count up</button>
-        <button class="mt-3 btn btn-primary" @onclick="CountupMany">Count up 100 times</button>
+        <button class="mt-3 btn btn-primary" @onclick="CountUpMany">Count up 100 times</button>
     </div>
 
     <div class="mt-5">
@@ -32,7 +29,7 @@
         <h3>Count up with Amount</h3>
         <input @bind-value="_amount" />
     </div>
-    <button class="mt-3 btn btn-primary" @onclick="CountupWithAmount">Count up with amount</button>
+    <button class="mt-3 btn btn-primary" @onclick="CountUpWithAmount">Count up with amount</button>
 
     <div class="mt-5">
         <h3>Set count</h3>
@@ -53,11 +50,11 @@
         await AsyncCounterStore.CountUpAsync();
     }
 
-    void CountupMany() {
+    void CountUpMany() {
         AsyncCounterStore.CountUpManyTimes(100);
     }
 
-    void CountupWithAmount() {
+    void CountUpWithAmount() {
         AsyncCounterStore.CountUpWithAmount(_amount);
     }
 

@@ -1,8 +1,8 @@
 namespace Memento.Core;
 
 public static class ServiceProviderExtensions {
-    public static IEnumerable<IStore> GetAllStores(this IServiceProvider provider) {
-        return provider.GetServices<IStore>();
+    public static IEnumerable<IStore<object, Command>> GetAllStores(this IServiceProvider provider) {
+        return provider.GetServices<IStore<object, Command>>();
     }
 
     public static IEnumerable<Middleware> GetAllMiddleware(this IServiceProvider provider) {

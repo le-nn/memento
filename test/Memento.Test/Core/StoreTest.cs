@@ -1,7 +1,10 @@
-﻿using Memento.Core;
+﻿using FluentAssertions;
+using Memento.Core;
 using Memento.Test.Core.Mock;
+using System.Collections.Concurrent;
 using System.Data;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Memento.Test.Core;
 
@@ -83,7 +86,7 @@ public class StoreTest {
     public async Task Force_ReplaceState() {
         var store = new AsyncCounterStore();
 
-        var commands = new List<StateChangedEventArgs>();
+        var commands = new List<IStateChangedEventArgs<object, Command>>();
 
         var lastState = store.State;
         using var subscription = store.Subscribe(e => {
@@ -96,7 +99,7 @@ public class StoreTest {
 
         await store.CountUpAsync();
         store.SetCount(1234);
-        if (store is IStore iStore) {
+        if (store is IStore<object, Command> iStore) {
             iStore.SetStateForce(store.State with {
                 Count = 5678
             });
@@ -109,7 +112,7 @@ public class StoreTest {
             { Command: Command.StateHasChanged },
             { Command: Command.StateHasChanged },
             { Command: Command.StateHasChanged },
-            { Command: null, State : AsyncCounterState { Count: 5678 } ,StateChangeType: StateChangeType.ForceReplaced},
+            { Command: null, State: AsyncCounterState { Count: 5678 }, StateChangeType: StateChangeType.ForceReplaced },
             { Command: Command.StateHasChanged },
             { Command: Command.StateHasChanged },
             { Command: Command.StateHasChanged },
@@ -142,13 +145,9 @@ public class StoreTest {
     [Fact]
     public void Ensure_StateHasChangedInvoked() {
         var store = new AsyncCounterStore();
-
-        var commands = new List<StateChangedEventArgs>();
-
+        var commands = new List<IStateChangedEventArgs<object, Command>>();
         var lastState = store.State;
-        using var subscription = store.Subscribe(e => {
-            commands.Add(e);
-        });
+        using var subscription = store.Subscribe(e => commands.Add(e));
 
         store.StateHasChanged();
         store.StateHasChanged();
@@ -165,5 +164,31 @@ public class StoreTest {
             { StateChangeType: StateChangeType.StateHasChanged },
             { StateChangeType: StateChangeType.StateHasChanged },
         ]);
+    }
+
+    [Fact]
+    public void Ensure_Observable() {
+        var store = new AsyncCounterStore();
+        var observers = (store.GetType()
+            .BaseType
+            ?.BaseType
+            ?.BaseType
+            ?.GetField(
+                "_observers",
+                BindingFlags.NonPublic | BindingFlags.Instance
+            )
+            ?.GetValue(store) as IDictionary<Guid, IObserver<IStateChangedEventArgs<AsyncCounterState, Command.StateHasChanged<AsyncCounterState, string>>>>
+         ) ?? throw new Exception("_observers is not found.");
+
+        var disposables = new BlockingCollection<IDisposable>();
+        Parallel.For(0, 10000, i => {
+            disposables.Add(store.Subscribe(e => { }));
+        });
+        observers.Count.Should().Be(10000);
+
+        Parallel.ForEach(disposables, e => {
+            e.Dispose();
+        });
+        observers.Count.Should().Be(0);
     }
 }
