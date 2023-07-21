@@ -2,7 +2,7 @@ namespace Memento.Core;
 
 public delegate object NextStoreMiddlewareCallback(object? state, Command command);
 
-public delegate RootState NextProviderMiddlewareCallback(RootState? state, StateChangedEventArgs e);
+public delegate RootState NextProviderMiddlewareCallback(RootState? state, IStateChangedEventArgs<object, Command> e);
 
 public abstract class MiddlewareHandler : IDisposable {
     /// <summary>
@@ -19,7 +19,7 @@ public abstract class MiddlewareHandler : IDisposable {
 
     public virtual RootState? HandleProviderDispatch(
         RootState? state,
-        StateChangedEventArgs e,
+        IStateChangedEventArgs<object,Command> e,
         NextProviderMiddlewareCallback next
     ) => next(state, e);
 

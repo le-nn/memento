@@ -1,14 +1,12 @@
 namespace Memento.Core.History;
 
-public record MementoCommandContext<T> : IMementoCommandContext<T> {
+public record HistoryCommandContext<T> : IHistoryCommandItem<T> where T : notnull {
+    private T? _historyState;
+
     public bool IsDisposed { get; private set; }
 
-    public T? State { get; set; } = default;
-
-    object? IMementoStateContext.State {
-        get => State;
-        set => State = (T?)value;
-    }
+    public T HistoryState => _historyState
+        ?? throw new NullReferenceException("The state is null because CommitAsync is not called.");
 
     public string Name { get; }
 
@@ -16,13 +14,13 @@ public record MementoCommandContext<T> : IMementoCommandContext<T> {
 
     private Func<T, ValueTask> UnDoHandler { get; init; }
 
-    public Func<IMementoStateContext<T?>, ValueTask>? ContextSaved { get; init; }
+    public Func<IHistoryItem<T?>, ValueTask>? ContextSaved { get; init; }
 
-    public Func<IMementoStateContext<T?>, ValueTask>? ContextLoaded { get; init; }
+    public Func<IHistoryItem<T?>, ValueTask>? ContextLoaded { get; init; }
 
-    public Action<IMementoCommandContext<T?>>? Disposed { get; init; }
+    public Action<IHistoryCommandItem<T?>>? Disposed { get; init; }
 
-    public MementoCommandContext(
+    public HistoryCommandContext(
         Func<ValueTask<T>> doHandler,
         Func<T, ValueTask> undoHandler,
         string name
@@ -33,15 +31,11 @@ public record MementoCommandContext<T> : IMementoCommandContext<T> {
     }
 
     public async ValueTask CommitAsync() {
-        State = await DoHandler();
+        _historyState = await DoHandler();
     }
 
     public async ValueTask RestoreAsync() {
-        if (State is null) {
-            throw new NullReferenceException("State is null.");
-        }
-
-        await UnDoHandler.Invoke(State);
+        await UnDoHandler.Invoke(HistoryState);
     }
 
     public async ValueTask InvokeContextSavedAsync() {

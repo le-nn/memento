@@ -1,6 +1,6 @@
 namespace Memento.Core.History;
 
-public interface IMementoCommandContext : IDisposable, IMementoStateContext {
+public interface IHistoryCommandItem<out T> : IHistoryItem<T>, IDisposable {
     ValueTask InvokeContextSavedAsync();
 
     ValueTask InvokeContextLoadedAsync();
@@ -8,8 +8,4 @@ public interface IMementoCommandContext : IDisposable, IMementoStateContext {
     ValueTask CommitAsync();
 
     ValueTask RestoreAsync();
-}
-
-public interface IMementoCommandContext<T> : IMementoCommandContext, IMementoStateContext<T> {
-
 }

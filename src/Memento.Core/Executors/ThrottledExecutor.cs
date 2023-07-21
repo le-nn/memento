@@ -1,4 +1,6 @@
 using Memento.Core.Internals;
+using System;
+using System.Collections.Concurrent;
 
 namespace Memento.Core.Executors;
 
@@ -7,8 +9,7 @@ public class ThrottledExecutor<T> : IObservable<T> {
     DateTime _lastInvokeTime;
     Timer? _throttleTimer;
 
-    readonly List<IObserver<T>> _observers = new();
-    readonly object _locker = new();
+    readonly ConcurrentDictionary<Guid, IObserver<T>> _observers = new();
 
     public ushort LatencyMs { get; set; } = 100;
 
@@ -16,14 +17,15 @@ public class ThrottledExecutor<T> : IObservable<T> {
         _lastInvokeTime = DateTime.UtcNow - TimeSpan.FromMilliseconds(ushort.MaxValue);
     }
 
-    public IDisposable Subscribe(IObserver<T> action) {
-        lock (_locker) {
-            _observers.Add(action);
+    public IDisposable Subscribe(IObserver<T> observer) {
+        var id = Guid.NewGuid();
+        if (_observers.TryAdd(id, observer) is false) {
+            throw new InvalidOperationException("Failed to add an observer.");
         }
 
         return new StoreSubscription(nameof(ThrottledExecutor<T>), () => {
-            lock (_locker) {
-                _observers.Remove(action);
+            if (_observers.TryRemove(new(id, observer)) is false) {
+                throw new InvalidOperationException("Failed to add an observer.");
             }
         });
     }
@@ -82,10 +84,8 @@ public class ThrottledExecutor<T> : IObservable<T> {
 
     private void ExecuteThrottledAction(T value) {
         try {
-            lock (_locker) {
-                foreach (var observer in _observers) {
-                    observer.OnNext(value);
-                }
+            foreach (var (_, observer) in _observers) {
+                observer.OnNext(value);
             }
         }
         finally {

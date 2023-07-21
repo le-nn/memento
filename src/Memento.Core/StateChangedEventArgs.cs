@@ -1,3 +1,5 @@
+using System.Data;
+
 namespace Memento.Core;
 
 public enum StateChangeType {
@@ -7,45 +9,39 @@ public enum StateChangeType {
     Restored,
 }
 
-public record StateChangedEventArgs {
+public interface IStateChangedEventArgs<out TState, out TCommand>
+    where TState : class
+    where TCommand : Command {
+
+    StateChangeType StateChangeType { get; }
+
+    TCommand? Command { get; }
+
+
+    TState? LastState { get; }
+
+    TState? State { get; }
+
+    DateTime Timestamp { get; }
+
+    IStore<TState, TCommand>? Sender { get; }
+}
+
+record StateChangedEventArgs<TState, TCommand> : IStateChangedEventArgs<TState, TCommand>
+    where TState : class
+    where TCommand : Command {
     protected object? sender;
 
     public StateChangeType StateChangeType { get; init; }
 
-    public Command? Command { get; init; } = default!;
+    public required TCommand? Command { get; init; }
 
-    public object? LastState { get; init; }
+    public required TState? LastState { get; init; }
 
-    public object? State { get; init; }
+    public required TState? State { get; init; }
 
     public DateTime Timestamp { get; } = DateTime.UtcNow;
 
-    public IStore? Sender {
-        get {
-            return (IStore?)sender;
-        }
-        init {
-            sender = value;
-        }
-    }
-}
+    public IStore<TState, TCommand>? Sender { get; init; }
 
-public record StateChangedEventArgs<TState, TCommand> : StateChangedEventArgs
-    where TState : class
-    where TCommand : Command {
-
-    public new TCommand? Command {
-        get => (TCommand)base.Command!;
-        init => base.Command = value;
-    }
-
-    public new required TState? LastState {
-        get => (TState)base.LastState!;
-        init => base.LastState = value;
-    }
-
-    public new required TState? State {
-        get => (TState)base.State!;
-        init => base.State = value;
-    }
 }
