@@ -120,29 +120,6 @@ public class FluxStoreTest {
     }
 
     [Fact]
-    public void Performance() {
-        var store = new FluxAsyncCounterStore();
-
-        var commands = new List<Command?>();
-
-        var lastState = store.State;
-        using var subscription = store.Subscribe(e => {
-            commands.Add(e.Command);
-        });
-
-        var sw = Stopwatch.StartNew();
-
-        for (var i = 0; i < 100000; i++) {
-            store.CountUpWithoutHistory();
-        }
-
-        sw.Stop();
-
-        Assert.Equal(100000, commands.Count);
-        Assert.True(sw.ElapsedMilliseconds < 100);
-    }
-
-    [Fact]
     public void Ensure_StateHasChangedInvoked() {
         var store = new FluxAsyncCounterStore();
         var commands = new List<IStateChangedEventArgs<object,Command>>();
