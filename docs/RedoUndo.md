@@ -137,6 +137,81 @@ public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState> {
 
 ```
 
+```razor
+
+﻿@using Memento.Sample.Blazor.Stores
+@using System.Text.Json
+
+@inherits ObserverComponent
+@inject AsyncCounterStore AsyncCounterStore
+
+<div class="p-4 mt-4 bg-opacity-10 bg-dark rounded-2">
+    <h1 class="">Async Counter Component</h1>
+    <h2>Current count: @AsyncCounterStore.State.Count</h2>
+    <p>Loading: @AsyncCounterStore.State.IsLoading</p>
+
+    <div>
+        <button class="mt-3 btn btn-primary" @onclick="IncrementCount">Count up</button>
+        <button class="mt-3 btn btn-primary" @onclick="CountUpMany">Count up 100 times</button>
+    </div>
+
+    <div class="mt-5">
+        <h3>Count up async with histories</h3>
+        <button class="mt-3 btn btn-primary" @onclick="IncrementCountAsync">Count up async</button>
+        <p class="mt-3 mb-0">Histories</p>
+        <div class="d-flex">
+            @foreach (var item in string.Join(", ", AsyncCounterStore.State.Histories)) {
+                @item
+            }
+        </div>
+    </div>
+
+    <div class="mt-5">
+        <h3>Count up with Amount</h3>
+        <input @bind-value="_amount" />
+    </div>
+    <button class="mt-3 btn btn-primary" @onclick="CountUpWithAmount">Count up with amount</button>
+
+    <div class="mt-5">
+        <h3>Set count</h3>
+        <input @bind-value="_countToSet" />
+    </div>
+    <button class="mt-3 btn btn-primary" @onclick="SetCount">Count up with amount</button>
+</div>
+
+@code {
+    int _amount = 5;
+    int _countToSet = 100;
+
+    void IncrementCount() {
+        AsyncCounterStore.CountUp();
+    }
+
+    async Task IncrementCountAsync() {
+        await AsyncCounterStore.CountUpAsync();
+    }
+
+    void CountUpMany() {
+        AsyncCounterStore.CountUpManyTimes(100);
+    }
+
+    void CountUpWithAmount() {
+        AsyncCounterStore.CountUpWithAmount(_amount);
+    }
+
+    void SetCount() {
+        AsyncCounterStore.SetCount(_countToSet);
+    }
+}
+
+```
+
+Sample Source
+
+https://github.com/le-nn/memento/blob/main/samples/Memento.Sample.Blazor/Stores/RedoUndoTodoStore.cs
+https://github.com/le-nn/memento/blob/main/samples/Memento.Sample.Blazor/Components/Counter.razor
+
 DEMO
 
 https://le-nn.github.io/memento/todo
+
