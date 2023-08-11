@@ -4,7 +4,7 @@
 
 Easy unidirectional store and redo/undo library for state management for frontend apps on Blazor/.NET
 
-![](./docs/Assets/ReduxDevTools.gif)
+<img src="./docs/Assets/ReduxDevTools.gif" width="800px" />
 
 ### 日本語
 
