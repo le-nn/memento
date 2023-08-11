@@ -10,7 +10,7 @@ Easy unidirectional store and redo/undo library for state management for fronten
 
 [使い方と紹介](https://zenn.dev/remrem/articles/32ee38e79f4cf0)
 
-[Redux DevToolsについて](https://zenn.dev/remrem/articles/32ee38e79f4cf0)
+[Redux DevToolsについて](https://zenn.dev/remrem/articles/0768982b3cdc92)
 
 # Basic Concept
 
