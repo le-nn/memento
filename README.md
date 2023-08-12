@@ -2,11 +2,11 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Easy unidirectional store and redo/undo library for state management for frontend apps on Blazor/.NET
+A simple client-side state management container for Blazor/.NET includes redo/undo and ReduxDevTools support.
 
 <img src="./docs/Assets/ReduxDevTools.gif" width="800px" />
 
-### 日本語
+### Japanese Link
 
 [使い方と紹介](https://zenn.dev/remrem/articles/32ee38e79f4cf0)
 
