@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using Memento.Core;
-using Memento.Core.History;
 using Memento.Sample.Blazor.Stores;
 using Memento.Test.Core.Mock;
 using Microsoft.Extensions.DependencyInjection;

@@ -39,7 +39,11 @@ public sealed class LoggerMiddleware : Middleware {
         /// <param name="e">The state change event arguments.</param>
         /// <param name="next">The next middleware in the pipeline.</param>
         /// <returns>The updated state after processing by the middleware pipeline.</returns>
-        public override RootState? HandleProviderDispatch(RootState? state, IStateChangedEventArgs<object, Command> e, NextProviderMiddlewareCallback next) {
+        public override RootState? HandleProviderDispatch(
+            RootState? state,
+            IStateChangedEventArgs<object, Command> e,
+            NextProviderMiddlewareCallback next
+        ) {
             _ = HandleLog(state, e);
             return next(state, e);
         }

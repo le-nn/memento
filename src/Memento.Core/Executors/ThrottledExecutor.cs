@@ -1,5 +1,4 @@
 using Memento.Core.Internals;
-using System;
 using System.Collections.Concurrent;
 
 namespace Memento.Core.Executors;

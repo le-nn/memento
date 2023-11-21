@@ -21,9 +21,9 @@ internal class GeneralObserver<T> : IObserver<T> {
 }
 
 internal class StoreObserver<TState, TCommand>
-    : IObserver<IStateChangedEventArgs<TState, TCommand>> 
-    where TState:class 
-    where TCommand :Command {
+    : IObserver<IStateChangedEventArgs<TState, TCommand>>
+    where TState : class
+    where TCommand : Command {
     readonly Action<IStateChangedEventArgs<TState, TCommand>> _action;
 
     public StoreObserver(Action<IStateChangedEventArgs<TState, TCommand>> action) {

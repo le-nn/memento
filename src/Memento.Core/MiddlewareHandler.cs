@@ -19,7 +19,7 @@ public abstract class MiddlewareHandler : IDisposable {
 
     public virtual RootState? HandleProviderDispatch(
         RootState? state,
-        IStateChangedEventArgs<object,Command> e,
+        IStateChangedEventArgs<object, Command> e,
         NextProviderMiddlewareCallback next
     ) => next(state, e);
 

@@ -79,7 +79,7 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
     /// Captures a dictionary containing all stores keyed by their type name.
     /// </summary>
     /// <returns>A dictionary containing all stores keyed by their type name.</returns>
-    public Dictionary<string, IStore<object,Command>> CaptureStoreBag() {
+    public Dictionary<string, IStore<object, Command>> CaptureStoreBag() {
         var map = new Dictionary<string, IStore<object, Command>>();
         foreach (var item in ResolveAllStores()) {
             map.Add(item.GetType().Name, item);
@@ -100,7 +100,7 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
             throw new InvalidOperationException("Already initialized.");
         }
 
-        IsInitialized = true;
+
         // observe all stores.
         foreach (var store in ResolveAllStores()) {
             var subscription = store.Subscribe(new StoreObserver<object, Command>(e => {
@@ -122,10 +122,19 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
         // Initialize all middleware.
         foreach (var middleware in GetAllMiddleware()) {
             try {
-                await middleware.InitializeAsync(_serviceContainer);
+                middleware.Initalize(_serviceContainer);
             }
             catch (Exception ex) {
                 throw new InvalidDataException($@"Failed to initialize memento middleware ""{ex.Message}""", ex);
+            }
+        }
+
+        foreach (var middleware in GetAllMiddleware()) {
+            try {
+                await middleware.InvokeInitializedAsync();
+            }
+            catch (Exception ex) {
+                throw new InvalidDataException($@"Failed to invoke OnInitialized memento middleware ""{ex.Message}""", ex);
             }
         }
 
@@ -138,6 +147,8 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
                 throw new InvalidDataException(@$"Failed to initialize memento provider ""{ex.Message}""", ex);
             }
         }
+
+        IsInitialized = true;
     }
 
     /// <summary>

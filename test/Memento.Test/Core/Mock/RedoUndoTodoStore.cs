@@ -1,7 +1,6 @@
 using Memento.Core;
 using Memento.Test.Core.Mock;
 using System.Collections.Immutable;
-using System.Xml.Linq;
 
 namespace Memento.Sample.Blazor.Stores;
 
