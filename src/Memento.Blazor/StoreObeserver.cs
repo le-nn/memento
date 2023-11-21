@@ -1,5 +1,3 @@
-using System;
-
 namespace Memento.Core;
 
 internal class StoreObserver

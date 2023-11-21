@@ -2,8 +2,6 @@
 using Memento.Core;
 using Memento.Test.Core.Mock;
 using System.Collections.Concurrent;
-using System.Data;
-using System.Diagnostics;
 using System.Reflection;
 
 namespace Memento.Test.Core;

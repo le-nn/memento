@@ -1,6 +1,5 @@
 ﻿using Memento.Core;
 using Memento.Test.Core.Mock;
-using System.Diagnostics;
 
 namespace Memento.Test.Core;
 
@@ -86,7 +85,7 @@ public class FluxStoreTest {
     public async Task Force_ReplaceState() {
         var store = new FluxAsyncCounterStore();
 
-        var commands = new List<IStateChangedEventArgs<object,Command>>();
+        var commands = new List<IStateChangedEventArgs<object, Command>>();
 
         var lastState = store.State;
         using var subscription = store.Subscribe(e => {
@@ -122,7 +121,7 @@ public class FluxStoreTest {
     [Fact]
     public void Ensure_StateHasChangedInvoked() {
         var store = new FluxAsyncCounterStore();
-        var commands = new List<IStateChangedEventArgs<object,Command>>();
+        var commands = new List<IStateChangedEventArgs<object, Command>>();
 
         var lastState = store.State;
         using var subscription = store.Subscribe(e => {

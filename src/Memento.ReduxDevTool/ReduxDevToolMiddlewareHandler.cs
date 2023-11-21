@@ -4,7 +4,6 @@ using Memento.ReduxDevTool.Internals;
 using System.Diagnostics;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using static Memento.Core.Command;
 
 namespace Memento.ReduxDevTool;
 

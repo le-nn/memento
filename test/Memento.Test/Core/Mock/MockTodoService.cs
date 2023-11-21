@@ -1,29 +1,28 @@
-using Memento.Test.Core.Mock;
 using System.Collections.Immutable;
 
 namespace Memento.Test.Core.Mock;
 
 public class MockTodoService : ITodoService {
-    readonly List<Todo> _items = new() {
-        new () {
+    readonly List<Todo> _items = [
+        new() {
             TodoId = Guid.NewGuid(),
             CreatedAt = DateTime.Now,
             IsCompleted = false,
             Text = "Test Item 1",
         },
-        new () {
+        new() {
             TodoId = Guid.NewGuid(),
             CreatedAt = DateTime.Now,
             IsCompleted = false,
             Text = "Test Item 2",
         },
-        new () {
+        new() {
             TodoId = Guid.NewGuid(),
             CreatedAt = DateTime.Now,
             IsCompleted = false,
             Text = "Test Item 3",
         },
-    };
+    ];
 
     public async Task<Todo> CreateItemAsync(Guid id, string text) {
         await Task.Delay(600);
@@ -39,7 +38,7 @@ public class MockTodoService : ITodoService {
 
     public async Task<ImmutableArray<Todo>> FetchItemsAsync() {
         await Task.Delay(600);
-        return _items.ToImmutableArray();
+        return [.. _items];
     }
 
     public async Task RemoveAsync(Guid id) {

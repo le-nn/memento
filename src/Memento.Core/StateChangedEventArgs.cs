@@ -1,5 +1,3 @@
-using System.Data;
-
 namespace Memento.Core;
 
 public enum StateChangeType {

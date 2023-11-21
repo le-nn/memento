@@ -46,7 +46,7 @@ public static class StateSubscriber {
         : GetStateChangedNotifierProperties(t.BaseType!)
             .Union(
                 t.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly)
-                    .Where(p => typeof(IStore<object,Command>).IsAssignableFrom(p.PropertyType))
+                    .Where(p => typeof(IStore<object, Command>).IsAssignableFrom(p.PropertyType))
             );
 
     private static IEnumerable<GetStateChangedPropertyDelegate> GetStateChangedNotifierPropertyDelegatesForType(Type type)

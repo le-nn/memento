@@ -17,7 +17,7 @@ internal class FutureHistoryStack<T> {
 
     public void Push(T item) {
         lock (_values) {
-                _values.Insert(0, item);
+            _values.Insert(0, item);
         }
     }
 

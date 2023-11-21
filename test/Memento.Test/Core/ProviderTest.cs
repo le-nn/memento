@@ -1,9 +1,9 @@
 ﻿using Memento.Blazor;
+using Memento.Core;
 using Memento.Test.Core.Mock;
 using Microsoft.Extensions.DependencyInjection;
-using Memento.Core;
-using System.Text.Json;
 using System.Collections.Immutable;
+using System.Text.Json;
 
 namespace Memento.Test.Core;
 
