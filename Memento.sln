@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_root", "_root", "{E9CA5D2D
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
+		.github\workflows\build-and-deploy.yml = .github\workflows\build-and-deploy.yml
 		src\Directory.Build.props = src\Directory.Build.props
 		README.md = README.md
 	EndProjectSection
