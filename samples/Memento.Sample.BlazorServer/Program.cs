@@ -6,8 +6,8 @@ using Memento.Sample.Blazor.Todos;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddRemoteReduxDevToolMiddleware()
-    .AddMemento()
+    .AddRemoteReduxDevToolMiddleware(true)
+    .AddMemento(true)
     .AddMiddleware(() => new LoggerMiddleware())
     .ScanAssemblyAndAddStores(typeof(App).Assembly);
 

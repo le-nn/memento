@@ -6,10 +6,13 @@ public abstract class Middleware : IDisposable {
     public MiddlewareHandler Handler => _handler
         ?? throw new InvalidOperationException($"Middleware '{GetType().FullName}' has not initialized.");
 
-    internal async Task InitializeAsync(IServiceProvider provider) {
+    internal void Initalize(IServiceProvider provider) {
         var handler = Create(provider);
         _handler = handler;
-        await handler.InitializedAsync();
+    }
+
+    internal async Task InvokeInitializedAsync() {
+        await Handler.InitializedAsync();
     }
 
     protected abstract MiddlewareHandler Create(IServiceProvider provider);
