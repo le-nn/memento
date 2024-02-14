@@ -1,45 +1,101 @@
-namespace Memento.Core;
-
 public enum StateChangeType {
-    Command,
     StateHasChanged,
     ForceReplaced,
     Restored,
 }
 
-public interface IStateChangedEventArgs<out TState, out TCommand>
-    where TState : class
-    where TCommand : Command {
-
-    StateChangeType StateChangeType { get; }
-
-    TCommand? Command { get; }
-
-
-    TState? LastState { get; }
-
-    TState? State { get; }
-
+/// <summary>
+/// Represents the event arguments for a state change with a message.
+/// </summary>
+/// <typeparam name="TMessage">The type of the message.</typeparam>
+public interface IStateChangedEventArgs<out TMessage>
+    where TMessage : notnull {
+    /// <summary>
+    /// Gets the timestamp of the state change.
+    /// </summary>
     DateTime Timestamp { get; }
 
-    IStore<TState, TCommand>? Sender { get; }
+    /// <summary>
+    /// Gets the message associated with the state change.
+    /// </summary>
+    TMessage? Message { get; }
+
+    /// <summary>
+    /// Gets the sender of the state change.
+    /// </summary>
+    object? Sender { get; }
 }
 
-record StateChangedEventArgs<TState, TCommand> : IStateChangedEventArgs<TState, TCommand>
-    where TState : class
-    where TCommand : Command {
-    protected object? sender;
-
+/// <summary>
+/// Represents the event arguments for a state change with a message.
+/// </summary>
+/// <typeparam name="TMessage">The type of the message.</typeparam>
+public record StateChangedEventArgs<TMessage> : IStateChangedEventArgs<TMessage>
+    where TMessage : notnull {
+    /// <summary>
+    /// Gets or sets the type of the state change.
+    /// </summary>
     public StateChangeType StateChangeType { get; init; }
 
-    public required TCommand? Command { get; init; }
+    /// <inheritdoc/>
+    public required TMessage? Message { get; init; }
 
-    public required TState? LastState { get; init; }
-
-    public required TState? State { get; init; }
-
+    /// <inheritdoc/>
     public DateTime Timestamp { get; } = DateTime.UtcNow;
 
-    public IStore<TState, TCommand>? Sender { get; init; }
+    /// <inheritdoc/>
+    public required object? Sender { get; init; }
+}
 
+/// <summary>
+/// Represents the event arguments for a state change with a state and a message.
+/// </summary>
+/// <typeparam name="TState">The type of the state.</typeparam>
+/// <typeparam name="TMessage">The type of the message.</typeparam>
+public interface IStateChangedEventArgs<out TState, out TMessage> : IStateChangedEventArgs<TMessage>
+    where TState : class
+    where TMessage : notnull {
+    /// <summary>
+    /// Gets the type of the state change.
+    /// </summary>
+    StateChangeType StateChangeType { get; }
+
+    /// <summary>
+    /// Gets the last state before the change.
+    /// </summary>
+    TState? LastState { get; }
+
+    /// <summary>
+    /// Gets the current state after the change.
+    /// </summary>
+    TState? State { get; }
+}
+
+/// <summary>
+/// Represents the event arguments for a state change with a state and a message.
+/// </summary>
+/// <typeparam name="TState">The type of the state.</typeparam>
+/// <typeparam name="TMessage">The type of the message.</typeparam>
+public record StateChangedEventArgs<TState, TMessage> : IStateChangedEventArgs<TState, TMessage>
+    where TState : class
+    where TMessage : notnull {
+    /// <summary>
+    /// Gets or sets the type of the state change.
+    /// </summary>
+    public StateChangeType StateChangeType { get; init; }
+
+    /// <inheritdoc/>
+    public required TMessage? Message { get; init; }
+
+    /// <inheritdoc/>
+    public required TState? LastState { get; init; }
+
+    /// <inheritdoc/>
+    public required TState? State { get; init; }
+
+    /// <inheritdoc/>
+    public DateTime Timestamp { get; } = DateTime.UtcNow;
+
+    /// <inheritdoc/>
+    public object? Sender { get; init; }
 }

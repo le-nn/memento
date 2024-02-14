@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
 namespace Memento.Blazor;
-
 /// <summary>
 /// Extension methods for configuring store-related services.
 /// </summary>
@@ -29,14 +28,14 @@ public static class StoreConfigExtension {
     /// <param name="isScoped">If true, registers the store with a scoped lifetime. Otherwise, registers with a singleton lifetime.</param>
     /// <returns>>The registered IServiceCollection instance from the IServiceCollection.</returns>
     public static IServiceCollection AddStore<TStore>(this IServiceCollection collection, bool isScoped = true)
-        where TStore : class, IStore<object, Command> {
+        where TStore : class, IStore<object, object> {
         if (isScoped) {
             collection.AddScoped<TStore>()
-                .AddScoped<IStore<object, Command>>(p => p.GetRequiredService<TStore>());
+                .AddScoped<IStore<object, object>>(p => p.GetRequiredService<TStore>());
         }
         else {
             collection.AddSingleton<TStore>()
-                .AddSingleton<IStore<object, Command>>(p => p.GetRequiredService<TStore>());
+                .AddSingleton<IStore<object, object>>(p => p.GetRequiredService<TStore>());
         }
         return collection;
     }
@@ -46,17 +45,20 @@ public static class StoreConfigExtension {
     /// </summary>
     /// <param name="isScoped">If true, registers the stores with a scoped lifetime. Otherwise, registers with a singleton lifetime.</param>
     /// <returns>>The registered IServiceCollection instance from the IServiceCollection.</returns>
-    public static void ScanAssemblyAndAddStores(this IServiceCollection services, Assembly assembly, bool isScoped = true) {
-        foreach (var type in assembly.GetTypes().Where(t => t.IsAssignableTo(typeof(IStore<object, Command>)))) {
+    public static IServiceCollection ScanAssemblyAndAddStores(this IServiceCollection services, Assembly assembly, bool isScoped = true) {
+        var a = assembly.GetTypes().Where(t => t.IsAssignableTo(typeof(IStore<object, object>))).ToArray();
+        foreach (var type in assembly.GetTypes().Where(t => t.IsAbstract is false).Where(t => t.IsAssignableTo(typeof(IStore<object, object>)))) {
             if (isScoped) {
                 services.AddScoped(type)
-                    .AddScoped(p => (IStore<object, Command>)p.GetRequiredService(type));
+                    .AddScoped(p => (IStore<object, object>)p.GetRequiredService(type));
             }
             else {
                 services.AddSingleton(type)
-                    .AddSingleton(p => (IStore<object, Command>)p.GetRequiredService(type));
+                    .AddSingleton(p => (IStore<object, object>)p.GetRequiredService(type));
             }
         }
+
+        return services;
     }
 
     /// <summary>

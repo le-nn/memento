@@ -82,19 +82,17 @@ public record AsyncCounterState {
 
     public bool IsLoading { get; init; } = false;
 
-    public ImmutableArray<int> Histories { get; init; } = ImmutableArray.Create<int>();
+    public int[] Histories { get; init; } = [];
 }
 
-public class AsyncCounterStore : Store<AsyncCounterStore> {
-    public AsyncCounterStore() : base(() => new()) { }
-
+public class AsyncCounterStore() : Store<AsyncCounterState>(() => new()) {
     public async Task CountUpAsync() {
         Mutate(state => state with { IsLoading = true, });
         await Task.Delay(800);
         Mutate(state => state with {
             IsLoading = false,
             Count = state.Count + 1,
-            Histories = state.Histories.Add(state.Count + 1),        
+            Histories = [.. state.Histories, state.Count + 1],
         });
     }
 }
@@ -103,47 +101,38 @@ public class AsyncCounterStore : Store<AsyncCounterStore> {
 
 Flux Store Pattern
 ```csharp
-using Memento.Core;
-using System.Collections.Immutable;
-using static Memento.Sample.Blazor.Stores.AsyncCounterCommands;
-
-namespace Memento.Sample.Blazor;
-
 public record AsyncCounterState {
     public int Count { get; init; } = 0;
 
     public bool IsLoading { get; init; } = false;
 
-    public ImmutableArray<int> Histories { get; init; } = ImmutableArray.Create<int>();
+    public int[] Histories { get; init; } = [];
 }
 
-public record AsyncCounterCommands: Command {
+public record AsyncCounterCommands : Command {
     public record Increment : AsyncCounterCommands;
-    public record SetCount(int Count) : AsyncCounterCommands;
     public record BeginLoading : AsyncCounterCommands;
 }
 
-public class AsyncCounterStore : FluxStore<AsyncCounterState, AsyncCounterCommands> {
-    public AsyncCounterStore() : base(() => new(), Reducer) { }
-
+public class AsyncCounterStore() : FluxStore<AsyncCounterState, AsyncCounterCommands>(() => new(), Reducer) {
     static AsyncCounterState Reducer(AsyncCounterState state, AsyncCounterCommands command) {
         return command switch {
-            CountUp => state with {
+            AsyncCounterCommands.Increment => state with {
                 Count = state.Count + 1,
                 IsLoading = false,
-                Histories = state.Histories.Add(state.Count + 1),
+                Histories = [.. state.Histories, state.Count + 1],
             },
-            BeginLoading => state with {
+            AsyncCounterCommands.BeginLoading => state with {
                 IsLoading = true,
             },
-            _ => throw new CommandNotHandledException(command),
+            _ => throw new CommandNotHandledException<AsyncCounterCommands>(command),
         };
     }
 
     public async Task CountUpAsync() {
-        Dispatch(new BeginLoading());
+        Dispatch(new AsyncCounterCommands.BeginLoading());
         await Task.Delay(800);
-        Dispatch(new CountUp());
+        Dispatch(new AsyncCounterCommands.Increment());
     }
 }
 

@@ -31,11 +31,11 @@ You can do state history and time travel.
 
 | Package Name                                                                                | Platform            | Desctiption                                                 |
 | ------------------------------------------------------------------------------------------- | ------------------- | ----------------------------------------------------------- |
-| [Memento.Core](https://www.nuget.org/packages/Memento.Core)                                 | .NET 6 or later     | Core Package of Memento                                     |
-| [Memento.Blazor](https://www.nuget.org/packages/Memento.Blazor)                             | .NET 6 or later     | Provides Observing state changes on Blazor Component.       |
-| [Memento.ReduxDevTool.Remote](https://www.nuget.org/packages/Memento.ReduxDevTool.Remote)   | .NET 6 or later     | Connect and Interact with applications via WebSocket.       |
-| [Memento.ReduxDevTool.Browser](https://www.nuget.org/packages/Memento.ReduxDevTool.Browser) | .NET 6 or later     | Interact with ReduxDevTools via JavaScript interop.         |
-| [Memento.ReduxDevTool](https://www.nuget.org/packages/Memento.ReduxDevTool)                 | .NET 6 or later     | Provides basic functionality to interact with ReduxDevTools. Interop is required. |
+| [Memento.Core](https://www.nuget.org/packages/Memento.Core)                                 | .NET 8 or later     | Core Package of Memento                                     |
+| [Memento.Blazor](https://www.nuget.org/packages/Memento.Blazor)                             | .NET 8 or later     | Provides Observing state changes on Blazor Component.       |
+| [Memento.ReduxDevTool.Remote](https://www.nuget.org/packages/Memento.ReduxDevTool.Remote)   | .NET 8 or later     | Connect and Interact with applications via WebSocket.       |
+| [Memento.ReduxDevTool.Browser](https://www.nuget.org/packages/Memento.ReduxDevTool.Browser) | .NET 8 or later     | Interact with ReduxDevTools via JavaScript interop.         |
+| [Memento.ReduxDevTool](https://www.nuget.org/packages/Memento.ReduxDevTool)                 | .NET 8 or later     | Provides basic functionality to interact with ReduxDevTools. Interop is required. |
 
 ## Tutorials
 

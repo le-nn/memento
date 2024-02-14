@@ -6,8 +6,14 @@ namespace Memento.Sample.Blazor.Stores;
 using static FluxRedoUndoTodoCommand;
 
 public record FluxRedoUndoTodoState {
-    public ImmutableArray<Todo> Todos { get; init; } = ImmutableArray.Create<Todo>();
+    /// <summary>
+    /// Gets or sets the list of todos.
+    /// </summary>
+    public ImmutableArray<Todo> Todos { get; init; } = [];
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the store is currently loading.
+    /// </summary>
     public bool IsLoading { get; init; }
 }
 
@@ -19,14 +25,19 @@ public record FluxRedoUndoTodoCommand : Command {
     public record EndLoading : FluxRedoUndoTodoCommand;
 }
 
-public class FluxRedoUndoTodoStore : FluxMementoStore<FluxRedoUndoTodoState, FluxRedoUndoTodoCommand> {
-    readonly ITodoService _todoService;
+/// <summary>
+/// Initializes a new instance of the <see cref="FluxRedoUndoTodoStore"/> class.
+/// </summary>
+/// <param name="todoService">The todo service.</param>
+public class FluxRedoUndoTodoStore(ITodoService todoService) 
+    : FluxMementoStore<FluxRedoUndoTodoState, FluxRedoUndoTodoCommand>(
+        () => new(), 
+        new() { MaxHistoryCount = 20 },
+        Reducer
+    ) {
+    readonly ITodoService _todoService = todoService;
 
-    public FluxRedoUndoTodoStore(ITodoService todoService) : base(() => new(), new() { MaxHistoryCount = 20 }, Reducer) {
-        _todoService = todoService;
-    }
-
-    static FluxRedoUndoTodoState Reducer(FluxRedoUndoTodoState state, FluxRedoUndoTodoCommand command) {
+    static FluxRedoUndoTodoState Reducer(FluxRedoUndoTodoState state, FluxRedoUndoTodoCommand? command) {
         return command switch {
             SetItems payload => state with {
                 Todos = payload.Items,
@@ -46,6 +57,11 @@ public class FluxRedoUndoTodoStore : FluxMementoStore<FluxRedoUndoTodoState, Flu
         };
     }
 
+    /// <summary>
+    /// Creates a new todo item asynchronously.
+    /// </summary>
+    /// <param name="text">The text of the todo item.</param>
+    /// <returns>The created todo item.</returns>
     public async Task CreateNewAsync(string text) {
         await CommitAsync(
             async () => {
@@ -60,6 +76,9 @@ public class FluxRedoUndoTodoStore : FluxMementoStore<FluxRedoUndoTodoState, Flu
         );
     }
 
+    /// <summary>
+    /// Loads the todo items asynchronously.
+    /// </summary>
     public async Task LoadAsync() {
         Dispatch(new BeginLoading());
         var items = await _todoService.FetchItemsAsync();
@@ -67,6 +86,11 @@ public class FluxRedoUndoTodoStore : FluxMementoStore<FluxRedoUndoTodoState, Flu
         Dispatch(new EndLoading());
     }
 
+    /// <summary>
+    /// Toggles the completion status of a todo item asynchronously.
+    /// </summary>
+    /// <param name="id">The ID of the todo item.</param>
+    /// <returns>The updated todo item.</returns>
     public async Task ToggleIsCompletedAsync(Guid id) {
         await CommitAsync(
             async () => {

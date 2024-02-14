@@ -3,26 +3,44 @@ using System.Collections.Immutable;
 
 namespace Memento.Sample.Blazor.Stores;
 
+/// <summary>
+/// Represents the state of the RedoUndoTodoStore.
+/// </summary>
 public record RedoUndoTodoState {
-    public ImmutableArray<Todo> Todos { get; init; } = ImmutableArray.Create<Todo>();
+    /// <summary>
+    /// Gets or sets the list of todos.
+    /// </summary>
+    public ImmutableArray<Todo> Todos { get; init; } = [];
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the store is currently loading.
+    /// </summary>
     public bool IsLoading { get; init; }
 }
 
-public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState> {
-    readonly ITodoService _todoService;
+/// <summary>
+/// Represents a store for managing the RedoUndoTodoState.
+/// </summary>
+/// <remarks>
+/// Initializes a new instance of the RedoUndoTodoStore class.
+/// </remarks>
+/// <param name="todoService">The ITodoService instance.</param>
+public class RedoUndoTodoStore(ITodoService todoService)
+    : MementoStore<RedoUndoTodoState>(() => new(), new() { MaxHistoryCount = 20 }) {
+    readonly ITodoService _todoService = todoService;
 
-    public RedoUndoTodoStore(ITodoService todoService) : base(() => new(), new() { MaxHistoryCount = 20 }) {
-        _todoService = todoService;
-    }
-
+    /// <summary>
+    /// Creates a new todo item asynchronously.
+    /// </summary>
+    /// <param name="text">The text of the todo item.</param>
+    /// <returns>The created todo item.</returns>
     public async Task CreateNewAsync(string text) {
         var id = Guid.NewGuid();
         await CommitAsync(
             async () => {
                 var item = await _todoService.CreateItemAsync(id, text);
                 Mutate(state => state with {
-                    Todos = state.Todos.Add(item),
+                    Todos = [.. state.Todos, item],
                 });
 
                 return item;
@@ -33,6 +51,9 @@ public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState> {
         );
     }
 
+    /// <summary>
+    /// Loads the todo items asynchronously.
+    /// </summary>
     public async Task LoadAsync() {
         Mutate(state => state with { IsLoading = true });
         var items = await _todoService.FetchItemsAsync();
@@ -40,6 +61,11 @@ public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState> {
         Mutate(state => state with { IsLoading = false });
     }
 
+    /// <summary>
+    /// Toggles the completion status of a todo item asynchronously.
+    /// </summary>
+    /// <param name="id">The ID of the todo item.</param>
+    /// <returns>The updated todo item.</returns>
     public async Task ToggleIsCompletedAsync(Guid id) {
         await CommitAsync(
             async () => {

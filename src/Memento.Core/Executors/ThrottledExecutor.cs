@@ -2,7 +2,6 @@ using Memento.Core.Internals;
 using System.Collections.Concurrent;
 
 namespace Memento.Core.Executors;
-
 public class ThrottledExecutor<T> : IObservable<T> {
     volatile int _lockFlag;
     DateTime _lastInvokeTime;

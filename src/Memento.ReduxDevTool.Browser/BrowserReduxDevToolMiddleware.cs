@@ -7,16 +7,12 @@ namespace Memento.ReduxDevTool.Browser;
 /// Represents the Redux Developer Tool middleware used for debugging and profiling Redux stores on Browser.
 /// Interact with ReduxDevTools via JavaScript interop on `Microsoft.JSInterop`.
 /// </summary>
-public sealed class BrowserReduxDevToolMiddleware : Middleware {
-    readonly ReduxDevToolOption _chromiumDevToolOption;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="BrowserReduxDevToolMiddleware" /> class with the specified options and interop handler.
-    /// </summary>
-    /// <param name="chromiumDevToolOption">The configuration options for the Redux Developer Tool middleware (optional).</param>
-    public BrowserReduxDevToolMiddleware(ReduxDevToolOption? chromiumDevToolOption = null) {
-        _chromiumDevToolOption = chromiumDevToolOption ?? new();
-    }
+/// <remarks>
+/// Initializes a new instance of the <see cref="BrowserReduxDevToolMiddleware" /> class with the specified options and interop handler.
+/// </remarks>
+/// <param name="chromiumDevToolOption">The configuration options for the Redux Developer Tool middleware (optional).</param>
+public sealed class BrowserReduxDevToolMiddleware(ReduxDevToolOption? chromiumDevToolOption = null) : Middleware {
+    readonly ReduxDevToolOption _chromiumDevToolOption = chromiumDevToolOption ?? new();
 
     /// <summary>
     /// Creates a new <see cref="ReduxDevToolMiddlewareHandler"/> instance for the Redux Developer Tool middleware.

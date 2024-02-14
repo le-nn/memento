@@ -1,6 +1,5 @@
 using Memento.Core.Internals;
 using System.Collections.Concurrent;
-using System.Collections.Immutable;
 
 namespace Memento.Core;
 
@@ -13,7 +12,7 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
     readonly IServiceProvider _serviceContainer;
     readonly ConcurrentDictionary<Guid, IDisposable> _subscriptions = new();
     readonly ConcurrentDictionary<Guid, IObserver<RootStateChangedEventArgs>> _observers = new();
-    readonly IReadOnlyList<IStore<object, Command>> _stores;
+    readonly IReadOnlyList<IStore<object, object>> _stores;
     readonly IReadOnlyList<Middleware> _middleware;
 
     /// <summary>
@@ -31,12 +30,18 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
     /// <param name="middlewares">The middlewares.</param>
     public StoreProvider(
         IServiceProvider container,
-        IReadOnlyCollection<IStore<object, Command>>? stores = null,
+        IReadOnlyCollection<IStore<object, object>>? stores = null,
         IReadOnlyCollection<Middleware>? middlewares = null
     ) {
         _serviceContainer = container;
-        _stores = _serviceContainer.GetAllStores().ToImmutableArray().AddRange(stores ?? ImmutableArray<IStore<object, Command>>.Empty);
-        _middleware = _serviceContainer.GetAllMiddleware().ToImmutableArray().AddRange(middlewares ?? ImmutableArray<Middleware>.Empty);
+        _stores = [
+            .. _serviceContainer.GetAllStores(),
+            .. stores ?? []
+        ];
+        _middleware = [
+            .. _serviceContainer.GetAllMiddleware(),
+            .. middlewares ?? []
+        ];
     }
 
     /// <summary>
@@ -79,8 +84,8 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
     /// Captures a dictionary containing all stores keyed by their type name.
     /// </summary>
     /// <returns>A dictionary containing all stores keyed by their type name.</returns>
-    public Dictionary<string, IStore<object, Command>> CaptureStoreBag() {
-        var map = new Dictionary<string, IStore<object, Command>>();
+    public Dictionary<string, IStore<object, object>> CaptureStoreBag() {
+        var map = new Dictionary<string, IStore<object, object>>();
         foreach (var item in ResolveAllStores()) {
             map.Add(item.GetType().Name, item);
         }
@@ -97,13 +102,13 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
     /// <exception cref="InvalidDataException">Throws when registered middleware and stores are incorrect.</exception>
     public async Task InitializeAsync() {
         if (IsInitialized) {
-            throw new InvalidOperationException("Already initialized.");
+            return;
         }
 
-
+        IsInitialized = true;
         // observe all stores.
         foreach (var store in ResolveAllStores()) {
-            var subscription = store.Subscribe(new StoreObserver<object, Command>(e => {
+            var subscription = store.Subscribe(new StoreObserver<object, object>(e => {
                 var handler = GetMiddlewareInvokeHandler();
                 var rootState = handler(CaptureRootState(), e);
                 if (rootState is not null) {
@@ -122,19 +127,10 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
         // Initialize all middleware.
         foreach (var middleware in GetAllMiddleware()) {
             try {
-                middleware.Initalize(_serviceContainer);
+                await middleware.InitializeAsync(_serviceContainer);
             }
             catch (Exception ex) {
                 throw new InvalidDataException($@"Failed to initialize memento middleware ""{ex.Message}""", ex);
-            }
-        }
-
-        foreach (var middleware in GetAllMiddleware()) {
-            try {
-                await middleware.InvokeInitializedAsync();
-            }
-            catch (Exception ex) {
-                throw new InvalidDataException($@"Failed to invoke OnInitialized memento middleware ""{ex.Message}""", ex);
             }
         }
 
@@ -147,8 +143,6 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
                 throw new InvalidDataException(@$"Failed to initialize memento provider ""{ex.Message}""", ex);
             }
         }
-
-        IsInitialized = true;
     }
 
     /// <summary>
@@ -158,7 +152,7 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
     /// <returns>An instance of the specified store type.</returns>
     /// <exception cref="ArgumentException">Thrown when the specified store type is not registered in the provider.</exception>
     public TStore ResolveStore<TStore>()
-        where TStore : IStore<object, Command> {
+        where TStore : IStore<object, object> {
         if (_serviceContainer.GetService(typeof(TStore)) is TStore store) {
             return store;
         }
@@ -170,7 +164,7 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
     /// Resolves all stores registered in the provider.
     /// </summary>
     /// <returns>An IEnumerable containing all registered stores.</returns>
-    public IEnumerable<IStore<object, Command>> ResolveAllStores() {
+    public IEnumerable<IStore<object, object>> ResolveAllStores() {
         return _stores;
     }
 
@@ -208,14 +202,14 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
     public IDisposable Subscribe(Action<RootStateChangedEventArgs> observer)
         => Subscribe(new StoreProviderObserver(observer));
 
-    internal Func<RootState?, IStateChangedEventArgs<object, Command>, RootState?> GetMiddlewareInvokeHandler() {
+    internal Func<RootState?, IStateChangedEventArgs<object, object>, RootState?> GetMiddlewareInvokeHandler() {
         // process middleware
         var middleware = GetAllMiddleware()
             ?? Array.Empty<Middleware>();
         return middleware.Aggregate(
-            (RootState? s, IStateChangedEventArgs<object, Command> _) => s,
+            (RootState? s, IStateChangedEventArgs<object, object> _) => s,
             (before, middleware) =>
-                (RootState? s, IStateChangedEventArgs<object, Command> m) => middleware.Handler.HandleProviderDispatch(
+                (RootState? s, IStateChangedEventArgs<object, object> m) => middleware.Handler.HandleProviderDispatch(
                     s,
                     m,
                     (_s, _m) => before(_s, m)

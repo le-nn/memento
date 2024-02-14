@@ -2,39 +2,60 @@
 
 namespace Memento.Core;
 
+/// <summary>
+/// Represents the context of a memento store.
+/// </summary>
+/// <typeparam name="TState">The type of the state.</typeparam>
 public interface IMementoStoreContext<TState> {
-    public TState State { get; }
+    /// <summary>
+    /// Gets the state.
+    /// </summary>
+    TState State { get; }
 
-    public object Payload { get; }
+    /// <summary>
+    /// Gets the payload.
+    /// </summary>
+    object Payload { get; }
 }
 
+/// <summary>
+/// Represents the context of a memento store with payload.
+/// </summary>
+/// <typeparam name="TState">The type of the state.</typeparam>
+/// <typeparam name="TPayload">The type of the payload.</typeparam>
 public record MementoStoreContext<TState, TPayload> : IMementoStoreContext<TState> where TPayload : notnull {
+    /// <summary>
+    /// Gets the payload.
+    /// </summary>
     public TPayload Payload { get; }
 
+    /// <summary>
+    /// Gets the state.
+    /// </summary>
     public TState State { get; }
 
     object IMementoStoreContext<TState>.Payload => Payload;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MementoStoreContext{TState, TPayload}"/> class.
+    /// </summary>
+    /// <param name="state">The state.</param>
+    /// <param name="payload">The payload.</param>
     public MementoStoreContext(TState state, TPayload payload) {
         State = state;
         Payload = payload;
     }
 }
 
-public abstract class AbstractMementoStore<TState, TMessage>
-    : AbstractStore<TState, TMessage>
+public abstract class AbstractMementoStore<TState, TMessage>(
+    Func<TState> initializer,
+    HistoryManager historyManager,
+    Reducer<TState, TMessage> reducer
+    )
+    : AbstractStore<TState, TMessage>(initializer, reducer)
       where TState : class
-      where TMessage : Command {
-
-    protected AbstractMementoStore(
-        StateInitializer<TState> initializer,
-        HistoryManager historyManager,
-        Reducer<TState, TMessage> reducer
-    ) : base(initializer, reducer) {
-        _historyManager = historyManager;
-    }
-
-    readonly HistoryManager _historyManager;
+      where TMessage : class {
+    readonly HistoryManager _historyManager = historyManager;
 
     public bool CanReDo => _historyManager.CanReDo;
 

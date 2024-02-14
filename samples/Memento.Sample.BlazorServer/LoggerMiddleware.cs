@@ -21,16 +21,12 @@ public sealed class LoggerMiddleware : Middleware {
     /// <summary>
     /// Handler for logging state changes in the LoggerMiddleware.
     /// </summary>
-    public class LoggerMiddlewareHandler : MiddlewareHandler {
-        private readonly IJSRuntime _jSRuntime;
-
-        /// <summary>
-        /// Creates a new instance of the LoggerMiddlewareHandler.
-        /// </summary>
-        /// <param name="jSRuntime">The JavaScript runtime to be used for logging.</param>
-        public LoggerMiddlewareHandler(IJSRuntime jSRuntime) {
-            _jSRuntime = jSRuntime;
-        }
+    /// <remarks>
+    /// Creates a new instance of the LoggerMiddlewareHandler.
+    /// </remarks>
+    /// <param name="jSRuntime">The JavaScript runtime to be used for logging.</param>
+    public class LoggerMiddlewareHandler(IJSRuntime jSRuntime) : MiddlewareHandler {
+        private readonly IJSRuntime _jSRuntime = jSRuntime;
 
         /// <summary>
         /// Handles logging the state changes before passing them to the next middleware.
@@ -41,7 +37,7 @@ public sealed class LoggerMiddleware : Middleware {
         /// <returns>The updated state after processing by the middleware pipeline.</returns>
         public override RootState? HandleProviderDispatch(
             RootState? state,
-            IStateChangedEventArgs<object, Command> e,
+            IStateChangedEventArgs<object, object> e,
             NextProviderMiddlewareCallback next
         ) {
             _ = HandleLog(state, e);
@@ -54,7 +50,7 @@ public sealed class LoggerMiddleware : Middleware {
         /// <param name="state">The current state of the application.</param>
         /// <param name="e">The state change event arguments.</param>
         /// <returns>A task representing the logging operation.</returns>
-        public async Task HandleLog(object? state, IStateChangedEventArgs<object, Command> e) {
+        public async Task HandleLog(object? state, IStateChangedEventArgs<object, object> e) {
             if (state is null) {
                 return;
             }

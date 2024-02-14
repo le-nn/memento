@@ -16,7 +16,7 @@ var provider = new StoreProvider(serviceProvider);
 // Observe all stores state
 provider.Subscribe(e => {
     Console.WriteLine();
-    Console.WriteLine($"// {e.StateChangedEvent.Command?.GetType().Name}");
+    Console.WriteLine($"// {e.StateChangedEvent.Message?.GetType().Name}");
     Console.WriteLine(JsonSerializer.Serialize(
         e.StateChangedEvent.State,
         new JsonSerializerOptions() {
@@ -30,7 +30,7 @@ var store = provider.ResolveStore<AsyncCounterStore>();
 // Observe a store state
 store.Subscribe(e => {
     Console.WriteLine();
-    Console.WriteLine($"// {e.Command?.GetType().Name}");
+    Console.WriteLine($"// {e.Message?.GetType().Name}");
     Console.WriteLine(JsonSerializer.Serialize(
         e.State,
         new JsonSerializerOptions() {
@@ -55,7 +55,7 @@ store.SetCount(5);
 // Define state to manage in store
 public record AsyncCounterState {
     public int Count { get; init; } = 0;
-    public ImmutableArray<int> History { get; init; } = ImmutableArray.Create<int>();
+    public ImmutableArray<int> History { get; init; } = [];
     public bool IsLoading { get; init; } = false;
 }
 
@@ -73,7 +73,7 @@ public class AsyncCounterStore : FluxStore<AsyncCounterState, AsyncCounterComman
 
     // State can change via Reducer and easy to observe state from command
     // Reducer generate new state from command and current state
-    static AsyncCounterState Reducer(AsyncCounterState state, AsyncCounterCommands command) {
+    static AsyncCounterState Reducer(AsyncCounterState state, AsyncCounterCommands? command) {
         return command switch {
             BeginLoading => state with {
                 IsLoading = true
@@ -86,7 +86,7 @@ public class AsyncCounterStore : FluxStore<AsyncCounterState, AsyncCounterComman
                 Count = payload.Value,
                 History = state.History.Add(payload.Value),
             },
-            _ => throw new CommandNotHandledException(command),
+            _ => throw new CommandNotHandledException<AsyncCounterCommands>(command),
         };
     }
 

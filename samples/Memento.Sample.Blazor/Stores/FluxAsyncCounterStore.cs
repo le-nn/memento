@@ -42,7 +42,7 @@ public class FluxAsyncCounterStore : FluxStore<FluxAsyncCounterState, FluxAsyncC
             AddWithAmount payload => state with {
                 Count = state.Count + payload.Amount,
             },
-            _ => throw new CommandNotHandledException(command),
+            _ => throw new CommandNotHandledException<FluxAsyncCounterCommand>(command),
         };
     }
 

@@ -10,12 +10,8 @@ public record RedoUndoTodoState {
     public bool IsLoading { get; init; }
 }
 
-public class RedoUndoTodoStore : MementoStore<RedoUndoTodoState> {
-    readonly ITodoService _todoService;
-
-    public RedoUndoTodoStore(ITodoService todoService) : base(() => new(), new() { MaxHistoryCount = 20 }) {
-        _todoService = todoService;
-    }
+public class RedoUndoTodoStore(ITodoService todoService) : MementoStore<RedoUndoTodoState>(() => new(), new() { MaxHistoryCount = 20 }) {
+    readonly ITodoService _todoService = todoService;
 
     public async Task CreateNewAsync(string text) {
         var id = Guid.NewGuid();

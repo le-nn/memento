@@ -8,18 +8,18 @@ namespace Memento.Core;
 /// The Reducer function generates a new state from the current state and a command.
 /// </summary>
 /// <typeparam name="TState">The type of state managed by the store.</typeparam>
-public class FluxStore<TState, TCommand>
-    : AbstractStore<TState, TCommand>
+public class FluxStore<TState, TMessage>
+    : AbstractStore<TState, TMessage>
         where TState : class
-        where TCommand : Command {
+        where TMessage : class {
     /// <summary>
     /// Initializes a new instance of the FluxStore class.
     /// </summary>
     /// <param name="initializer">The state initializer for creating the initial state.</param>
     /// <param name="reducer">The reducer function for applying commands to the state.</param>
     protected FluxStore(
-        StateInitializer<TState> initializer,
-        Reducer<TState, TCommand> reducer
+        Func<TState> initializer,
+        Reducer<TState, TMessage> reducer
     ) : base(initializer, reducer) {
     }
 
@@ -27,7 +27,7 @@ public class FluxStore<TState, TCommand>
     /// Dispatches a command to the store, which updates the state accordingly.
     /// </summary>
     /// <param name="command">The command to dispatch.</param>
-    public void Dispatch(TCommand command) {
+    public void Dispatch(TMessage command) {
         ComputedAndApplyState(State, command);
     }
 
@@ -35,7 +35,7 @@ public class FluxStore<TState, TCommand>
     /// Dispatches a command to the store using a message loader function, which updates the state accordingly.
     /// </summary>
     /// <param name="messageLoader">The function to generate a command based on the current state.</param>
-    public void Dispatch(Func<TState, TCommand> messageLoader) {
+    public void Dispatch(Func<TState, TMessage> messageLoader) {
         ComputedAndApplyState(State, messageLoader(State));
     }
 }

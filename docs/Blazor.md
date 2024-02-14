@@ -192,3 +192,32 @@ This is an example of Counter.
 }
 
 ```
+
+## Another way to use
+
+If inherit cannot be used due to conflicts with other libraries, please use StateChangedObserver. 
+If you specify IObservable for Observables, it will automatically track state changes and notify OnStateHasChanged.
+
+```razor
+<StateChangedObserver Observables="[Store1, Store2, Store3]" OnStateHasChanged="StateHasChanged" />
+```
+
+#### sample
+
+
+```razor
+
+@page "/counter"
+@inject AsyncCounterStore AsyncCounterStore
+
+<PageTitle>Counter</PageTitle>
+
+<StateChangedObserver Observables="[AsyncCounterStore]" OnStateHasChanged="StateHasChanged" />
+
+<div>
+    <h1 class="mt-5">Async Counter</h1>
+    <h2>Current count: @AsyncCounterStore.State.Count</h2>
+    <p>Loading: @AsyncCounterStore.State.IsLoading</p>
+</div>
+
+```

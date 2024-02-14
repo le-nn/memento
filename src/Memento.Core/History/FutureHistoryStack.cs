@@ -1,7 +1,6 @@
 namespace Memento.Core.History;
-
 internal class FutureHistoryStack<T> {
-    readonly List<T> _values = new();
+    readonly List<T> _values = [];
 
     public int GetCount() {
         lock (_values) {

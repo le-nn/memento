@@ -1,7 +1,6 @@
 using Memento.Core.Executors;
 
 namespace Memento.Core.History;
-
 public class HistoryManager {
     private int _maxHistoryCount = 8;
     private readonly FutureHistoryStack<IHistoryCommandItem<object>> _future = new();

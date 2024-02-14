@@ -1,11 +1,6 @@
 namespace Memento.Core.Internals;
-
-internal class GeneralObserver<T> : IObserver<T> {
-    readonly Action<T> _action;
-
-    public GeneralObserver(Action<T> action) {
-        _action = action;
-    }
+internal readonly struct GeneralObserver<T>(Action<T> action) : IObserver<T> {
+    readonly Action<T> _action = action;
 
     public void OnCompleted() {
         throw new NotImplementedException();
@@ -20,15 +15,11 @@ internal class GeneralObserver<T> : IObserver<T> {
     }
 }
 
-internal class StoreObserver<TState, TCommand>
-    : IObserver<IStateChangedEventArgs<TState, TCommand>>
+internal readonly struct StoreObserver<TState, TMessage>(Action<IStateChangedEventArgs<TState, TMessage>> action)
+    : IObserver<IStateChangedEventArgs<TState, TMessage>>
     where TState : class
-    where TCommand : Command {
-    readonly Action<IStateChangedEventArgs<TState, TCommand>> _action;
-
-    public StoreObserver(Action<IStateChangedEventArgs<TState, TCommand>> action) {
-        _action = action;
-    }
+    where TMessage : notnull {
+    readonly Action<IStateChangedEventArgs<TState, TMessage>> _action = action;
 
     public void OnCompleted() {
         throw new NotImplementedException();
@@ -38,17 +29,13 @@ internal class StoreObserver<TState, TCommand>
         throw new NotImplementedException();
     }
 
-    public void OnNext(IStateChangedEventArgs<TState, TCommand> value) {
+    public void OnNext(IStateChangedEventArgs<TState, TMessage> value) {
         _action(value);
     }
 }
 
-internal class StoreProviderObserver : IObserver<RootStateChangedEventArgs> {
-    readonly Action<RootStateChangedEventArgs> _action;
-
-    public StoreProviderObserver(Action<RootStateChangedEventArgs> action) {
-        _action = action;
-    }
+internal readonly struct StoreProviderObserver(Action<RootStateChangedEventArgs> action) : IObserver<RootStateChangedEventArgs> {
+    readonly Action<RootStateChangedEventArgs> _action = action;
 
     public void OnCompleted() {
         throw new NotImplementedException();

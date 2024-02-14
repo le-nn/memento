@@ -60,7 +60,7 @@ First, define the state that the store will manage: create a record named AsyncC
 ```cs
 public record AsyncCounterState {
     public int Count { get; init; } = 0;
-    public ImmutableArray<int> History { get; init; } = ImmutableArray.Create<int>();
+    public ImmutableArray<int> History { get; init; } = [];
     public bool IsLoading { get; init; } = false;
 }
 ```
@@ -70,9 +70,8 @@ public record AsyncCounterState {
 Next, create a store class named AsyncCounterStore. This class inherits from Store<AsyncCounterState>.
 
 ```cs
-public class AsyncCounterStore : Store<AsyncCounterState> {
-    public AsyncCounterStore() : base(() => new()) {
-    }
+public class AsyncCounterStore() : Store<AsyncCounterState>(() => new()) {
+
 }
 ```
     
@@ -82,7 +81,6 @@ Implement the CountUpAsync method to perform asynchronous count-up processing. T
 And implement the SetCount method to allow the user to set the count with a specified number. This method takes the current state and returns a new state with a new count value and updated history.
     
 ```cs
-    
     public async Task CountUpAsync() {
         Mutate(state => state with { IsLoading = true });
 
@@ -118,14 +116,11 @@ Below is the code for the completed AsyncCounterStore class.
 // Define state to manage in store
 public record AsyncCounterState {
     public int Count { get; init; } = 0;
-    public ImmutableArray<int> History { get; init; } = ImmutableArray.Create<int>();
+    public ImmutableArray<int> History { get; init; } = [];
     public bool IsLoading { get; init; } = false;
 }
 
-public class AsyncCounterStore : Store<AsyncCounterState> {
-    public AsyncCounterStore() : base(() => new()) {
-    }
-
+public class AsyncCounterStore() : Store<AsyncCounterState>(() => new()) {
     public async Task CountUpAsync() {
         Mutate(state => state with { IsLoading = true });
 
@@ -153,14 +148,17 @@ public class AsyncCounterStore : Store<AsyncCounterState> {
 
 ```
 
-### Includes the typed Payload explaining what the change has been in StateHasChangedEventArgs 
+### Includes the typed Message explaining what the change has been in StateHasChangedEventArgs 
 
-```Store<TState, TPayload>``` allows you to have a typed Payload explaining what the change has been in StateHasChangedEventArgs when mutating the State of the Store.
-
+```Store<TState, TMessage>``` allows you to have a typed message explaining what the change has been in StateHasChangedEventArgs when mutating the State of the Store.
+The default message type is string if unspecified, such as in ```Store<TState>```.
 
 ## Usage
 
-Define the payload type.
+Define the message type.
+You can't define message as value type (enum, struct, int, double etc...)
+because the message type must be class or record.
+Wrap value types with reference types like record if you need.
 
 ```cs
 
@@ -171,18 +169,20 @@ public enum StateChangedType {
     Increment
 }
 
+public record StateChangedTypeMessage(StateChangedType StateChangedType);
+
 ```
 
-The Payload type is specified in Store Type params in the following way.
+The message type is specified in Store Type params in the following way.
 
-```Store<AsyncCounterState, StateChangedType>```
+```Store<AsyncCounterState, StateChangedTypeMessage>```
 
-If you set Payload as the second argument of ```Mutate(..., StateChangedType.CountUp)```, you can have Payload in the StateHasChangedEventArgs.
+If you set message as the second argument of ```Mutate(..., new(StateChangedType.Increment))```, you can get the message from the StateHasChangedEventArgs.
 
 ```cs
 
 store.Subscribe(e => {
-    Console.WriteLine(e.Command.Payload); // Specified Paylaod
+    Console.WriteLine(e.Command.Message.StateChangedType); // Specified Paylaod
 });
 
 ```
@@ -193,7 +193,7 @@ store.Subscribe(e => {
 
 public record CounterStoreState {
     public int Count { get; init; } = 0;
-    public ImmutableArray<int> History { get; init; } = ImmutableArray.Create<int>();
+    public ImmutableArray<int> History { get; init; } = [];
     public bool IsLoading { get; init; } = false;
 }
 
@@ -204,17 +204,17 @@ public enum StateChangedType {
     Increment
 }
 
-public class CounterStore: Store<CounterStoreState, StateChangedType> {
-    public CounterStore() : base(() => new()) {
-    }
+public record StateChangedMessage(StateChangedType StateChangedType);
+
+public class CounterStore() : Store<CounterStoreState, StateChangedMessage>(() => new()) {
 
     public async Task CountUpAsync() {
-        Mutate(state => state with { IsLoading = true }, StateChangedType.BeginLoading);
+        Mutate(state => state with { IsLoading = true }, new(StateChangedType.BeginLoading));
 
         await Task.Delay(500);
 
-        Mutate(HandleIncrement, StateChangedType.Increment);
-        Mutate(state => state with { IsLoading = false }, StateChangedType.EndLoading);
+        Mutate(HandleIncrement, new(StateChangedType.Increment));
+        Mutate(state => state with { IsLoading = false }, new(StateChangedType.EndLoading));
     }
 
     private static CounterStoreState HandleIncrement(CounterStoreState state) {
@@ -229,9 +229,10 @@ public class CounterStore: Store<CounterStoreState, StateChangedType> {
         Mutate(state => state with {
             Count = num,
             History = state.History.Add(num),
-        }, StateChangedType.SetCount);
+        }, new(StateChangedType.SetCount));
     }
 }
+
 
 ```
 
@@ -264,7 +265,7 @@ In this example, create a record named AsyncCounterState.
 ```cs
 public record AsyncCounterState {
     public int Count { get; init; } = 0;
-    public ImmutableArray<int> History { get; init; } = ImmutableArray.Create<int>();
+    public ImmutableArray<int> History { get; init; } = [];
     public bool IsLoading { get; init; } = false;
 }
 ```
@@ -289,9 +290,7 @@ public record AsyncCounterCommand : Command {
 Create an AsyncCounterStore class and extend FluxStore. In this class, define the state initialization and reducer functions.
 
 ```cs
-public class AsyncCounterStore : FluxStore<AsyncCounterState, AsyncCounterCommand> {
-    public AsyncCounterStore() : base(() => new(), Reducer) {
-    }
+public class AsyncCounterStore() : FluxStore<AsyncCounterState, AsyncCounterCommand>(() => new(), Reducer) {
 }
 ```
 
@@ -302,20 +301,20 @@ The Reducer uses the current state and command to create a new state; define a R
 ```cs
     // State can change via Reducer and easy to observe state from command
     // Reducer generate new state from command and current state
-    static AsyncCounterState Reducer(AsyncCounterState state, AsyncCounterCommand command) {
+    static AsyncCounterState Reducer(AsyncCounterState state, AsyncCounterCommand? command) {
         return command switch {
-            BeginLoading => state with {
+            AsyncCounterCommand.BeginLoading => state with {
                 IsLoading = true
             },
-            EndLoading => state with {
+            AsyncCounterCommand.EndLoading => state with {
                 IsLoading = false
             },
-            Increment => HandleIncrement(state),
-            ModifyCount payload => state with {
-                Count = payload.Value,
-                History = state.History.Add(payload.Value),
+            AsyncCounterCommand.Increment => HandleIncrement(state),
+            AsyncCounterCommand.ModifyCount(var val) => state with {
+                Count = val,
+                History = state.History.Add(val),
             },
-            _ => throw new CommandNotHandledException(command),
+            _ => throw new CommandNotHandledException<AsyncCounterCommand>(command),
         };
     }
     
@@ -372,10 +371,7 @@ public record AsyncCounterCommand : Command {
     public record ModifyCount(int Value) : AsyncCounterCommand;
 }
 
-public class AsyncCounterStore : FluxStore<AsyncCounterState, AsyncCounterCommand> {
-    public AsyncCounterStore() : base(() => new(), Reducer) {
-    }
-
+public class AsyncCounterStore() : FluxStore<AsyncCounterState, AsyncCounterCommand>(() => new(), Reducer) {
     // State can change via Reducer and easy to observe state from command
     // Reducer generate new state from command and current state
     static AsyncCounterState Reducer(AsyncCounterState state, AsyncCounterCommand command) {
@@ -387,11 +383,11 @@ public class AsyncCounterStore : FluxStore<AsyncCounterState, AsyncCounterComman
                 IsLoading = false
             },
             Increment => HandleIncrement(state),
-            ModifyCount payload => state with {
-                Count = payload.Value,
-                History = state.History.Add(payload.Value),
+            ModifyCount(var val) => state with {
+                Count = val,
+                History = state.History.Add(val),
             },
-            _ => throw new Exception("Message is not handled"),
+            _ => throw new CommandNotHandledException<AsyncCounterCommand>(command),
         };
     }
 

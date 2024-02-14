@@ -1,7 +1,6 @@
 using System.Collections.Concurrent;
 
 namespace Memento.Core.Executors;
-
 /// <summary>
 /// Provides a feature to wait for the end of asynchronous processing and connect to the next processing.
 /// </summary>
@@ -62,14 +61,9 @@ public class ConcatAsyncOperationExecutor {
         Task HandleAsync();
     }
 
-    class Operation<T> : IOperation {
-        readonly Func<Task<T>> _func;
-        readonly TaskCompletionSource<T> _taskSource;
-
-        public Operation(Func<Task<T>> func, TaskCompletionSource<T> taskSource) {
-            _func = func;
-            _taskSource = taskSource;
-        }
+    class Operation<T>(Func<Task<T>> func, TaskCompletionSource<T> taskSource) : IOperation {
+        readonly Func<Task<T>> _func = func;
+        readonly TaskCompletionSource<T> _taskSource = taskSource;
 
         public async Task HandleAsync() {
             try {
