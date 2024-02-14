@@ -51,5 +51,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./samples/Memento.Sample.BlazorWasm/bin/Release/net7.0/publish/wwwroot
+          publish_dir: ./samples/Memento.Sample.BlazorWasm/bin/Release/net8.0/publish/wwwroot
           force_orphan: true
