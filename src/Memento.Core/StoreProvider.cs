@@ -98,7 +98,6 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
     /// You must invoke once.
     /// </summary>
     /// <returns></returns>
-    /// <exception cref="InvalidOperationException">Throws when provider has initialized.</exception>
     /// <exception cref="InvalidDataException">Throws when registered middleware and stores are incorrect.</exception>
     public async Task InitializeAsync() {
         if (IsInitialized) {
