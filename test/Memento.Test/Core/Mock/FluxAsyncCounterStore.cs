@@ -8,7 +8,7 @@ using static Memento.Test.Core.Mock.FluxAsyncCounterCommands;
 // Define state to manage in store
 public record FluxAsyncCounterState {
     public int Count { get; init; } = 0;
-    public ImmutableArray<int> History { get; init; } = ImmutableArray.Create<int>();
+    public ImmutableArray<int> History { get; init; } = [];
     public bool IsLoading { get; init; } = false;
 }
 
@@ -45,7 +45,7 @@ public class FluxAsyncCounterStore : FluxStore<FluxAsyncCounterState, FluxAsyncC
                 Count = payload.Value,
                 History = state.History.Add(payload.Value),
             },
-            _ => throw new CommandNotHandledException(command),
+            _ => throw new CommandNotHandledException<FluxAsyncCounterCommands>(command),
         };
 
         static FluxAsyncCounterState HandleIncrement(FluxAsyncCounterState state) {

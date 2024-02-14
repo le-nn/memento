@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 namespace Memento.Sample.Blazor.Stores;
 
 public record RedoUndoTodoState {
-    public ImmutableArray<Todo> Todos { get; init; } = ImmutableArray.Create<Todo>();
+    public ImmutableArray<Todo> Todos { get; init; } = [];
 
     public bool IsLoading { get; init; }
 }

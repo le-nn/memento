@@ -6,7 +6,7 @@ namespace Memento.Test.Core.Mock;
 // Define state to manage in store
 public record AsyncCounterState {
     public int Count { get; init; } = 0;
-    public ImmutableArray<int> History { get; init; } = ImmutableArray.Create<int>();
+    public ImmutableArray<int> History { get; init; } = [];
     public bool IsLoading { get; init; } = false;
 }
 

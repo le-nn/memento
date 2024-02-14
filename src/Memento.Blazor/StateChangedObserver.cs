@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Memento.Blazor.Internal;
+using Microsoft.AspNetCore.Components;
 using System.Collections.Concurrent;
 
 namespace Memento.Blazor;

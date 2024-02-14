@@ -63,7 +63,7 @@ public class FluxStoreTest {
             Assert.NotEqual(e.State, lastState);
             Assert.Equal(e.LastState, lastState);
             lastState = e.State;
-            commands.Add(e.Command);
+            commands.Add(e.Message);
         });
 
         await store.CountUpAsync();
@@ -107,14 +107,14 @@ public class FluxStoreTest {
         await store.CountUpAsync();
 
         Assert.True(commands is [
-            { Command: FluxAsyncCounterCommands.BeginLoading },
-            { Command: FluxAsyncCounterCommands.Increment },
-            { Command: FluxAsyncCounterCommands.EndLoading },
-            { Command: FluxAsyncCounterCommands.ModifyCount(1234) },
+            { Message: FluxAsyncCounterCommands.BeginLoading },
+            { Message: FluxAsyncCounterCommands.Increment },
+            { Message: FluxAsyncCounterCommands.EndLoading },
+            { Message: FluxAsyncCounterCommands.ModifyCount(1234) },
             { State: FluxAsyncCounterState { Count: 5678 }, StateChangeType: StateChangeType.ForceReplaced },
-            { Command: FluxAsyncCounterCommands.BeginLoading },
-            { Command: FluxAsyncCounterCommands.Increment },
-            { Command: FluxAsyncCounterCommands.EndLoading },
+            { Message: FluxAsyncCounterCommands.BeginLoading },
+            { Message: FluxAsyncCounterCommands.Increment },
+            { Message: FluxAsyncCounterCommands.EndLoading },
         ]);
     }
 

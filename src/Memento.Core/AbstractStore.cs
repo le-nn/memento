@@ -88,6 +88,14 @@ public abstract class AbstractStore<TState, TMessage>(
             if (e is IStateChangedEventArgs<TState, TMessage> e2) {
                 observer.OnNext(e2);
             }
+            else {
+                observer.OnNext(new StateChangedEventArgs<TState, TMessage>() {
+                    LastState = State,
+                    Message = e.Message,
+                    State = State,
+                    Sender = this,
+                });
+            }
         }));
     }
 
@@ -154,8 +162,8 @@ public abstract class AbstractStore<TState, TMessage>(
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         (TState?, StateChangedEventArgs<TState, TMessage>?) ComputeNewState() {
-            var previous = state;
-            var postState = OnBeforeDispatch(previous, command);
+            var previous = State;
+            var postState = OnBeforeDispatch(state, command);
 
             if (MiddlewareHandler.Invoke(postState, command) is TState s) {
                 var newState = OnAfterDispatch(s, command);

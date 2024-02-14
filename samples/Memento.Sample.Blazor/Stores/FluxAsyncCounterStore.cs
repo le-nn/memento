@@ -9,7 +9,7 @@ public record FluxAsyncCounterState {
 
     public bool IsLoading { get; init; } = false;
 
-    public ImmutableArray<int> Histories { get; init; } = ImmutableArray.Create<int>();
+    public ImmutableArray<int> Histories { get; init; } = [];
 }
 
 public record FluxAsyncCounterCommand : Command {

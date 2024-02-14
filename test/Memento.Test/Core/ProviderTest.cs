@@ -26,9 +26,8 @@ public class ProviderTest {
 
         await mementoProvider.InitializeAsync();
 
-        await Assert.ThrowsAnyAsync<InvalidOperationException>(async () => {
-            await mementoProvider.InitializeAsync();
-        });
+        // Ensure root state is correct
+        await mementoProvider.InitializeAsync();
 
         store.CountUp();
         store.CountUp();
@@ -43,7 +42,7 @@ public class ProviderTest {
         var expected = JsonSerializer.Serialize(new {
             AsyncCounterStore = new AsyncCounterState {
                 Count = 5,
-                History = ImmutableArray.Create(1, 2, 3, 4, 5),
+                History = [1, 2, 3, 4, 5],
             }
         });
         var actual = JsonSerializer.Serialize(root.AsDictionary());

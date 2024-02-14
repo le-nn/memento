@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Memento.Core;
 using Memento.Test.Core.Mock;
+using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using System.Collections.Concurrent;
 using System.Reflection;
 
@@ -55,28 +56,28 @@ public class StoreTest {
     public async Task Command_CouldBeSubscribeCorrectly() {
         var store = new AsyncCounterStore();
 
-        var commands = new List<Command?>();
+        var messages = new List<object?>();
         var lastState = store.State;
         using var subscription = store.Subscribe(e => {
             Assert.Equal(e.Sender, store);
             Assert.NotEqual(e.State, lastState);
             Assert.Equal(e.LastState, lastState);
             lastState = e.State;
-            commands.Add(e.Command);
+            messages.Add(e.Message);
         });
 
         await store.CountUpAsync();
         store.SetCount(1234);
         await store.CountUpAsync();
 
-        Assert.True(commands is [
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
-            Command.StateHasChanged,
+        Assert.True(messages is [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
         ]);
     }
 
@@ -84,7 +85,7 @@ public class StoreTest {
     public async Task Force_ReplaceState() {
         var store = new AsyncCounterStore();
 
-        var commands = new List<IStateChangedEventArgs<object, Command>>();
+        var events = new List<IStateChangedEventArgs<object, object>>();
 
         var lastState = store.State;
         using var subscription = store.Subscribe(e => {
@@ -92,12 +93,12 @@ public class StoreTest {
             Assert.NotEqual(e.State, lastState);
             Assert.Equal(e.LastState, lastState);
             lastState = e.State;
-            commands.Add(e);
+            events.Add(e);
         });
 
         await store.CountUpAsync();
         store.SetCount(1234);
-        if (store is IStore<object, Command> iStore) {
+        if (store is IStore<object, object> iStore) {
             iStore.SetStateForce(store.State with {
                 Count = 5678
             });
@@ -105,24 +106,26 @@ public class StoreTest {
 
         await store.CountUpAsync();
 
-        Assert.True(commands is [
-            { Command: Command.StateHasChanged },
-            { Command: Command.StateHasChanged },
-            { Command: Command.StateHasChanged },
-            { Command: Command.StateHasChanged },
-            { Command: null, State: AsyncCounterState { Count: 5678 }, StateChangeType: StateChangeType.ForceReplaced },
-            { Command: Command.StateHasChanged },
-            { Command: Command.StateHasChanged },
-            { Command: Command.StateHasChanged },
+        Assert.True(events is [
+            { Message: null },
+            { Message: null },
+            { Message: null },
+            { Message: null },
+            { Message: null, State: AsyncCounterState { Count: 5678 }, StateChangeType: StateChangeType.ForceReplaced },
+            { Message: null },
+            { Message: null },
+            { Message: null },
         ]);
     }
 
     [Fact]
     public void Ensure_StateHasChangedInvoked() {
         var store = new AsyncCounterStore();
-        var commands = new List<IStateChangedEventArgs<object, Command>>();
+        var commands = new List<IStateChangedEventArgs<object, object>>();
         var lastState = store.State;
-        using var subscription = store.Subscribe(e => commands.Add(e));
+        using var subscription = store.Subscribe(e => {
+            commands.Add(e);
+        });
 
         store.StateHasChanged();
         store.StateHasChanged();
@@ -144,16 +147,15 @@ public class StoreTest {
     [Fact]
     public void Ensure_Observable() {
         var store = new AsyncCounterStore();
-        var observers = (store.GetType()
-            .BaseType
-            ?.BaseType
-            ?.BaseType
-            ?.GetField(
-                "_observers",
-                BindingFlags.NonPublic | BindingFlags.Instance
-            )
-            ?.GetValue(store) as IDictionary<Guid, IObserver<IStateChangedEventArgs<AsyncCounterState, Command.StateHasChanged<AsyncCounterState, string>>>>
-         ) ?? throw new Exception("_observers is not found.");
+        var observers = (
+            store.GetType()
+                .BaseType
+                ?.BaseType
+                ?.BaseType
+                ?.BaseType
+                ?.GetField("_observers", BindingFlags.NonPublic | BindingFlags.Instance)
+                ?.GetValue(store) as ConcurrentDictionary<Guid, IObserver<IStateChangedEventArgs<string>>>
+            ) ?? throw new Exception("_observers is not found.");
 
         var disposables = new BlockingCollection<IDisposable>();
         Parallel.For(0, 10000, i => {

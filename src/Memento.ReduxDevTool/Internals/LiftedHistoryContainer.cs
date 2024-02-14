@@ -167,7 +167,7 @@ internal sealed class LiftedHistoryContainer : IDisposable {
 
     public async Task CommitAsync() {
         var history = CurrentHistory;
-        _histories = ImmutableArray.Create(history.AsInitial());
+        _histories = [history.AsInitial()];
 
         await SyncWithPlugin();
         _currentCursorId = 0;
@@ -176,7 +176,7 @@ internal sealed class LiftedHistoryContainer : IDisposable {
 
     public async Task RollbackAsync() {
         var history = _histories.First();
-        _histories = ImmutableArray.Create(history.AsInitial());
+        _histories = [history.AsInitial()];
 
         await SyncWithPlugin();
         _currentCursorId = 0;
