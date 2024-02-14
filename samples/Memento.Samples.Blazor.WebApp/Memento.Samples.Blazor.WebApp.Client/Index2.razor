@@ -1,0 +1,24 @@
+﻿@page "/index2"
+
+<PageTitle>Index2</PageTitle>
+@System.OperatingSystem.IsBrowser()
+<h1>Hello, world 22222222!</h1>
+
+Welcome to your new app.
+
+
+<button @onclick="IncrementCount">Click me: @count</button>
+
+@code {
+    private int count = 0;
+
+    private void IncrementCount()
+    {
+        count++;
+    }
+
+    private void DecrementCount()
+    {
+        count--;
+    }
+}
