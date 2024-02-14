@@ -20,10 +20,8 @@ public record FluxAsyncCounterCommand : Command {
     public record BeginLoading : FluxAsyncCounterCommand;
 }
 
-public class FluxAsyncCounterStore : FluxStore<FluxAsyncCounterState, FluxAsyncCounterCommand> {
-    public FluxAsyncCounterStore() : base(() => new(), Reducer) { }
-
-    static FluxAsyncCounterState Reducer(FluxAsyncCounterState state, FluxAsyncCounterCommand command) {
+public class FluxAsyncCounterStore() : FluxStore<FluxAsyncCounterState, FluxAsyncCounterCommand>(() => new(), Reducer) {
+    static FluxAsyncCounterState Reducer(FluxAsyncCounterState state, FluxAsyncCounterCommand? command) {
         return command switch {
             IncrementAndEndLoading => state with {
                 Count = state.Count + 1,

@@ -12,8 +12,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_root", "_root", "{E9CA5D2D
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		.github\workflows\build-and-deploy.yml = .github\workflows\build-and-deploy.yml
-		src\Directory.Build.props = src\Directory.Build.props
+		Directory.Build.props = Directory.Build.props
+		docfx.json = docfx.json
 		README.md = README.md
+		toc.yml = toc.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{4EBD97E1-0380-4F7F-A7EF-92FD6B82FAE6}"
@@ -26,6 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{95938898-9
 		docs\README.md = docs\README.md
 		docs\RedoUndo.md = docs\RedoUndo.md
 		docs\ReduxDevTools.md = docs\ReduxDevTools.md
+		docs\toc.yml = docs\toc.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "middlewares", "middlewares", "{9D40EFD1-EE24-4985-B286-7C99ABA9AAC0}"

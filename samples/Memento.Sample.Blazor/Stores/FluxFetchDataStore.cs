@@ -32,7 +32,7 @@ public record FluxFetchDataCommands : Command {
 /// <param name="httpClient">The HTTP client.</param>
 public class FluxFetchDataStore(
     HttpClient httpClient
-    ) : FluxStore<FetchDataState, FluxFetchDataCommands>(() => new(), Reducer) {
+) : FluxStore<FetchDataState, FluxFetchDataCommands>(() => new(), Reducer) {
     readonly HttpClient _httpClient = httpClient;
 
     /// <summary>

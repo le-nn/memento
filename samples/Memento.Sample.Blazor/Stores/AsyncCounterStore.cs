@@ -22,10 +22,7 @@ public enum StateChangedType {
 
 public record Message(StateChangedType StateChangedType);
 
-public class AsyncCounterStore : Store<AsyncCounterState, Message> {
-    public AsyncCounterStore() : base(() => new()) {
-    }
-
+public class AsyncCounterStore() : Store<AsyncCounterState, Message>(() => new()) {
     public void CountUp() {
         Mutate(state => state with {
             Count = state.Count + 1,

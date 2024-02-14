@@ -1,7 +1,7 @@
 <Project>
     <PropertyGroup>
         <TargetFrameworks>net8.0</TargetFrameworks>
-        <LangVersion>latest</LangVersion>
+        <UseArtifactsOutput>true</UseArtifactsOutput>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,7 +20,7 @@
         <PackageProjectUrl>https://github.com/le-nn/memento</PackageProjectUrl>
         <RepositoryUrl>https://github.com/le-nn/memento</RepositoryUrl>
         <PackageTags>blazor;store;flux;redux</PackageTags>
-        <Copyright>Copyright (c) 2022 le-nn</Copyright>
+        <Copyright>Copyright (c) 2024 le-nn</Copyright>
         <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 </Project>

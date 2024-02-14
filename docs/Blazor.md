@@ -14,7 +14,8 @@ It can also be used with native UI frameworks such as MobileBlazorBindings and B
 
 Blazor
 
-[https://docs.microsoft.com/ja-jp/aspnet/core/blazor/?view=aspnetcore-6.0](https://dotnet.microsoft.com/ja-jp/apps/aspnet/web-apps/blazor)
+https://docs.microsoft.com/ja-jp/aspnet/core/blazor/
+https://dotnet.microsoft.com/ja-jp/apps/aspnet/web-apps/blazor
 
 MobileBlazorBindings
 

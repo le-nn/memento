@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 
 namespace Memento.Blazor;
 
-public class Item(IDisposable disposable, bool isEnabled) {
+internal class Item(IDisposable disposable, bool isEnabled) {
     public bool IsEnabled { get; set; } = isEnabled;
 
     public IDisposable Disposable => disposable;

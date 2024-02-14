@@ -1,7 +1,35 @@
-﻿using System.Text.Json;
+﻿using Memento.ReduxDevTool.Internals;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
-namespace Memento.ReduxDevTool.Internals;
+namespace Memento.ReduxDevTool;
+
+public record ActionItemFromDevtool(
+   string Type,
+   JsonElement? Payload,
+   string? Source
+);
+
+public record ActionItem(
+   [property:JsonPropertyName("type")]
+    string? Type,
+   [property:JsonPropertyName("payload")]
+    object? Payload,
+   [property:JsonPropertyName("declaredType")]
+    string? DeclaredType,
+   [property:JsonPropertyName("storeName")]
+    string StoreName
+);
+
+public record ComputedState(
+    [property:JsonPropertyName("state")]
+    object State
+);
 
 public record StoreAction {
     [JsonPropertyName("action")]
@@ -17,22 +45,6 @@ public record StoreAction {
     public required string Type { get; init; }
 }
 
-public record ActionItemFromDevtool(
-    string Type,
-    JsonElement? Payload,
-    string? Source
-);
-
-public record ActionItem(
-    [property:JsonPropertyName("type")]
-    string? Type,
-    [property:JsonPropertyName("payload")]
-    object? Payload,
-    [property:JsonPropertyName("declaredType")]
-    string? DeclaredType,
-    [property:JsonPropertyName("storeName")]
-    string StoreName
-);
 
 public record HistoryStateContextJson {
     [JsonPropertyName("actionsById")]
@@ -59,8 +71,3 @@ public record HistoryStateContextJson {
     [JsonPropertyName("isPaused")]
     public bool IsPaused { get; init; }
 }
-
-public record ComputedState(
-    [property:JsonPropertyName("state")]
-    object State
-);
