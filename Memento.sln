@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_root", "_root", "{E9CA5D2D
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		.github\workflows\build-and-deploy.yml = .github\workflows\build-and-deploy.yml
-		Directory.Build.props = Directory.Build.props
+		src\Directory.Build.props = src\Directory.Build.props
 		docfx.json = docfx.json
 		README.md = README.md
 		toc.yml = toc.yml
@@ -52,6 +52,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.Sample.BlazorWasm", "samples\Memento.Sample.BlazorWasm\Memento.Sample.BlazorWasm.csproj", "{8DA8C555-F65E-4419-8732-7CAD00507166}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.Sample.ConsoleApp", "samples\Memento.Sample.ConsoleApp\Memento.Sample.ConsoleApp.csproj", "{A089BC00-80C4-4074-8127-C414F2B79585}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.Samples.Blazor.WebApp", "samples\Memento.Samples.Blazor.WebApp\Memento.Samples.Blazor.WebApp\Memento.Samples.Blazor.WebApp.csproj", "{AC47BE86-40AF-47CF-BC23-8D0707AF8EA4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memento.Samples.Blazor.WebApp.Client", "samples\Memento.Samples.Blazor.WebApp\Memento.Samples.Blazor.WebApp.Client\Memento.Samples.Blazor.WebApp.Client.csproj", "{D4B0BC5F-E0AA-403C-9DDE-777D742FC13A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +103,14 @@ Global
 		{A089BC00-80C4-4074-8127-C414F2B79585}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A089BC00-80C4-4074-8127-C414F2B79585}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A089BC00-80C4-4074-8127-C414F2B79585}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC47BE86-40AF-47CF-BC23-8D0707AF8EA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC47BE86-40AF-47CF-BC23-8D0707AF8EA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC47BE86-40AF-47CF-BC23-8D0707AF8EA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC47BE86-40AF-47CF-BC23-8D0707AF8EA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4B0BC5F-E0AA-403C-9DDE-777D742FC13A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4B0BC5F-E0AA-403C-9DDE-777D742FC13A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4B0BC5F-E0AA-403C-9DDE-777D742FC13A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4B0BC5F-E0AA-403C-9DDE-777D742FC13A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -116,6 +128,8 @@ Global
 		{4481A230-D66C-486F-B06A-29DECB3940FA} = {AD16691B-0034-4F49-8F90-0932C029DA3C}
 		{8DA8C555-F65E-4419-8732-7CAD00507166} = {AD16691B-0034-4F49-8F90-0932C029DA3C}
 		{A089BC00-80C4-4074-8127-C414F2B79585} = {AD16691B-0034-4F49-8F90-0932C029DA3C}
+		{AC47BE86-40AF-47CF-BC23-8D0707AF8EA4} = {AD16691B-0034-4F49-8F90-0932C029DA3C}
+		{D4B0BC5F-E0AA-403C-9DDE-777D742FC13A} = {AD16691B-0034-4F49-8F90-0932C029DA3C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52122159-362B-41B0-BE89-5FC9BF19BE01}
