@@ -23,7 +23,7 @@ public abstract class AbstractStore<TState, TMessage>(
         IStore<TState, TMessage>,
         IDisposable
             where TState : class
-            where TMessage : class {
+            where TMessage : notnull {
     readonly Reducer<TState, TMessage> _reducer = (state, command) => reducer(state, command);
     readonly ConcurrentBag<IDisposable> _disposables = [];
 

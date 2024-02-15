@@ -44,6 +44,6 @@ internal sealed class StoreSubscription : IDisposable {
     /// <exception cref="InvalidOperationException">Thrown if the object is collected without being disposed</exception>
     ~StoreSubscription() {
         if (!_isDisposed && _wasCreated)
-            throw new InvalidOperationException($"{nameof(StoreSubscription)} with _id \"{_id}\" was not disposed. ");
+            throw new InvalidOperationException($"{nameof(StoreSubscription)} with id \"{_id}\" was not disposed. "+ new Exception().StackTrace);
     }
 }

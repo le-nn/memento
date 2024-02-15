@@ -7,7 +7,7 @@ namespace Memento.Core;
 public interface IStore<out TState, out TMessage>
     : IObservable<IStateChangedEventArgs<TState, TMessage>>, IDisposable
         where TState : class
-        where TMessage : class {
+        where TMessage : notnull {
     /// <summary>
     /// Gets the current state of the store.
     /// </summary>

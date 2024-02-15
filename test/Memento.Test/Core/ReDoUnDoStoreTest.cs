@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using Memento.Core;
-using Memento.Sample.Blazor.Stores;
 using Memento.Test.Core.Mock;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,8 +10,8 @@ public class ReDoUnDoStoreTest {
     public async Task Test1() {
         var services = new ServiceCollection().BuildServiceProvider();
 
-        var store = new RedoUndoTodoStore(new MockTodoService());
-        var provider = new StoreProvider(services, new[] { store });
+        using var store = new RedoUndoTodoStore(new MockTodoService());
+        using var provider = new StoreProvider(services, [store]);
         await provider.InitializeAsync();
 
         Assert.Equal(store.State, new()); // Should().Be() is not working
@@ -21,7 +20,6 @@ public class ReDoUnDoStoreTest {
         store.PastHistories.Count.Should().Be(0);
         store.FutureHistories.Count.Should().Be(0);
         store.Present.Should().BeNull();
-
 
         var todoStates = new List<RedoUndoTodoState>();
         await store.CreateNewAsync("test1");

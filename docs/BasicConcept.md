@@ -156,9 +156,6 @@ The default message type is string if unspecified, such as in ```Store<TState>``
 ## Usage
 
 Define the message type.
-You can't define message as value type (enum, struct, int, double etc...)
-because the message type must be class or record.
-Wrap value types with reference types like record if you need.
 
 ```cs
 
@@ -169,15 +166,13 @@ public enum StateChangedType {
     Increment
 }
 
-public record StateChangedTypeMessage(StateChangedType StateChangedType);
-
 ```
 
 The message type is specified in Store Type params in the following way.
 
-```Store<AsyncCounterState, StateChangedTypeMessage>```
+```Store<AsyncCounterState, StateChangedType>```
 
-If you set message as the second argument of ```Mutate(..., new(StateChangedType.Increment))```, you can get the message from the StateHasChangedEventArgs.
+If you set message as the second argument of ```Mutate(..., StateChangedType.Increment)```, you can get the message from the StateHasChangedEventArgs.
 
 ```cs
 
@@ -204,17 +199,15 @@ public enum StateChangedType {
     Increment
 }
 
-public record StateChangedMessage(StateChangedType StateChangedType);
-
-public class CounterStore() : Store<CounterStoreState, StateChangedMessage>(() => new()) {
+public class CounterStore() : Store<CounterStoreState, StateChangedType>(() => new()) {
 
     public async Task CountUpAsync() {
-        Mutate(state => state with { IsLoading = true }, new(StateChangedType.BeginLoading));
+        Mutate(state => state with { IsLoading = true }, StateChangedType.BeginLoading);
 
         await Task.Delay(500);
 
-        Mutate(HandleIncrement, new(StateChangedType.Increment));
-        Mutate(state => state with { IsLoading = false }, new(StateChangedType.EndLoading));
+        Mutate(HandleIncrement, StateChangedType.Increment);
+        Mutate(state => state with { IsLoading = false }, StateChangedType.EndLoading);
     }
 
     private static CounterStoreState HandleIncrement(CounterStoreState state) {
@@ -229,7 +222,7 @@ public class CounterStore() : Store<CounterStoreState, StateChangedMessage>(() =
         Mutate(state => state with {
             Count = num,
             History = state.History.Add(num),
-        }, new(StateChangedType.SetCount));
+        }, StateChangedType.SetCount);
     }
 }
 

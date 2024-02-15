@@ -14,7 +14,7 @@
 public class Store<TState, TMessage>(Func<TState> initializer)
     : AbstractStore<TState, TMessage>(initializer, Reducer)
     where TState : class
-    where TMessage : class {
+    where TMessage : notnull {
 
     /// <summary>
     /// Initializes a new instance of the Store class with the specified initial state.

@@ -1,8 +1,7 @@
 using Memento.Core;
-using Memento.Test.Core.Mock;
 using System.Collections.Immutable;
 
-namespace Memento.Sample.Blazor.Stores;
+namespace Memento.Test.Core.Mock;
 
 public record RedoUndoTodoState {
     public ImmutableArray<Todo> Todos { get; init; } = [];
