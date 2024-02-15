@@ -8,7 +8,7 @@
     <h1 class="">Async Counter Component</h1>
     <h2>Current count: @AsyncCounterStore.State.Count</h2>
     <p>Loading: @AsyncCounterStore.State.IsLoading</p>
-
+    <p>IsBrowser: @OperatingSystem.IsBrowser()</p>
     <div>
         <button class="mt-3 btn btn-primary" @onclick="IncrementCount">Count up</button>
         <button class="mt-3 btn btn-primary" @onclick="CountUpMany">Count up 100 times</button>
