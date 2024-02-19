@@ -1,0 +1,592 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Tutorial for C# with Console Application | Memento </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Tutorial for C# with Console Application | Memento ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/le-nn/memento/blob/main/docs/BasicConcept.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+  </head>
+
+  <script type="module" src="./../public/docfx.min.js"></script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Memento">
+            Memento
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled="" placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="tutorial-for-c-with-console-application">Tutorial for C# with Console Application</h1>
+
+<p>Take a look at an example of a simple console application to experience the basic concept.</p>
+<p>We provide a Store that allows you to share state between components. All stores are managed by a single provider and can subscribe to state change notifications. Unidirectional flow and immutable change of state provide a predictable architecture. In addition, we offer a store that easily implements Redo/Undo by managing immutable states.</p>
+<p>There are two ways to define a Store class that manages state.
+First, there is a simple store that only fires immutable state and state change events.
+Besides the simple store pattern, we also provide patterns inspired by MVU patterns such as Flux and Elm. Since you should change the state via the Reducer, you can change the state based on stricter rules and observe the state in detail.</p>
+<h3 id="store-class">Store class</h3>
+<ul>
+<li>Provides a way to change state directly.</li>
+<li>Suitable when simpler state management is required.</li>
+<li>State management may be intuitive and easy to understand because the state is changed by directly applying reducer functions.</li>
+</ul>
+<h3 id="fluxstore-class">FluxStore class</h3>
+<ul>
+<li>Based on the Flux architecture, this class is suitable when more rigorous state management is required.</li>
+<li>State changes via commands, so actions and state changes are separated. This facilitates logging and debugging of state changes.</li>
+<li>It facilitates consistent state management in complex applications and team development.</li>
+</ul>
+<h3 id="rules">Rules</h3>
+<ul>
+<li>State should always be read-only.</li>
+<li>The UI then uses the new state to render its display.</li>
+</ul>
+<h4 id="for-patterns-like-flux">For patterns like Flux</h4>
+<ul>
+<li>Every Reducer that processes in the action will create new state to reflect the old state combined with the changes expected for the action.</li>
+<li>To change state our app should Dispatch via Reducer in the action method</li>
+</ul>
+<h2 id="install">Install</h2>
+<p>Please install via package manager.</p>
+<pre><code>dotnet add package Memento.Core
+dotnet add package Microsoft.Extensions.DependencyInjection
+</code></pre>
+<p>Or install from Nuget</p>
+<p><a href="https://www.nuget.org/packages/Memento.Core">https://www.nuget.org/packages/Memento.Core</a></p>
+<h2 id="define-store-pattern">Define Store pattern</h2>
+<p>In this section, you will learn the basic patterns of state management.
+Try to initialize state in your application, subscribe to it, and call actions to output state changes.
+Create a store for a simple counter application. This store, named AsyncCounterStore, will handle the count-up process and set-count process.</p>
+<h3 id="define-the-state">Define the state</h3>
+<p>It is preferable to make the state immutable, for example, by using a C# function record.
+This is to ensure consistency even if the state changes unexpectedly or is referenced from various locations.
+It is also necessary to use ReduxDevTools or similar tools to perform time travel.</p>
+<p>First, define the state that the store will manage: create a record named AsyncCounterState. This record contains properties that store the current count, history, and loading state.</p>
+<pre><code class="lang-cs">public record AsyncCounterState {
+    public int Count { get; init; } = 0;
+    public ImmutableArray&lt;int&gt; History { get; init; } = [];
+    public bool IsLoading { get; init; } = false;
+}
+</code></pre>
+<h3 id="define-store">Define Store</h3>
+<p>Next, create a store class named AsyncCounterStore. This class inherits from Store<asynccounterstate>.</asynccounterstate></p>
+<pre><code class="lang-cs">public class AsyncCounterStore() : Store&lt;AsyncCounterState&gt;(() =&gt; new()) {
+
+}
+</code></pre>
+<h3 id="add-actions-to-store-to-change-store-state">Add actions to store to change store state</h3>
+<p>Implement the CountUpAsync method to perform asynchronous count-up processing. This method first sets the loading state to true, then waits for a certain period of time using Task.Delay. It then calls the HandleIncrement method to increment the count and finally sets the loading state to false.
+And implement the SetCount method to allow the user to set the count with a specified number. This method takes the current state and returns a new state with a new count value and updated history.</p>
+<pre><code class="lang-cs">    public async Task CountUpAsync() {
+        Mutate(state =&gt; state with { IsLoading = true });
+
+        await Task.Delay(500);
+
+        Mutate(HandleIncrement);
+        Mutate(state =&gt; state with { IsLoading = false });
+    }
+
+    private static AsyncCounterState HandleIncrement(AsyncCounterState state) {
+        var count = state.Count + 1;
+        return state with {
+            Count = count,
+            History = state.History.Add(count),
+        };
+    }
+
+    public void SetCount(int num) {
+        Mutate(state =&gt; state with {
+            Count = num,
+            History = state.History.Add(num),
+        });
+    }
+    
+</code></pre>
+<h3 id="overview">Overview</h3>
+<p>Completes the implementation of the AsyncCounterStore class. This store simplifies application state management.
+Below is the code for the completed AsyncCounterStore class.</p>
+<pre><code class="lang-cs">// Define state to manage in store
+public record AsyncCounterState {
+    public int Count { get; init; } = 0;
+    public ImmutableArray&lt;int&gt; History { get; init; } = [];
+    public bool IsLoading { get; init; } = false;
+}
+
+public class AsyncCounterStore() : Store&lt;AsyncCounterState&gt;(() =&gt; new()) {
+    public async Task CountUpAsync() {
+        Mutate(state =&gt; state with { IsLoading = true });
+
+        await Task.Delay(500);
+
+        Mutate(HandleIncrement);
+        Mutate(state =&gt; state with { IsLoading = false });
+    }
+
+    private static AsyncCounterState HandleIncrement(AsyncCounterState state) {
+        var count = state.Count + 1;
+        return state with {
+            Count = count,
+            History = state.History.Add(count),
+        };
+    }
+
+    public void SetCount(int num) {
+        Mutate(state =&gt; state with {
+            Count = num,
+            History = state.History.Add(num),
+        });
+    }
+}
+
+</code></pre>
+<h3 id="includes-the-typed-message-explaining-what-the-change-has-been-in-statehaschangedeventargs">Includes the typed Message explaining what the change has been in StateHasChangedEventArgs</h3>
+<p><code>Store&lt;TState, TMessage&gt;</code> allows you to have a typed message explaining what the change has been in StateHasChangedEventArgs when mutating the State of the Store.
+The default message type is string if unspecified, such as in <code>Store&lt;TState&gt;</code>.</p>
+<h2 id="usage">Usage</h2>
+<p>Define the message type.</p>
+<pre><code class="lang-cs">
+public enum StateChangedType {
+    BeginLoading,
+    EndLoading,
+    SetCount,
+    Increment
+}
+
+</code></pre>
+<p>The message type is specified in Store Type params in the following way.</p>
+<p><code>Store&lt;AsyncCounterState, StateChangedType&gt;</code></p>
+<p>If you set message as the second argument of <code>Mutate(..., StateChangedType.Increment)</code>, you can get the message from the StateHasChangedEventArgs.</p>
+<pre><code class="lang-cs">
+store.Subscribe(e =&gt; {
+    Console.WriteLine(e.Command.Message.StateChangedType); // Specified Paylaod
+});
+
+</code></pre>
+<h3 id="sample-counterstore-overview">Sample CounterStore Overview</h3>
+<pre><code class="lang-cs">
+public record CounterStoreState {
+    public int Count { get; init; } = 0;
+    public ImmutableArray&lt;int&gt; History { get; init; } = [];
+    public bool IsLoading { get; init; } = false;
+}
+
+public enum StateChangedType {
+    BeginLoading,
+    EndLoading,
+    SetCount,
+    Increment
+}
+
+public class CounterStore() : Store&lt;CounterStoreState, StateChangedType&gt;(() =&gt; new()) {
+
+    public async Task CountUpAsync() {
+        Mutate(state =&gt; state with { IsLoading = true }, StateChangedType.BeginLoading);
+
+        await Task.Delay(500);
+
+        Mutate(HandleIncrement, StateChangedType.Increment);
+        Mutate(state =&gt; state with { IsLoading = false }, StateChangedType.EndLoading);
+    }
+
+    private static CounterStoreState HandleIncrement(CounterStoreState state) {
+        var count = state.Count + 1;
+        return state with {
+            Count = count,
+            History = state.History.Add(count),
+        };
+    }
+
+    public void SetCount(int num) {
+        Mutate(state =&gt; state with {
+            Count = num,
+            History = state.History.Add(num),
+        }, StateChangedType.SetCount);
+    }
+}
+
+
+</code></pre>
+<h4 id="sample-source">Sample Source</h4>
+<p><a href="https://github.com/le-nn/memento/blob/main/samples/Memento.Sample.Blazor/Stores/AsyncCounterStore.cs">https://github.com/le-nn/memento/blob/main/samples/Memento.Sample.Blazor/Stores/AsyncCounterStore.cs</a></p>
+<hr>
+<h2 id="define-fluxstore-pattern">Define FluxStore pattern</h2>
+<p>In the previous section, we implemented AsyncCounterStore using the Store pattern. This time, let's implement the same features using the FluxStore pattern.</p>
+<p>In this section, you will learn how to use the AsyncCounterStore to manage the state of your counters.
+Skip this section if you do not use the FluxStore pattern.</p>
+<p>FluxPattern is one of the architectural patterns for managing application data flow in React applications. This pattern uses unidirectional data flow to manage application state changes.
+These elements are similar to the Model-View-Update (MVU) architectural pattern, which represents the application state as a model and uses it to display it in the View. State changes are managed by the Update function, which is then reflected in the View.</p>
+<p>FluxStore is inspired by React's Flux and MVU patterns.
+If you want to manage state with stricter rules and observe more detailed state change events, FluxStore is the right choice.
+By mutating via Command, we have tighter control over all state changes.
+Let's take a look at the tutorial.</p>
+<h3 id="define-the-state-1">Define the state</h3>
+<p>First, define the state to be managed in the store.
+In this example, create a record named AsyncCounterState.</p>
+<pre><code class="lang-cs">public record AsyncCounterState {
+    public int Count { get; init; } = 0;
+    public ImmutableArray&lt;int&gt; History { get; init; } = [];
+    public bool IsLoading { get; init; } = false;
+}
+</code></pre>
+<h3 id="define-commands">Define commands</h3>
+<p>Define the commands used to change the state.
+create an AsyncCounterCommand record and add subrecords to define each command.</p>
+<pre><code class="lang-cs">
+public record AsyncCounterCommand : Command {
+    public record Increment : AsyncCounterCommand;
+    public record BeginLoading : AsyncCounterCommand;
+    public record EndLoading : AsyncCounterCommand;
+    public record ModifyCount(int Value) : AsyncCounterCommand;
+}
+
+</code></pre>
+<h3 id="create-a-store">Create a store</h3>
+<p>Create an AsyncCounterStore class and extend FluxStore. In this class, define the state initialization and reducer functions.</p>
+<pre><code class="lang-cs">public class AsyncCounterStore() : FluxStore&lt;AsyncCounterState, AsyncCounterCommand&gt;(() =&gt; new(), Reducer) {
+}
+</code></pre>
+<h3 id="denine-reducer">Denine Reducer</h3>
+<p>The Reducer uses the current state and command to create a new state; define a Reducer function in the AsyncCounterStore class.</p>
+<pre><code class="lang-cs">    // State can change via Reducer and easy to observe state from command
+    // Reducer generate new state from command and current state
+    static AsyncCounterState Reducer(AsyncCounterState state, AsyncCounterCommand? command) {
+        return command switch {
+            AsyncCounterCommand.BeginLoading =&gt; state with {
+                IsLoading = true
+            },
+            AsyncCounterCommand.EndLoading =&gt; state with {
+                IsLoading = false
+            },
+            AsyncCounterCommand.Increment =&gt; HandleIncrement(state),
+            AsyncCounterCommand.ModifyCount(var val) =&gt; state with {
+                Count = val,
+                History = state.History.Add(val),
+            },
+            _ =&gt; throw new CommandNotHandledException&lt;AsyncCounterCommand&gt;(command),
+        };
+    }
+    
+    static AsyncCounterState HandleIncrement(AsyncCounterState state) {
+        var count = state.Count + 1;
+        return state with {
+            Count = count,
+            History = state.History.Add(count),
+        };
+    }
+
+</code></pre>
+<h2 id="add-actions-to-store">Add actions to store</h2>
+<p>As with the Store section add actions to change the state from outside the store.
+In this example, two actions are defined, CountUpAsync and SetCount.
+Since the creation of the new state is done by the Reducer, the command is dispatched to entrust it to the Reducer.</p>
+<pre><code class="lang-cs">
+    // &quot;Dispatch&quot; method can called outside of store via action (public method)
+    // Action can be async method.
+    public async Task CountUpAsync() {
+        this.Dispatch(new BeginLoading());
+
+        await Task.Delay(500);
+
+        this.Dispatch(new Increment());
+        this.Dispatch(new EndLoading());
+    }
+
+    public void SetCount(int num) {
+        this.Dispatch(new ModifyCount(num));
+    }
+
+</code></pre>
+<h3 id="overview-1">Overview</h3>
+<pre><code class="lang-cs">// Define state to manage in store
+public record AsyncCounterState {
+    public int Count { get; init; } = 0;
+    public ImmutableArray&lt;int&gt; History { get; init; } = ImmutableArray.Create&lt;int&gt;();
+    public bool IsLoading { get; init; } = false;
+}
+
+// Define messages to change state and observe state change event in detail.
+public record AsyncCounterCommand : Command {
+    public record Increment : AsyncCounterCommand;
+    public record BeginLoading : AsyncCounterCommand;
+    public record EndLoading : AsyncCounterCommand;
+    public record ModifyCount(int Value) : AsyncCounterCommand;
+}
+
+public class AsyncCounterStore() : FluxStore&lt;AsyncCounterState, AsyncCounterCommand&gt;(() =&gt; new(), Reducer) {
+    // State can change via Reducer and easy to observe state from command
+    // Reducer generate new state from command and current state
+    static AsyncCounterState Reducer(AsyncCounterState state, AsyncCounterCommand command) {
+        return command switch {
+            BeginLoading =&gt; state with {
+                IsLoading = true
+            },
+            EndLoading =&gt; state with {
+                IsLoading = false
+            },
+            Increment =&gt; HandleIncrement(state),
+            ModifyCount(var val) =&gt; state with {
+                Count = val,
+                History = state.History.Add(val),
+            },
+            _ =&gt; throw new CommandNotHandledException&lt;AsyncCounterCommand&gt;(command),
+        };
+    }
+
+    static AsyncCounterState HandleIncrement(AsyncCounterState state) {
+        var count = state.Count + 1;
+        return state with {
+            Count = count,
+            History = state.History.Add(count),
+        };
+    }
+
+    // &quot;Dispatch&quot; method can called outside of store via action (public method)
+    // Action can be async method.
+    public async Task CountUpAsync() {
+        this.Dispatch(new BeginLoading());
+
+        await Task.Delay(500);
+
+        this.Dispatch(new Increment());
+        this.Dispatch(new EndLoading());
+    }
+
+    public void SetCount(int num) {
+        this.Dispatch(new ModifyCount(num));
+    }
+}
+
+</code></pre>
+<h2 id="usage-of-store">Usage of Store</h2>
+<p>You seemed to create Store or FluxStore the usage is the same for both.</p>
+<h3 id="storeprovider">StoreProvider</h3>
+<p>The <code>StoreProvider</code> provides centralized management of related Stores and a single StateTree representation of the related Stores' States. It also centrally manages Stores' state change notifications and events.</p>
+<h3 id="initializing-store-and-storeprovider">Initializing Store and StoreProvider</h3>
+<p>StoreProvider initialization requires an IServiceProvider with the associated services and stores registered.</p>
+<pre><code class="lang-cs">var services = new ServiceCollection();
+services.AddScoped&lt;AsyncCounterStore&gt;();
+
+var serviceProvider = new ServiceCollection()
+    .AddScoped&lt;AsyncCounterStore&gt;()
+    .BuildServiceProvider();
+
+var provider = new StoreProvider(serviceProvider);
+
+</code></pre>
+<p>Capture the StateTree that consists from all aggregated store states
+The StateTree is represented by a <code>IDictionary&lt;string, object&gt;</code>.
+The key is store name and the value is store state.</p>
+<pre><code class="lang-cs">
+var rootState = provider.CaptureRootState();
+
+</code></pre>
+<p>rootState is following</p>
+<pre><code class="lang-json">
+{
+    &quot;Store1&quot; : {
+       &quot;Count1&quot; : 1234,
+       &quot;Count2&quot; : 4567,
+    },
+
+    // other stores ...
+
+    &quot;AsyncCounterStore&quot; : {
+        &quot;Count&quot;: 0,
+        &quot;History&quot;: [],
+        &quot;IsLoading&quot;: false
+    }
+}
+
+</code></pre>
+<h3 id="subscribing">Subscribing</h3>
+<p>A listener is registered for state change events so that processing can be performed each time the state changes. In this example, logs are output to the console each time the state changes.
+The provider subscribes to all store state change events and outputs in JSON to the console.
+The store subscribes to the store state change events and output in JSON to console.
+Whenever a state change occurs, an event is emitted from the monitored store (all stores or a specific store) and information related to that event is printed to the console. This output includes event types, state changes, and is presented in formatted JSON using the JsonSerializer.</p>
+<pre><code class="lang-cs">// Observe all stores state
+provider.Subscribe(e =&gt; {
+    Console.WriteLine();
+    Console.WriteLine($&quot;// {e.StateChangedEvent.Message?.GetType().Name}&quot;);
+    Console.WriteLine(JsonSerializer.Serialize(
+        e.StateChangedEvent.State,
+        new JsonSerializerOptions() {
+            WriteIndented = true
+        })
+    );
+});
+
+var store = provider.ResolveStore&lt;AsyncCounterStore&gt;();
+
+// Observe a store state
+store.Subscribe(e =&gt; {
+    Console.WriteLine();
+    Console.WriteLine($&quot;// {e.Message.GetType().Name}&quot;);
+    Console.WriteLine(JsonSerializer.Serialize(
+        e.State,
+        new JsonSerializerOptions() {
+            WriteIndented = true
+        })
+    );
+});
+
+Console.WriteLine(&quot;// Initial state&quot;);
+Console.WriteLine(JsonSerializer.Serialize(
+    store.State,
+    new JsonSerializerOptions() {
+        WriteIndented = true
+    })
+);
+</code></pre>
+<h2 id="call-actions">Call actions</h2>
+<p>The application calls the store's actions to change the state. In this example, two actions are called, CountUpAsync and SetCount.</p>
+<pre><code class="lang-cs">// Call action and countup async.
+await store.CountUpAsync();
+// Call action and set count.
+store.SetCount(5);
+</code></pre>
+<p><code>store.Subscribe</code> can be exptected output following</p>
+<pre><code class="lang-json">// Initial state
+{
+  &quot;Count&quot;: 0,
+  &quot;History&quot;: [],
+  &quot;IsLoading&quot;: false
+}
+
+// BeginLoading
+{
+  &quot;Count&quot;: 0,
+  &quot;History&quot;: [],
+  &quot;IsLoading&quot;: true
+}
+
+// 500ms later
+// Increment
+{
+  &quot;Count&quot;: 1,
+  &quot;History&quot;: [
+    1
+  ],
+  &quot;IsLoading&quot;: true
+}
+
+// EndLoading
+{
+  &quot;Count&quot;: 1,
+  &quot;History&quot;: [
+    1
+  ],
+  &quot;IsLoading&quot;: false
+}
+
+// ModifyCount
+{
+  &quot;Count&quot;: 5,
+  &quot;History&quot;: [
+    1,
+    5
+  ],
+  &quot;IsLoading&quot;: false
+}
+</code></pre>
+<p>Now you know how to use AsyncCounterStore to manage application state. If the state becomes complex, consider creating multiple stores and splitting the state or sharing state between stores. These approaches make application state management more effective and efficient.</p>
+<p>As an application grows and different features and components are added, state management can become complex. In such cases, state management can be facilitated by using multiple stores to partition state. Individual stores can be used to manage state related to specific features or components.</p>
+<p>When sharing state among multiple stores or UI components, state can be shared using parent components or contexts. This ensures consistency of state and synchronizes state across the application.</p>
+<p>Applying these methods makes application state management scalable and maintainable, improves code reusability, and simplifies development. Depending on the requirements of each application, choose the best state management approach.</p>
+<h2 id="next-step">Next step</h2>
+<p>In the Next tutorial you will learn how to update the actual UI in Blazor !</p>
+<p><a href="Blazor.html">See</a></p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/le-nn/memento/blob/main/docs/BasicConcept.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

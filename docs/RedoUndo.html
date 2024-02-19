@@ -1,0 +1,304 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>ReDo/UnDo | Memento </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="ReDo/UnDo | Memento ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/le-nn/memento/blob/main/docs/RedoUndo.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+  </head>
+
+  <script type="module" src="./../public/docfx.min.js"></script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Memento">
+            Memento
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled="" placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="redoundo">ReDo/UnDo</h1>
+
+<p><code>Memento.Core.History.HistoryManager</code> is a class that manages the redo/undo state context.
+It gives you a generic ReDo/UnDo.</p>
+<p>Here is  an example of how to use it.</p>
+<pre><code class="lang-cs">
+@using Memento.Core.History;
+
+&lt;PageTitle&gt;Index&lt;/PageTitle&gt;
+
+&lt;h1&gt;Redo / Undo Counter&lt;/h1&gt;
+
+&lt;button disabled=&quot;@(!_historyManager.CanUnDo)&quot; @onclick=&quot;() =&gt; _historyManager.UnDoAsync()&quot;&gt;UnDo&lt;/button&gt;
+&lt;button disabled=&quot;@(!_historyManager.CanReDo)&quot; @onclick=&quot;() =&gt; _historyManager.ReDoAsync()&quot;&gt;ReDo&lt;/button&gt;
+
+&lt;h2&gt;@_count&lt;/h2&gt;
+
+&lt;button @onclick=&quot;CountUp&quot;&gt;Count Up&lt;/button&gt;
+
+@code {
+    readonly HistoryManager _historyManager = new() { MaxHistoryCount = 20 };
+
+    int _count = 0;
+
+    async Task CountUp() {
+        await _historyManager.CommitAsync(
+            async () =&gt; {
+                var count = _count;
+                _count++;
+                return new {
+                    Count = count,
+                };
+            },
+            async state =&gt; {
+                _count = state.Count;
+            }
+        );
+    }
+}
+
+</code></pre>
+<p>MaxHistoryCount is the maximum number that can be saved.
+Disabling button with CanUnDo/CanReDo.</p>
+<p>Take a snapshot of the current State with CommitAsync.</p>
+<p>The first argument callback is called when &quot;Do&quot; or &quot;ReDo&quot; is performed, and retains the returned Context as a Snapshot.
+The first callback should be implemented to create and take snapshot of the state when &quot;Do&quot; or &quot;ReDo&quot; performed.</p>
+<p>The second argument callback is called when &quot;UnDo&quot; is performed.
+The second callback should be implemented to Restore the state from the snapshot of the state when &quot;UnDo&quot; performed.</p>
+<h1 id="with-store">With Store</h1>
+<p><code>Memento.Core.MementoStore</code> or <code>Memento.Core.FluxMementoStore</code> allows you to manage the redo/undo state context in the store.
+Specify the HistoryManager instance as the second argument of base() constructor. You can share context across stores.
+Invoking CommitAsync preserves the current State, which can be restored with UnDoAsync and ReDoAsync.</p>
+<p>Unlike HistoryManager.CommitAsync, there is no need to manually assign state.
+The state at the time Store.CommitAsync was invoked is automatically restored.</p>
+<p>The first argument callback is called when &quot;Do&quot; or &quot;ReDo&quot; is performed,
+The returned value is retained as a payload to receive when the second argument callback is called.
+The first callback should be implemented to create a payload when &quot;Do&quot; or &quot;ReDo&quot; performed.</p>
+<p>The second argument callback is called when &quot;UnDo&quot; is performed.
+The second callback should be implemented handling such as removing items with a received payload from the DB or Server etc.</p>
+<h2 id="sample-with-todo">Sample with ToDo</h2>
+<pre><code class="lang-cs">
+public record RedoUndoTodoState {
+    public ImmutableArray&lt;Todo&gt; Todos { get; init; } = [];
+
+    public bool IsLoading { get; init; }
+}
+
+public class RedoUndoTodoStore(ITodoService todoService) : MementoStore&lt;RedoUndoTodoState&gt;(() =&gt; new(), new() { MaxHistoryCount = 20 }) {
+    readonly ITodoService _todoService = todoService;
+
+    public async Task CreateNewAsync(string text) {
+        var id = Guid.NewGuid();
+        await CommitAsync(
+            async () =&gt; {
+                var item = await _todoService.CreateItemAsync(id, text);
+                Mutate(state =&gt; state with {
+                    Todos = state.Todos.Add(item),
+                });
+
+                return item;
+            },
+            async todo =&gt; {
+                await _todoService.RemoveAsync(todo.Payload.TodoId);
+            }
+        );
+    }
+
+    public async Task LoadAsync() {
+        Mutate(state =&gt; state with { IsLoading = true });
+        var items = await _todoService.FetchItemsAsync();
+        Mutate(state =&gt; state with { Todos = items, });
+        Mutate(state =&gt; state with { IsLoading = false });
+    }
+
+    public async Task ToggleIsCompletedAsync(Guid id) {
+        await CommitAsync(
+            async () =&gt; {
+                var state = State;
+                var item = await _todoService.ToggleCompleteAsync(id)
+                    ?? throw new Exception(&quot;Failed to toggle an item in Do or ReDo.&quot;);
+                Mutate(state =&gt; state with {
+                    Todos = state.Todos.Replace(
+                        state.Todos.Where(x =&gt; id == x.TodoId).First(),
+                        item
+                    )
+                });
+
+                return item;
+            },
+            async p =&gt; {
+                var item = await _todoService.ToggleCompleteAsync(id)
+                    ?? throw new Exception(&quot;Failed to toggle an item in UnDo.&quot;);
+            }
+        );
+    }
+}
+
+</code></pre>
+<pre><code class="lang-razor">
+@using Memento.Sample.Blazor.Stores
+@using System.Text.Json
+
+@inherits ObserverComponent
+@inject AsyncCounterStore AsyncCounterStore
+
+&lt;div class=&quot;p-4 mt-4 bg-opacity-10 bg-dark rounded-2&quot;&gt;
+    &lt;h1 class=&quot;&quot;&gt;Async Counter Component&lt;/h1&gt;
+    &lt;h2&gt;Current count: @AsyncCounterStore.State.Count&lt;/h2&gt;
+    &lt;p&gt;Loading: @AsyncCounterStore.State.IsLoading&lt;/p&gt;
+
+    &lt;div&gt;
+        &lt;button class=&quot;mt-3 btn btn-primary&quot; @onclick=&quot;IncrementCount&quot;&gt;Count up&lt;/button&gt;
+        &lt;button class=&quot;mt-3 btn btn-primary&quot; @onclick=&quot;CountUpMany&quot;&gt;Count up 100 times&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;mt-5&quot;&gt;
+        &lt;h3&gt;Count up async with histories&lt;/h3&gt;
+        &lt;button class=&quot;mt-3 btn btn-primary&quot; @onclick=&quot;IncrementCountAsync&quot;&gt;Count up async&lt;/button&gt;
+        &lt;p class=&quot;mt-3 mb-0&quot;&gt;Histories&lt;/p&gt;
+        &lt;div class=&quot;d-flex&quot;&gt;
+            @foreach (var item in string.Join(&quot;, &quot;, AsyncCounterStore.State.Histories)) {
+                @item
+            }
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;mt-5&quot;&gt;
+        &lt;h3&gt;Count up with Amount&lt;/h3&gt;
+        &lt;input @bind-value=&quot;_amount&quot; /&gt;
+    &lt;/div&gt;
+    &lt;button class=&quot;mt-3 btn btn-primary&quot; @onclick=&quot;CountUpWithAmount&quot;&gt;Count up with amount&lt;/button&gt;
+
+    &lt;div class=&quot;mt-5&quot;&gt;
+        &lt;h3&gt;Set count&lt;/h3&gt;
+        &lt;input @bind-value=&quot;_countToSet&quot; /&gt;
+    &lt;/div&gt;
+    &lt;button class=&quot;mt-3 btn btn-primary&quot; @onclick=&quot;SetCount&quot;&gt;Count up with amount&lt;/button&gt;
+&lt;/div&gt;
+
+@code {
+    int _amount = 5;
+    int _countToSet = 100;
+
+    void IncrementCount() {
+        AsyncCounterStore.CountUp();
+    }
+
+    async Task IncrementCountAsync() {
+        await AsyncCounterStore.CountUpAsync();
+    }
+
+    void CountUpMany() {
+        AsyncCounterStore.CountUpManyTimes(100);
+    }
+
+    void CountUpWithAmount() {
+        AsyncCounterStore.CountUpWithAmount(_amount);
+    }
+
+    void SetCount() {
+        AsyncCounterStore.SetCount(_countToSet);
+    }
+}
+
+</code></pre>
+<p>Sample Source</p>
+<p><a href="https://github.com/le-nn/memento/blob/main/samples/Memento.Sample.Blazor/Stores/RedoUndoTodoStore.cs">https://github.com/le-nn/memento/blob/main/samples/Memento.Sample.Blazor/Stores/RedoUndoTodoStore.cs</a>
+<a href="https://github.com/le-nn/memento/blob/main/samples/Memento.Sample.Blazor/Components/Counter.razor">https://github.com/le-nn/memento/blob/main/samples/Memento.Sample.Blazor/Components/Counter.razor</a></p>
+<p>DEMO</p>
+<p><a href="https://le-nn.github.io/memento/todo">https://le-nn.github.io/memento/todo</a></p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/le-nn/memento/blob/main/docs/RedoUndo.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

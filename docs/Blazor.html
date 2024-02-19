@@ -1,0 +1,291 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Getting Standard | Memento </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Getting Standard | Memento ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/le-nn/memento/blob/main/docs/Blazor.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+  </head>
+
+  <script type="module" src="./../public/docfx.min.js"></script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Memento">
+            Memento
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled="" placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="getting-standard">Getting Standard</h1>
+
+<p>In this tutorial, you will learn how to update the actual UI in Blazor !</p>
+<p>Install <code>Memento.Blazor</code> in the Blazor component to update the Store state.</p>
+<p><code>Memento.Blazor</code> contains components that allow UI components to know about state updates and automatically update the UI.
+<code>Memento.Core</code> is included in the dependencies and does not need to be installed additionally.
+<code>Memento.Core</code> is a core library consisting of pure .NET code only.
+NET class library or for console apps that do not use a UI framework such as Blazor, install <code>Memento.Core</code>.</p>
+<p>Depends on Microsoft.AspNetCore.Components.
+It can also be used with native UI frameworks such as MobileBlazorBindings and BlazorBindings.Maui because it does not depend on Microsoft.AspNetCore.Components.Web.</p>
+<p>Blazor</p>
+<p><a href="https://docs.microsoft.com/ja-jp/aspnet/core/blazor/">https://docs.microsoft.com/ja-jp/aspnet/core/blazor/</a>
+<a href="https://dotnet.microsoft.com/ja-jp/apps/aspnet/web-apps/blazor">https://dotnet.microsoft.com/ja-jp/apps/aspnet/web-apps/blazor</a></p>
+<p>MobileBlazorBindings</p>
+<p><a href="https://github.com/dotnet/MobileBlazorBindings">https://github.com/dotnet/MobileBlazorBindings</a></p>
+<p>BlazorBindings.Maui</p>
+<p><a href="https://github.com/Dreamescaper/BlazorBindings.Maui">https://github.com/Dreamescaper/BlazorBindings.Maui</a></p>
+<h2 id="install">Install</h2>
+<p>Install <code>Memento.Blazor</code> for the Blazor projects.
+Install <code>Memento.Core</code> for the pure NET project that do not use the UI framework like .NET Class library or Console App.</p>
+<h3 id="install-with-cli">Install with CLI</h3>
+<p>Memento.Blazor</p>
+<pre><code>dotnet add package Memento.Blazor
+</code></pre>
+<p>Memento.Core</p>
+<pre><code>dotnet add package Memento.Core
+</code></pre>
+<h3 id="install-from-nuget">Install from Nuget</h3>
+<p>Memento.Blazor Nuget</p>
+<p><a href="https://www.nuget.org/packages/Memento.Blazor">https://www.nuget.org/packages/Memento.Blazor</a></p>
+<p>Memento.Core Nuget</p>
+<p><a href="https://www.nuget.org/packages/Memento.Core">https://www.nuget.org/packages/Memento.Core</a></p>
+<h3 id="initialization">Initialization</h3>
+<p>Blazor uses Dependency Injection in the framework.</p>
+<p>Here is how to use Memento in your application.</p>
+<p>Registers all required modules with <code>AddMemento()</code> .
+Registers all the stores present in the specified assembly with <code>ScanAssemblyAndAddStores()</code> .
+Specifically, all classes that inherit from ````IStore``` will be registered.</p>
+<p>registers an individual Store specified by <code>AddStore&lt;TStore&gt;()</code> .
+Register the required services in <code>Program.cs</code> etc.
+Add middleware with ```AddMiddleware(...)`` .
+Add middleware if necessary.</p>
+<p>If <code>isScoped: false</code>, it will be registered as a Singleton, if <code>isScoped: true</code>, it will be registered as a Scoped service.
+In the case of Blazor Server, the state is separated for each user session, so the argument <code>isScoped: true</code> must be set or the state will be shared by all users.
+The default args is <code>isScoped: true</code>.</p>
+<pre><code class="lang-cs">using Memento.Blazor;
+
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
+builder.RootComponents.Add&lt;App&gt;(&quot;#app&quot;);
+builder.RootComponents.Add&lt;HeadOutlet&gt;(&quot;head::after&quot;);
+
+builder.Services
+    // Add necessary modules to Memento
+    .AddMemento(isScoped: false)
+     // Add middleware
+    .AddMiddleware&lt;LoggerMiddleware&gt;(isScoped: false)
+     // Add by specifying Store
+    .AddStore&lt;AsyncCounterStore&gt;(isScoped: false)
+    // Scan the assembly and register all classes that implement the IStore interface
+    .ScanAssemblyAndAddStores(typeof(Program).Assembly, isScoped: false);
+
+await builder.Build().RunAsync();
+</code></pre>
+<p>Next,  <code>MementoInitializer</code> to the component root, such as <code>App.razor</code>.
+This will initialize the necessary Memento modules.</p>
+<pre><code class="lang-razor">&lt;MementoInitializer /&gt;
+
+&lt;Router AppAssembly=&quot;@typeof(App).Assembly&quot;&gt;
+    &lt;Found Context=&quot;routeData&quot;&gt;
+        &lt;RouteView RouteData=&quot;@routeData&quot; DefaultLayout=&quot;@typeof(MainLayout)&quot; /&gt;
+        &lt;FocusOnNavigate RouteData=&quot;@routeData&quot; Selector=&quot;h1&quot; /&gt;
+    &lt;/Found&gt;
+    &lt;NotFound&gt;
+        &lt;PageTitle&gt;Not found&lt;/PageTitle&gt;
+        &lt;LayoutView Layout=&quot;@typeof(MainLayout)&quot;&gt;
+            &lt;p role=&quot;alert&quot;&gt;Sorry, there's nothing at this address.&lt;/p&gt;
+        &lt;/LayoutView&gt;
+    &lt;/NotFound&gt;
+&lt;/Router&gt;
+</code></pre>
+<h3 id="component-usage">Component usage</h3>
+<p>Using <code>@inject</code> in Store will be automatically resolved by the DI container.
+By inheriting from ObserverComponent.
+Injected Stores that extend <code>Store&lt;TState&gt;</code> or <code>FluxStore&lt;TState, TCommand&gt;</code> are automatically observed by reflection.
+This allows the View to automatically update the state of the Store automatically</p>
+<p>This is an example of Counter.</p>
+<pre><code class="lang-razor">
+@using Memento.Sample.Blazor.Stores
+@using System.Text.Json
+
+@page &quot;/counter&quot;
+@inherits ObserverComponent
+@inject AsyncCounterStore AsyncCounterStore
+
+&lt;PageTitle&gt;Counter&lt;/PageTitle&gt;
+
+&lt;div&gt;
+    &lt;h1 class=&quot;mt-5&quot;&gt;Async Counter&lt;/h1&gt;
+    &lt;h2&gt;Current count: @AsyncCounterStore.State.Count&lt;/h2&gt;
+    &lt;p&gt;Loading: @AsyncCounterStore.State.IsLoading&lt;/p&gt;
+
+    &lt;div&gt;
+        &lt;button class=&quot;mt-3 btn btn-primary&quot; @onclick=&quot;IncrementCount&quot;&gt;Count up&lt;/button&gt;
+        &lt;button class=&quot;mt-3 btn btn-primary&quot; @onclick=&quot;CountupMany&quot;&gt;Count up 100 times&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;mt-5&quot;&gt;
+        &lt;h3&gt;Count up async with histories&lt;/h3&gt;
+        &lt;button class=&quot;mt-3 btn btn-primary&quot; @onclick=&quot;IncrementCountAsync&quot;&gt;Count up async&lt;/button&gt;
+        &lt;p class=&quot;mt-3 mb-0&quot;&gt;Histories&lt;/p&gt;
+        &lt;div class=&quot;d-flex&quot;&gt;
+            @foreach (var item in string.Join(&quot;, &quot;, AsyncCounterStore.State.Histories)) {
+                @item
+            }
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;mt-5&quot;&gt;
+        &lt;h3&gt;Count up with Amount&lt;/h3&gt;
+        &lt;input @bind-value=&quot;_amount&quot; /&gt;
+    &lt;/div&gt;
+    &lt;button class=&quot;mt-3 btn btn-primary&quot; @onclick=&quot;CountupWithAmount&quot;&gt;Count up with amount&lt;/button&gt;
+
+    &lt;div class=&quot;mt-5&quot;&gt;
+        &lt;h3&gt;Set count&lt;/h3&gt;
+        &lt;input @bind-value=&quot;_countToSet&quot; /&gt;
+    &lt;/div&gt;
+    &lt;button class=&quot;mt-3 btn btn-primary&quot; @onclick=&quot;SetCount&quot;&gt;Count up with amount&lt;/button&gt;
+&lt;/div&gt;
+
+@code {
+    int _amount = 5;
+    int _countToSet = 100;
+
+    void IncrementCount() {
+        AsyncCounterStore.CountUp();
+    }
+
+    async Task IncrementCountAsync() {
+        await AsyncCounterStore.CountUpAsync();
+    }
+
+    void CountupMany() {
+        AsyncCounterStore.CountUpManyTimes(100);
+    }
+
+    void CountupWithAmount() {
+        AsyncCounterStore.CountUpWithAmount(_amount);
+    }
+
+    void SetCount() {
+        AsyncCounterStore.SetCount(_countToSet);
+    }
+}
+
+</code></pre>
+<h2 id="another-way-to-use">Another way to use</h2>
+<p>If inherit cannot be used due to conflicts with other libraries, please use StateChangedObserver.
+If you specify IObservable for Observables, it will automatically track state changes and notify OnStateHasChanged.</p>
+<pre><code class="lang-razor">&lt;StateChangedObserver Observables=&quot;[Store1, Store2, Store3]&quot; OnStateHasChanged=&quot;StateHasChanged&quot; /&gt;
+</code></pre>
+<h4 id="sample">sample</h4>
+<pre><code class="lang-razor">
+@page &quot;/counter&quot;
+@inject AsyncCounterStore AsyncCounterStore
+
+&lt;PageTitle&gt;Counter&lt;/PageTitle&gt;
+
+&lt;StateChangedObserver Observables=&quot;[AsyncCounterStore]&quot; OnStateHasChanged=&quot;StateHasChanged&quot; /&gt;
+
+&lt;div&gt;
+    &lt;h1 class=&quot;mt-5&quot;&gt;Async Counter&lt;/h1&gt;
+    &lt;h2&gt;Current count: @AsyncCounterStore.State.Count&lt;/h2&gt;
+    &lt;p&gt;Loading: @AsyncCounterStore.State.IsLoading&lt;/p&gt;
+&lt;/div&gt;
+
+</code></pre>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/le-nn/memento/blob/main/docs/Blazor.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

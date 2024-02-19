@@ -1,0 +1,258 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Memento | Memento </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Memento | Memento ">
+      
+      
+      <link rel="icon" href="favicon.ico">
+      <link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
+      <meta name="docfx:navrel" content="toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/le-nn/memento/blob/main/README.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+  </head>
+
+  <script type="module" src="./public/docfx.min.js"></script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="index.html">
+            <img id="logo" class="svg" src="logo.svg" alt="Memento">
+            Memento
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled="" placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="memento">Memento</h1>
+
+<p><a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a></p>
+<p>A simple client-side state management container for Blazor/.NET includes redo/undo and ReduxDevTools support.</p>
+<img src="docs/Assets/ReduxDevTools.gif" width="800px">
+<h3 id="japanese-link">Japanese Link</h3>
+<p><a href="https://zenn.dev/remrem/articles/32ee38e79f4cf0">使い方と紹介</a></p>
+<p><a href="https://zenn.dev/remrem/articles/0768982b3cdc92">Redux DevToolsについて</a></p>
+<h1 id="basic-concept">Basic Concept</h1>
+<p>We provides a Store that allows you to share state between components.
+All stores are managed by a single provider and can subscribe to state change notifications.
+Undirectional flow and immutable change of state provides a predictable architecture.
+In addition, we provide a store that easily implements Redo/Undo by managing in immutable states.</p>
+<h3 id="for-patterns-like-flux-or-mvu">For patterns like Flux or MVU</h3>
+<p>Besides simple store pattern, we also provide patterns inspired by MVU patterns such as Flux and Elm.
+Since you should change the state via the Reducer, you can change the state based on stricter rules and observe the state in detail.</p>
+<h3 id="reduxdevtools">ReduxDevTools</h3>
+<p><a href="https://github.com/reduxjs/redux-devtools">Redux DevTools</a> is supported.
+Redux DevTools is a tool for debugging application's state changes.
+State can be time traveled and history can be viewed in DevTools.</p>
+<p><a href="docs/ReduxDevTools.html">See docs</a> for details of usage.</p>
+<h2 id="demo-page">DEMO Page</h2>
+<p><a href="https://le-nn.github.io/memento/">https://le-nn.github.io/memento/</a></p>
+<p>If you have ReduxDevTool installed,
+DevTool will launch automatically.
+You can do state history and time travel.</p>
+<h1 id="documentation">Documentation</h1>
+<p><a href="https://le-nn.github.io/memento/docs/README.html">https://le-nn.github.io/memento/docs/README.html</a></p>
+<h2 id="react-or-tsjs-bindings">React or TS/JS bindings</h2>
+<p>Currently, moved to here
+<a href="https://github.com/le-nn/memento-js">https://github.com/le-nn/memento-js</a></p>
+<h2 id="features">Features</h2>
+<ul>
+<li>Less boilerplate, less rule and simple usage</li>
+<li>Immutable state and Unidirectional flow</li>
+<li>Multiple stores but managed by single provider, so can observe and manage as one state tree</li>
+<li>Observe detailed status with command patterns and makes it easier to monitor what happened within the application</li>
+</ul>
+<h2 id="concepts-and-flow">Concepts and Flow</h2>
+<img width="800px" src="./Architecture.jpg">
+<h2 id="rules">Rules</h2>
+<ul>
+<li>State should always be read-only.</li>
+<li>The UI then uses the new state to render its display.</li>
+</ul>
+<h3 id="for-patterns-like-flux">For patterns like Flux</h3>
+<ul>
+<li>Every Reducer that processes in the action will create new state to reflect the old state combined with the changes expected for the action.</li>
+<li>To change state our app should Dispatch via Reducer in the action method</li>
+</ul>
+<h2 id="store-overview">Store Overview</h2>
+<p>This is an C# and Blazor example that implements counter.</p>
+<p>Simple Store Pattern</p>
+<pre><code class="lang-csharp">using Memento.Core;
+using System.Collections.Immutable;
+
+namespace Memento.Sample.Blazor;
+
+public record AsyncCounterState {
+    public int Count { get; init; } = 0;
+
+    public bool IsLoading { get; init; } = false;
+
+    public int[] Histories { get; init; } = [];
+}
+
+public class AsyncCounterStore() : Store&lt;AsyncCounterState&gt;(() =&gt; new()) {
+    public async Task CountUpAsync() {
+        Mutate(state =&gt; state with { IsLoading = true, });
+        await Task.Delay(800);
+        Mutate(state =&gt; state with {
+            IsLoading = false,
+            Count = state.Count + 1,
+            Histories = [.. state.Histories, state.Count + 1],
+        });
+    }
+}
+
+</code></pre>
+<p>Flux Store Pattern</p>
+<pre><code class="lang-csharp">public record AsyncCounterState {
+    public int Count { get; init; } = 0;
+
+    public bool IsLoading { get; init; } = false;
+
+    public int[] Histories { get; init; } = [];
+}
+
+public record AsyncCounterCommands : Command {
+    public record Increment : AsyncCounterCommands;
+    public record BeginLoading : AsyncCounterCommands;
+}
+
+public class AsyncCounterStore() : FluxStore&lt;AsyncCounterState, AsyncCounterCommands&gt;(() =&gt; new(), Reducer) {
+    static AsyncCounterState Reducer(AsyncCounterState state, AsyncCounterCommands command) {
+        return command switch {
+            AsyncCounterCommands.Increment =&gt; state with {
+                Count = state.Count + 1,
+                IsLoading = false,
+                Histories = [.. state.Histories, state.Count + 1],
+            },
+            AsyncCounterCommands.BeginLoading =&gt; state with {
+                IsLoading = true,
+            },
+            _ =&gt; throw new CommandNotHandledException&lt;AsyncCounterCommands&gt;(command),
+        };
+    }
+
+    public async Task CountUpAsync() {
+        Dispatch(new AsyncCounterCommands.BeginLoading());
+        await Task.Delay(800);
+        Dispatch(new AsyncCounterCommands.Increment());
+    }
+}
+
+</code></pre>
+<p>Blazor view in Razor</p>
+<pre><code class="lang-razor">@page &quot;/counter&quot;
+@inherits ObserverComponet
+@inject AsyncCounterStore AsyncCounterStore
+
+&lt;PageTitle&gt;Counter&lt;/PageTitle&gt;
+&lt;h1&gt;Async Counter&lt;/h1&gt;
+&lt;p role=&quot;status&quot;&gt;Current count: @AsyncCounterStore.State.Count&lt;/p&gt;
+&lt;p role=&quot;status&quot;&gt;Loading: @AsyncCounterStore.State.IsLoading&lt;/p&gt;
+&lt;p role=&quot;status&quot; class=&quot;mb-0&quot;&gt;History&lt;/p&gt;
+&lt;div class=&quot;d-flex&quot;&gt;
+    [
+    @foreach (var item in string.Join(&quot;, &quot;, AsyncCounterStore.State.Histories)) {
+        @item
+    }
+    ]
+&lt;/div&gt;
+&lt;button class=&quot;mt-3 btn btn-primary&quot; @onclick=&quot;IncrementCount&quot;&gt;Count up&lt;/button&gt;
+
+@code {
+    async Task IncrementCount() {
+        await AsyncCounterStore.CountUpAsync();
+    }
+}
+
+</code></pre>
+<h1 id="license">License</h1>
+<p>Designed with ♥ by le-nn. Licensed under the MIT License.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/le-nn/memento/blob/main/README.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

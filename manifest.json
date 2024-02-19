@@ -1,0 +1,798 @@
+{
+  "source_base_path": "/home/runner/work/memento/memento",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      }
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "README.md",
+      "output": {
+        ".html": {
+          "relative_path": "README.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Blazor.MementoInitializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Blazor.MementoInitializer.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Blazor.ObserverComponent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Blazor.ObserverComponent.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Blazor.StateChangedObserver.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Blazor.StateChangedObserver.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Blazor.StateSubscriber.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Blazor.StateSubscriber.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Blazor.StoreConfigExtension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Blazor.StoreConfigExtension.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Blazor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Blazor.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.AbstractMementoStore-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.AbstractMementoStore-2.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.AbstractStore-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.AbstractStore-2.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.Command.StateHasChanged-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.Command.StateHasChanged-2.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.Command.StateHasChanged.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.Command.StateHasChanged.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.Command.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.Command.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.CommandNotHandledException-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.CommandNotHandledException-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.Executors.ConcatAsyncOperationExecutor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.Executors.ConcatAsyncOperationExecutor.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.Executors.ThrottledExecutor-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.Executors.ThrottledExecutor-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.Executors.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.Executors.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.FluxMementoStore-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.FluxMementoStore-2.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.FluxStore-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.FluxStore-2.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.History.HistoryCommandContext-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.History.HistoryCommandContext-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.History.HistoryManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.History.HistoryManager.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.History.IHistoryCommandItem-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.History.IHistoryCommandItem-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.History.IHistoryItem-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.History.IHistoryItem-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.History.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.History.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.IMementoStoreContext-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.IMementoStoreContext-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.IStateObservable-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.IStateObservable-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.IStore-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.IStore-2.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.IStore.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.IStore.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.MementoStore-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.MementoStore-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.MementoStore-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.MementoStore-2.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.MementoStoreContext-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.MementoStoreContext-2.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.Middleware.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.Middleware.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.MiddlewareHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.MiddlewareHandler.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.NextProviderMiddlewareCallback.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.NextProviderMiddlewareCallback.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.NextStoreMiddlewareCallback.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.NextStoreMiddlewareCallback.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.Reducer-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.Reducer-2.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.RootState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.RootState.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.RootStateChangedEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.RootStateChangedEventArgs.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.ServiceProviderExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.ServiceProviderExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.StateHasChangedType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.StateHasChangedType.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.StateObservable-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.StateObservable-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.Store-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.Store-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.Store-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.Store-2.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.StoreProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.StoreProvider.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.Core.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.Core.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.ReduxDevTool.ActionItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.ReduxDevTool.ActionItem.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.ReduxDevTool.ActionItemFromDevtool.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.ReduxDevTool.ActionItemFromDevtool.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.ReduxDevTool.Browser.BrowserReduxDevToolExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.ReduxDevTool.Browser.BrowserReduxDevToolExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.ReduxDevTool.Browser.BrowserReduxDevToolMiddleware.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.ReduxDevTool.Browser.BrowserReduxDevToolMiddleware.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.ReduxDevTool.Browser.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.ReduxDevTool.Browser.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.ReduxDevTool.ComputedState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.ReduxDevTool.ComputedState.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.ReduxDevTool.HistoryStateContextJson.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.ReduxDevTool.HistoryStateContextJson.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.ReduxDevTool.IDevToolInteropHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.ReduxDevTool.IDevToolInteropHandler.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.ReduxDevTool.ReduxDevToolMiddleware.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.ReduxDevTool.ReduxDevToolMiddleware.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.ReduxDevTool.ReduxDevToolMiddlewareHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.ReduxDevTool.ReduxDevToolMiddlewareHandler.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.ReduxDevTool.ReduxDevToolOption.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.ReduxDevTool.ReduxDevToolOption.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.ReduxDevTool.Remote.DevToolWebSocketConnection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.ReduxDevTool.Remote.DevToolWebSocketConnection.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.ReduxDevTool.Remote.RemoteReduxDevToolMiddleware.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.ReduxDevTool.Remote.RemoteReduxDevToolMiddleware.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.ReduxDevTool.Remote.RemoveReduxDevToolExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.ReduxDevTool.Remote.RemoveReduxDevToolExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.ReduxDevTool.Remote.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.ReduxDevTool.Remote.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.ReduxDevTool.StoreAction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.ReduxDevTool.StoreAction.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Memento.ReduxDevTool.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Memento.ReduxDevTool.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "docs/Assets/Architecture.jpg",
+      "output": {
+        "resource": {
+          "relative_path": "docs/Assets/Architecture.jpg"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "docs/Assets/ReduxDevTools.gif",
+      "output": {
+        "resource": {
+          "relative_path": "docs/Assets/ReduxDevTools.gif"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "docs/Assets/ReduxDevTools.png",
+      "output": {
+        "resource": {
+          "relative_path": "docs/Assets/ReduxDevTools.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "docs/Assets/StateTree.png",
+      "output": {
+        "resource": {
+          "relative_path": "docs/Assets/StateTree.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "docs/Assets/middleware-pipeline.png",
+      "output": {
+        "resource": {
+          "relative_path": "docs/Assets/middleware-pipeline.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "docs/Assets/middleware-pipeline2.svg",
+      "output": {
+        "resource": {
+          "relative_path": "docs/Assets/middleware-pipeline2.svg"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/BasicConcept.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/BasicConcept.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/Blazor.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/Blazor.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/Middleware.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/Middleware.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/README.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/README.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/RedoUndo.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/RedoUndo.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/ReduxDevTools.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/ReduxDevTools.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "docs/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/toc.html"
+        },
+        ".json": {
+          "relative_path": "docs/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "samples/Memento.Sample.Blazor/wwwroot/css/open-iconic/README.md",
+      "output": {
+        ".html": {
+          "relative_path": "samples/Memento.Sample.Blazor/wwwroot/css/open-iconic/README.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
+        }
+      },
+      "version": ""
+    }
+  ],
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

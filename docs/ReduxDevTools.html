@@ -1,0 +1,325 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Redux Dev Tools | Memento </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Redux Dev Tools | Memento ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/le-nn/memento/blob/main/docs/ReduxDevTools.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+  </head>
+
+  <script type="module" src="./../public/docfx.min.js"></script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Memento">
+            Memento
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled="" placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="redux-dev-tools">Redux Dev Tools</h1>
+
+<p>Redux DevTools is supported. Redux DevTools is a tool for debugging application's state changes. State can be time traveled and history can be viewed in DevTools.</p>
+<p>Currently, memento is supported most features of ReduxDevTools.</p>
+<p><img src="Assets/ReduxDevTools.gif" alt=""></p>
+<p>There are two types of Middleware for ReduxDevTools.</p>
+<p>One is Memento.ReduxDevTool.Browser that interacts via Javascript
+The other is Memento.ReduxDevTool.Remote which interacts via WebSocket.</p>
+<h3 id="mementoreduxdevtoolbrowser">Memento.ReduxDevTool.Browser</h3>
+<p>Works with Blazor Server and Blazor Wasm.
+Interact with ReduxDevTools via JavaScript interop on <code>Microsoft.JSInterop</code>.</p>
+<h3 id="mementoreduxdevtoolremote">Memento.ReduxDevTool.Remote</h3>
+<p>Connect and Interact with applications via WebSocket.
+You can use ReduxDevTool even in environments that do not use a direct browser, such as Blazor Hybrid, Native Application, and Blazor Server.
+Not available for Browser applications such as Blazor WASM as it must support System.Net</p>
+<h1 id="usage">Usage</h1>
+<p>To enable develop integration, follow these steps</p>
+<h2 id="1-install-redux-devtool-extension-into-your-browser">1. Install Redux DevTool Extension into Your Browser</h2>
+<p>It can be used as a browser extension for Edge, Chrome and FireFox.</p>
+<p>Chrome</p>
+<p><a href="https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd">https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd</a></p>
+<p>Edge</p>
+<p><a href="https://microsoftedge.microsoft.com/addons/detail/redux-devtools/nnkgneoiohoecpdiaponcejilbhhikei">https://microsoftedge.microsoft.com/addons/detail/redux-devtools/nnkgneoiohoecpdiaponcejilbhhikei</a></p>
+<p>FireFox</p>
+<p><a href="https://addons.mozilla.org/en-US/firefox/addon/reduxdevtools/">https://addons.mozilla.org/en-US/firefox/addon/reduxdevtools/</a></p>
+<p>You can see the all docs for extension on official Github repos.</p>
+<p><a href="https://github.com/reduxjs/redux-devtools">https://github.com/reduxjs/redux-devtools</a></p>
+<h2 id="2-install-the-memento-middleware-from-nuget-package">2. Install the memento middleware from Nuget package</h2>
+<h3 id="cli">CLI</h3>
+<p>Case of Blazor WASM or Blazor Server</p>
+<pre><code>dotnet add package Memento.ReduxDevTool.Browser
+</code></pre>
+<p>Case of Native app, Blazor MAUI or Blazor Server</p>
+<pre><code>dotnet add package Memento.ReduxDevTool.Remote
+</code></pre>
+<h3 id="nuget">Nuget</h3>
+<p>Memento.ReduxDevTool.Browser
+<a href="https://www.nuget.org/packages/Memento.ReduxDevTool.Browser">https://www.nuget.org/packages/Memento.ReduxDevTool.Browser</a></p>
+<p>Memento.ReduxDevTool.Remote
+<a href="https://www.nuget.org/packages/Memento.ReduxDevTool.Remote">https://www.nuget.org/packages/Memento.ReduxDevTool.Remote</a></p>
+<h2 id="3-register-services">3. Register services</h2>
+<p>This might be a security flaw, so you should only reference this package in Debug builds.</p>
+<h4 id="case-of-mementoreduxdevtoolbrowser">Case of Memento.ReduxDevTool.Browser</h4>
+<pre><code class="lang-cs">using Memento.ReduxDevTool.Browser;
+
+#if DEBUG
+builder.Services.AddBrowserReduxDevToolMiddleware(new() {
+    StackTraceEnabled = true,
+    OpenDevTool = true,
+    ...
+});
+#endif
+</code></pre>
+<h3 id="case-of-mementoreduxdevtoolbrowser-1">Case of Memento.ReduxDevTool.Browser;</h3>
+<pre><code class="lang-cs">using Memento.ReduxDevTool.Remote;
+
+#if DEBUG
+builder.Services.AddRemoteReduxDevToolMiddleware(
+    false,
+    new() {
+        StackTraceEnabled = true,
+        OpenDevTool = true,
+        ...
+    }
+);
+#endif
+</code></pre>
+<h2 id="boot-redux-devtools">Boot Redux DevTools</h2>
+<p>Press F12 to open the developer tool and select the Redux tab.</p>
+<p><img src="Assets/ReduxDevTools.png" alt=""></p>
+<p>All Store states in an application are represented as a single StateTree.</p>
+<p><img src="Assets/StateTree.png" alt=""></p>
+<h1 id="redux-dev-tools-middleware-api-reference">Redux Dev Tools middleware API Reference</h1>
+<p>API Reference for ReduxDevTools middleware.</p>
+<h2 id="addbrowserreduxdevtoolmiddleware-extension">AddBrowserReduxDevToolMiddleware Extension</h2>
+<p>Register the middleware to services for browser.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>services</code></td>
+<td>this IServiceCollection</td>
+<td>-</td>
+<td>The services.</td>
+</tr>
+<tr>
+<td><code>option</code></td>
+<td>ReduxDevToolOption?</td>
+<td>null</td>
+<td>The middleware options.</td>
+</tr>
+<tr>
+<td><code>isScoped</code></td>
+<td>bool</td>
+<td>false</td>
+<td>If true, registers with AddScoped, otherwise AddSingleton.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<p>The service collection.</p>
+<h2 id="addremotereduxdevtoolmiddleware-extension">AddRemoteReduxDevToolMiddleware Extension</h2>
+<p>Register the middleware to services for via remote connection.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>services</code></td>
+<td>this IServiceCollection</td>
+<td>-</td>
+<td>The services.</td>
+</tr>
+<tr>
+<td><code>isScoped</code></td>
+<td>bool</td>
+<td>false</td>
+<td>If true, registers with AddScoped, otherwise AddSingleton.</td>
+</tr>
+<tr>
+<td><code>chromiumDevToolOption</code></td>
+<td>ReduxDevToolOption?</td>
+<td>null</td>
+<td>The middleware options.</td>
+</tr>
+<tr>
+<td><code>hostName</code></td>
+<td>string</td>
+<td>&quot;0.0.0.0&quot;</td>
+<td>The proxy server hostname.</td>
+</tr>
+<tr>
+<td><code>port</code></td>
+<td>ushort</td>
+<td>8000</td>
+<td>The proxy server port.</td>
+</tr>
+<tr>
+<td><code>secure</code></td>
+<td>bool</td>
+<td>false</td>
+<td>Uses HTTPS if true, otherwise HTTP.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<p>The service collection.</p>
+<h2 id="reduxdevtooloption">ReduxDevToolOption</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Name</code></td>
+<td>string</td>
+<td>&quot;Memento Developer Tool&quot;</td>
+<td>The name displayed in the developer tool.</td>
+</tr>
+<tr>
+<td><code>MaximumHistoryLength</code></td>
+<td>uint</td>
+<td>50</td>
+<td>The maximum number of history entries stored by the developer tool.</td>
+</tr>
+<tr>
+<td><code>Latency</code></td>
+<td>TimeSpan</td>
+<td>TimeSpan.FromMilliseconds(800)</td>
+<td>The latency for the developer tool.</td>
+</tr>
+<tr>
+<td><code>StackTraceEnabled</code></td>
+<td>bool</td>
+<td>true</td>
+<td>Indicates whether stack traces are enabled in the developer tool.</td>
+</tr>
+<tr>
+<td><code>StackTraceLinesLimit</code></td>
+<td>int</td>
+<td>30</td>
+<td>The limit of stack trace lines displayed in the developer tool.</td>
+</tr>
+<tr>
+<td><code>OpenDevTool</code></td>
+<td>bool</td>
+<td>false</td>
+<td>Indicates whether the developer tool should be opened by default.</td>
+</tr>
+</tbody>
+</table>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/le-nn/memento/blob/main/docs/ReduxDevTools.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

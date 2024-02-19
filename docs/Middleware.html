@@ -1,0 +1,268 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>What is Middleware | Memento </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="What is Middleware | Memento ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/le-nn/memento/blob/main/docs/Middleware.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+  </head>
+
+  <script type="module" src="./../public/docfx.min.js"></script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Memento">
+            Memento
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled="" placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="what-is-middleware">What is Middleware</h1>
+
+<p>Middleware can be implemented to interrupt the process when updating the state.
+Middleware can be extended for various purposes, such as implementing your own Logger or supporting ReduxDevTools.</p>
+<h2 id="middleware-pipeline">Middleware pipeline</h2>
+<p>Middleware is a component built into the StoreProvider and Store pipeline to interrupt another function in the state change process.</p>
+<p>A <code>StoreProvider</code> can have multiple middlewares registered.
+The middleware is interrupted by state changes like a chain and is connected to the chain . The middleware is connected like a chain.</p>
+<p>Each delegate can perform operations before and after the next delegate.</p>
+<p><img src="Assets/middleware-pipeline.png" alt="Pipeline"></p>
+<h3 id="how-to-actually-interrupt-the-state-changes">How to actually interrupt the State Changes</h3>
+<p>Suppose Middleware is registered with the service as follows</p>
+<pre><code class="lang-cs">services.AddMiddleware(() =&gt; new Middleware1());
+services.AddMiddleware(() =&gt; new Middleware2());
+services.AddMiddleware(() =&gt; new Middleware3());
+</code></pre>
+<p>Pipelines are built in the order in which they are registered</p>
+<p><img src="Assets/middleware-pipeline2.svg" alt="Pipeline2"></p>
+<p>The specific code looks like this</p>
+<p>The <code>NextProviderMiddlewareCallback</code> argument is a delegate handler that calls the next middleware to be connected.</p>
+<p>If the state is not changed, handle the next middleware and return the result.
+<code>return next(state, e);</code></p>
+<p>If you return null in middleware handler, the state change is canceled and no state change event is fired.</p>
+<p><code>return null;</code></p>
+<pre><code class="lang-cs">// Middleware1
+public override RootState? HandleProviderDispatch(RootState? state, StateChangedEventArgs e, NextProviderMiddlewareCallback next) {
+    // pre logic
+    var handledState =  next(state, e); // Handle Middleware2
+    // post logic
+
+    return handledState; // The state changes will be canceled if handleState is null
+}
+
+// Middleware2
+public override RootState? HandleProviderDispatch(RootState? state, StateChangedEventArgs e, NextProviderMiddlewareCallback next) {
+    // pre logic
+    var handledState =  next(state, e); // Handle Middleware3
+    // post logic
+
+    return handledState;
+}
+
+// Middleware3
+public override RootState? HandleProviderDispatch(RootState? state, StateChangedEventArgs e, NextProviderMiddlewareCallback next) {
+    // pre logic
+    var handledState =  next(state, e); // Handle Middleware4
+    // post logic
+
+    return handledState;
+}
+
+// ...
+
+</code></pre>
+<p>They are based on the Middleware pattern and
+They function like ASP.NET Core Middleware.</p>
+<p><a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-7.0">https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-7.0</a></p>
+<h2 id="implements-middleware-and-middlewarehandler">Implements Middleware and MiddlewareHandler</h2>
+<p>Let's look at a more concrete implementation</p>
+<p>Implement your own Middleware by inheriting from <code>Middleware</code> abstract class.
+The <code>Middleware</code> abstract class can only inherit from
+Create a <code>MiddlewareHandler</code> by simply overriding <code>MiddlewareHandler Create(IServiceProvider provider)</code> .
+The actual functionality and implementation is delegated to <code>MiddlewareHandler</code>.
+To interrupt state updates, override <code>HandleProviderDispatch()</code> or <code>HandleStoreDispatch</code> .</p>
+<p><code>HandleProviderDispatch(...)</code> overrides <code>StoreProviderDispatch()</code> when <code>StoreProvider</code> detects a state update.
+<code>StoreProvider</code> handles when it detects a state update, that is, when the state of one of the application's Stores changes.</p>
+<p><code>HandleStoreDispatch(...)</code> handles only the Store whose state has been updated.</p>
+<p>The following example overrides <code>HandleProviderDispatch(...)</code> overrides <code>StoreProvider</code> and interrupts the state change with <code>StoreProvider</code> . The log is handled when the state of any Store is changed.</p>
+<p>The argument RootState is an <code>IDictionary&lt;TKey, TValue&gt;</code> that represents all StateTrees managed by <code>StoreProvider</code> .</p>
+<p>The <code>next</code> of <code>NextProviderMiddlewareCallback</code> argument is a delegate handler that calls the next connected middleware.</p>
+<p>If you don't want to change state, process the next middleware and return the result.
+<code>return next(state, e);</code></p>
+<p>If you return null, the state change is canceled and no state change event is fired.
+<code>return null;</code> However, if you return null, the connection is still active.</p>
+<p>However, even if you return null, it is possible that some state may be returned by the previous middleware that is connected to it.</p>
+<p><code>LoggerMiddlewareHandler.HandleProviderDispatch(...)</code> implements only <code>return next(state, e);</code> by default.</p>
+<p>The <code>HandleStoreDispatch</code> does the same.
+However, if the <code>object</code> to be returned does not match the type of State managed by the Store, an exception will be thrown.</p>
+<h3 id="loggermiddleware">LoggerMiddleware</h3>
+<p>This is an example of LoggerMiddleware.
+It handles StoreProvider and outputs a log of all state changes to the console.</p>
+<pre><code class="lang-cs">
+/// &lt;summary&gt;
+/// Middleware for logging state changes.
+/// &lt;/summary&gt;
+public sealed class LoggerMiddleware : Middleware {
+    /// &lt;summary&gt;
+    /// Creates a new instance of the LoggerMiddlewareHandler.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;provider&quot;&gt;The service provider used to resolve required services.&lt;/param&gt;
+    /// &lt;returns&gt;A new LoggerMiddlewareHandler instance.&lt;/returns&gt;
+    protected override MiddlewareHandler Create(IServiceProvider provider) {
+        return new LoggerMiddlewareHandler(
+            provider.GetRequiredService&lt;IJSRuntime&gt;()
+        );
+    }
+
+    /// &lt;summary&gt;
+    /// Handler for logging state changes in the LoggerMiddleware.
+    /// &lt;/summary&gt;
+    public class LoggerMiddlewareHandler : MiddlewareHandler {
+        private readonly IJSRuntime _jSRuntime;
+
+        /// &lt;summary&gt;
+        /// Creates a new instance of the LoggerMiddlewareHandler.
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;jSRuntime&quot;&gt;The JavaScript runtime to be used for logging.&lt;/param&gt;
+        public LoggerMiddlewareHandler(IJSRuntime jSRuntime) {
+            _jSRuntime = jSRuntime;
+        }
+
+        /// &lt;summary&gt;
+        /// Handles logging the state changes before passing them to the next middleware.
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;state&quot;&gt;The current state of the application.&lt;/param&gt;
+        /// &lt;param name=&quot;e&quot;&gt;The state change event arguments.&lt;/param&gt;
+        /// &lt;param name=&quot;next&quot;&gt;The next middleware in the pipeline.&lt;/param&gt;
+        /// &lt;returns&gt;The updated state after processing by the middleware pipeline.&lt;/returns&gt;
+        public override RootState? HandleProviderDispatch(RootState? state, StateChangedEventArgs e, NextProviderMiddlewareCallback next) {
+            _ = HandleLog(state, e);
+            return next(state, e);
+        }
+
+        /// &lt;summary&gt;
+        /// Logs the state changes using the JavaScript console.
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;state&quot;&gt;The current state of the application.&lt;/param&gt;
+        /// &lt;param name=&quot;e&quot;&gt;The state change event arguments.&lt;/param&gt;
+        /// &lt;returns&gt;A task representing the logging operation.&lt;/returns&gt;
+        public async Task HandleLog(object? state, StateChangedEventArgs e) {
+            if (state is null) {
+                return;
+            }
+
+            await _jSRuntime.InvokeVoidAsync(&quot;console.log&quot;, new {
+                StateName = state.GetType().Name,
+                State = state,
+                EventArgs = e,
+            });
+        }
+    }
+}
+
+</code></pre>
+<p>Register middleware instances to IServiceCollection in callback.</p>
+<pre><code class="lang-cs">builder.Services.AddMiddleware(() =&gt; new LoggerMiddleware());
+</code></pre>
+<h2 id="demo">DEMO</h2>
+<p>Here is sample code for this tutorial.</p>
+<p><a href="https://github.com/le-nn/memento/blob/main/samples/Memento.Sample.BlazorWasm/LoggerMiddleware.cs">https://github.com/le-nn/memento/blob/main/samples/Memento.Sample.BlazorWasm/LoggerMiddleware.cs</a></p>
+<p>or</p>
+<p><a href="https://github.com/le-nn/memento/blob/main/samples/Memento.Sample.BlazorServer/LoggerMiddleware.cs">https://github.com/le-nn/memento/blob/main/samples/Memento.Sample.BlazorServer/LoggerMiddleware.cs</a></p>
+<p>The <code>LoggerMiddleware</code> is implemented in the Memento sample on the DEMO page and can be found in the console tab of Chrome's DevTool.</p>
+<p><a href="https://le-nn.github.io/memento/">https://le-nn.github.io/memento/</a></p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/le-nn/memento/blob/main/docs/Middleware.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
