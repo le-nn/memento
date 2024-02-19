@@ -50,7 +50,7 @@ jobs:
         run: dotnet publish ./samples/Memento.Sample.BlazorWasm/Memento.Sample.BlazorWasm.csproj -c Release -p:GHPages=true
       
       - name: Generate Docs
-        run: dockfx ./dockfx.json
+        run: docfx ./docfx.json
 
       # Deploy the site
       - name: Deploy Github Pages
