@@ -37,7 +37,7 @@ public sealed class ServerLoggerMiddleware : Middleware {
         /// <returns>The updated state after processing by the middleware pipeline.</returns>
         public override RootState? HandleProviderDispatch(
             RootState? state,
-            IStateChangedEventArgs<object, object> e,
+            IStateChangedEventArgs e,
             NextProviderMiddlewareCallback next
         ) {
             _ = HandleLog(state, e);
@@ -50,7 +50,7 @@ public sealed class ServerLoggerMiddleware : Middleware {
         /// <param name="state">The current state of the application.</param>
         /// <param name="e">The state change event arguments.</param>
         /// <returns>A task representing the logging operation.</returns>
-        public async Task HandleLog(object? state, IStateChangedEventArgs<object, object> e) {
+        public async Task HandleLog(object? state, IStateChangedEventArgs e) {
             if (state is null) {
                 return;
             }

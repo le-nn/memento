@@ -1,8 +1,8 @@
 namespace Memento.Blazor;
 
-internal readonly struct StateObserver(Action<IStateChangedEventArgs<object>> action)
-        : IObserver<IStateChangedEventArgs<object>> {
-    readonly Action<IStateChangedEventArgs<object>> _action = action;
+internal readonly struct StateObserver(Action<IStateChangedEventArgs> action)
+        : IObserver<IStateChangedEventArgs> {
+    readonly Action<IStateChangedEventArgs> _action = action;
 
     public void OnCompleted() {
         throw new NotSupportedException();
@@ -12,7 +12,7 @@ internal readonly struct StateObserver(Action<IStateChangedEventArgs<object>> ac
         throw new NotSupportedException();
     }
 
-    public void OnNext(IStateChangedEventArgs<object> value) {
+    public void OnNext(IStateChangedEventArgs value) {
         _action(value);
     }
 }

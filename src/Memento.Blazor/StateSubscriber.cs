@@ -22,7 +22,7 @@ public static class StateSubscriber {
     /// <param name="subject">The object to scan for <see cref="IStateChangedNotifier"/> properties.</param>
     /// <param name="callback">The action to execute when one of the states are modified</param>
     /// <returns></returns>
-    public static IDisposable Subscribe(object subject, Action<IStateChangedEventArgs<object>> callback) {
+    public static IDisposable Subscribe(object subject, Action<IStateChangedEventArgs> callback) {
         _ = subject ?? throw new ArgumentNullException(nameof(subject));
         _ = callback ?? throw new ArgumentNullException(nameof(callback));
 

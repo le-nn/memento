@@ -6,8 +6,8 @@ public static class ServiceProviderExtensions {
     /// </summary>
     /// <param name="provider">The service provider.</param>
     /// <returns>An enumerable collection of <see cref="IStore{TKey, TValue}"/> instances.</returns>
-    public static IEnumerable<IStore<object, object>> GetAllStores(this IServiceProvider provider) {
-        return provider.GetServices<IStore<object, object>>();
+    public static IEnumerable<IStore> GetAllStores(this IServiceProvider provider) {
+        return provider.GetServices<IStore>();
     }
 
     /// <summary>

@@ -12,7 +12,7 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
     readonly IServiceProvider _serviceContainer;
     readonly ConcurrentDictionary<Guid, IDisposable> _subscriptions = new();
     readonly ConcurrentDictionary<Guid, IObserver<RootStateChangedEventArgs>> _observers = new();
-    readonly IReadOnlyList<IStore<object, object>> _stores;
+    readonly IReadOnlyList<IStore> _stores;
     readonly IReadOnlyList<Middleware> _middleware;
 
     /// <summary>
@@ -30,7 +30,7 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
     /// <param name="middlewares">The middlewares.</param>
     public StoreProvider(
         IServiceProvider container,
-        IReadOnlyCollection<IStore<object, object>>? stores = null,
+        IReadOnlyCollection<IStore>? stores = null,
         IReadOnlyCollection<Middleware>? middlewares = null
     ) {
         _serviceContainer = container;
@@ -84,8 +84,8 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
     /// Captures a dictionary containing all stores keyed by their type name.
     /// </summary>
     /// <returns>A dictionary containing all stores keyed by their type name.</returns>
-    public Dictionary<string, IStore<object, object>> CaptureStoreBag() {
-        var map = new Dictionary<string, IStore<object, object>>();
+    public Dictionary<string, IStore> CaptureStoreBag() {
+        var map = new Dictionary<string, IStore>();
         foreach (var item in ResolveAllStores()) {
             map.Add(item.GetType().Name, item);
         }
@@ -107,7 +107,7 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
         IsInitialized = true;
         // observe all stores.
         foreach (var store in ResolveAllStores()) {
-            var subscription = store.Subscribe(new StoreObserver<object, object>(e => {
+            var subscription = store.Subscribe(new GeneralObserver<IStateChangedEventArgs>(e => {
                 var handler = GetMiddlewareInvokeHandler();
                 var rootState = handler(CaptureRootState(), e);
                 if (rootState is not null) {
@@ -151,7 +151,7 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
     /// <returns>An instance of the specified store type.</returns>
     /// <exception cref="ArgumentException">Thrown when the specified store type is not registered in the provider.</exception>
     public TStore ResolveStore<TStore>()
-        where TStore : IStore<object, object> {
+        where TStore : IStore {
         if (_serviceContainer.GetService(typeof(TStore)) is TStore store) {
             return store;
         }
@@ -163,7 +163,7 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
     /// Resolves all stores registered in the provider.
     /// </summary>
     /// <returns>An IEnumerable containing all registered stores.</returns>
-    public IEnumerable<IStore<object, object>> ResolveAllStores() {
+    public IEnumerable<IStore> ResolveAllStores() {
         return _stores;
     }
 
@@ -201,14 +201,14 @@ public class StoreProvider : IObservable<RootStateChangedEventArgs>, IDisposable
     public IDisposable Subscribe(Action<RootStateChangedEventArgs> observer)
         => Subscribe(new StoreProviderObserver(observer));
 
-    internal Func<RootState?, IStateChangedEventArgs<object, object>, RootState?> GetMiddlewareInvokeHandler() {
+    internal Func<RootState?, IStateChangedEventArgs, RootState?> GetMiddlewareInvokeHandler() {
         // process middleware
         var middleware = GetAllMiddleware()
             ?? Array.Empty<Middleware>();
         return middleware.Aggregate(
-            (RootState? s, IStateChangedEventArgs<object, object> _) => s,
+            (RootState? s, IStateChangedEventArgs _) => s,
             (before, middleware) =>
-                (RootState? s, IStateChangedEventArgs<object, object> m) => middleware.Handler.HandleProviderDispatch(
+                (RootState? s, IStateChangedEventArgs m) => middleware.Handler.HandleProviderDispatch(
                     s,
                     m,
                     (_s, _m) => before(_s, m)

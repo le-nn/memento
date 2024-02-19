@@ -63,7 +63,7 @@ public class FluxStoreTest {
             Assert.NotEqual(e.State, lastState);
             Assert.Equal(e.LastState, lastState);
             lastState = e.State;
-            commands.Add(e.Message);
+            commands.Add(e.Message as Command);
         });
 
         await store.CountUpAsync();
@@ -98,7 +98,7 @@ public class FluxStoreTest {
 
         await store.CountUpAsync();
         store.SetCount(1234);
-        if (store is IStore<object, Command> iStore) {
+        if (store is IStore iStore) {
             iStore.SetStateForce(store.State with {
                 Count = 5678
             });

@@ -57,6 +57,8 @@ public abstract class AbstractStore<TState, TMessage>(
 
     public Reducer<object, object> ReducerHandle => (s, c) => _reducer.Invoke((TState)s, (TMessage?)c);
 
+    object IStore.State => State;
+
     /// <summary>
     /// Disposes the store and its resources.
     /// </summary>
@@ -84,14 +86,14 @@ public abstract class AbstractStore<TState, TMessage>(
     /// <param name="observer">The observer to subscribe to the store.</param>
     /// <returns>An IDisposable instance that can be used to unsubscribe from the store.</returns>
     public IDisposable Subscribe(IObserver<IStateChangedEventArgs<TState, TMessage>> observer) {
-        return base.Subscribe(new GeneralObserver<IStateChangedEventArgs<TMessage>>(e => {
+        return base.Subscribe(new GeneralObserver<IStateChangedEventArgs>(e => {
             if (e is IStateChangedEventArgs<TState, TMessage> e2) {
                 observer.OnNext(e2);
             }
             else {
                 observer.OnNext(new StateChangedEventArgs<TState, TMessage>() {
                     LastState = State,
-                    Message = e.Message,
+                    Message = (TMessage?)e.Message,
                     State = State,
                     Sender = this,
                 });
@@ -130,7 +132,7 @@ public abstract class AbstractStore<TState, TMessage>(
         return typeof(TState);
     }
 
-    void IStore<TState, TMessage>.SetStateForceSilently(object state) {
+    void IStore.SetStateForceSilently(object state) {
         if (state is not TState tState) {
             throw new InvalidDataException($"'{state.GetType().FullName}' is not compatible with '{typeof(TState).FullName}'.");
         }
@@ -138,7 +140,7 @@ public abstract class AbstractStore<TState, TMessage>(
         State = tState;
     }
 
-    void IStore<TState, TMessage>.SetStateForce(object state) {
+    void IStore.SetStateForce(object state) {
         if (state is not TState tState) {
             throw new InvalidDataException($"'{state.GetType().FullName}' is not compatible with '{typeof(TState).FullName}'.");
         }
@@ -250,7 +252,7 @@ public abstract class AbstractStore<TState, TMessage>(
         }
     }
 
-    async ValueTask IStore<TState, TMessage>.InitializeAsync(StoreProvider provider) {
+    async ValueTask IStore.InitializeAsync(StoreProvider provider) {
         _provider = provider;
 
         foreach (var item in OnHandleDisposable()) {

@@ -18,7 +18,7 @@ provider.Subscribe(e => {
     Console.WriteLine();
     Console.WriteLine($"// {e.StateChangedEvent.Message?.GetType().Name}");
     Console.WriteLine(JsonSerializer.Serialize(
-        e.StateChangedEvent.State,
+        e.StateChangedEvent,
         new JsonSerializerOptions() {
             WriteIndented = true
         })

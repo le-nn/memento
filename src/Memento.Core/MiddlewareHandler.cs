@@ -14,7 +14,7 @@ public delegate object NextStoreMiddlewareCallback(object? state, object? comman
 /// <param name="state">The current state.</param>
 /// <param name="e">The event arguments.</param>
 /// <returns>The result of the next middleware callback.</returns>
-public delegate RootState NextProviderMiddlewareCallback(RootState? state, IStateChangedEventArgs<object, object> e);
+public delegate RootState NextProviderMiddlewareCallback(RootState? state, IStateChangedEventArgs e);
 
 /// <summary>
 /// Represents an abstract class for middleware handlers.
@@ -45,7 +45,7 @@ public abstract class MiddlewareHandler : IDisposable {
     /// <returns>The result of the next middleware callback.</returns>
     public virtual RootState? HandleProviderDispatch(
         RootState? state,
-        IStateChangedEventArgs<object, object> e,
+        IStateChangedEventArgs e,
         NextProviderMiddlewareCallback next
     ) => next(state, e);
 

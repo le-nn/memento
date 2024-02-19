@@ -98,7 +98,7 @@ public class StoreTest {
 
         await store.CountUpAsync();
         store.SetCount(1234);
-        if (store is IStore<object, object> iStore) {
+        if (store is IStore iStore) {
             iStore.SetStateForce(store.State with {
                 Count = 5678
             });
@@ -154,7 +154,7 @@ public class StoreTest {
                 ?.BaseType
                 ?.BaseType
                 ?.GetField("_observers", BindingFlags.NonPublic | BindingFlags.Instance)
-                ?.GetValue(store) as ConcurrentDictionary<Guid, IObserver<IStateChangedEventArgs<string>>>
+                ?.GetValue(store) as ConcurrentDictionary<Guid, IObserver<IStateChangedEventArgs>>
             ) ?? throw new Exception("_observers is not found.");
 
         var disposables = new BlockingCollection<IDisposable>();

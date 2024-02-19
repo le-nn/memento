@@ -2,8 +2,6 @@ using System.Collections.Immutable;
 
 namespace Memento.Sample.Blazor.Stores;
 
-
-
 public record AsyncCounterState {
     public int Count { get; init; } = 0;
 
@@ -19,6 +17,8 @@ public enum StateChangedType {
     SetCount,
     CountUpWithAmount
 }
+
+public struct Test();
 
 public class AsyncCounterStore() : Store<AsyncCounterState, StateChangedType>(() => new()) {
     public void CountUp() {

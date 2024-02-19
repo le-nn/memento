@@ -61,7 +61,7 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
 
     public override RootState? HandleProviderDispatch(
         RootState? state,
-        IStateChangedEventArgs<object, object> e,
+        IStateChangedEventArgs e,
         NextProviderMiddlewareCallback next
     ) {
         if (state is null) {
@@ -95,7 +95,7 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
         await _liftedStore.ResetAsync();
     }
 
-    public async Task SendAsync(IStateChangedEventArgs<object, object> e, RootState rootState, string stackTrace) {
+    public async Task SendAsync(IStateChangedEventArgs e, RootState rootState, string stackTrace) {
         if (e.StateChangeType is StateChangeType.ForceReplaced) {
             return;
         }

@@ -19,7 +19,7 @@
                     "**/*.{md,yml}"
                 ],
                 "exclude": [
-                    "artifacts/_site/**"
+                    "samples/Memento.Sample.BlazorWasm/bin/Release/net8.0/publish/wwwroot/**"
                 ]
             }
         ],
@@ -30,7 +30,7 @@
                 ]
             }
         ],
-        "output": "artifacts/_site",
+        "output": "./samples/Memento.Sample.BlazorWasm/bin/Release/net8.0/publish/wwwroot",
         "template": [
             "default",
             "modern"

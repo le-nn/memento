@@ -7,12 +7,12 @@ public record RootStateChangedEventArgs {
     /// <summary>
     /// Gets or sets the state changed event.
     /// </summary>
-    public required IStateChangedEventArgs<object, object> StateChangedEvent { get; init; }
+    public required IStateChangedEventArgs StateChangedEvent { get; init; }
 
     /// <summary>
     /// Gets or sets the store.
     /// </summary>
-    public required IStore<object, object> Store { get; init; }
+    public required IStore Store { get; init; }
 
     /// <summary>
     /// Gets or sets the root state.

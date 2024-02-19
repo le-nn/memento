@@ -7,7 +7,7 @@ using System.Text.Json;
 namespace Memento.ReduxDevTool.Internals;
 internal record HistoryState {
     public required int Id { get; set; }
-    public required IStateChangedEventArgs<object>? Command { get; init; }
+    public required IStateChangedEventArgs? Command { get; init; }
     public required string StoreBagKey { get; init; }
     public required Dictionary<string, object> RootState { get; init; }
     public required string? Stacktrace { get; init; }
@@ -16,7 +16,7 @@ internal record HistoryState {
 
     public HistoryState AsInitial() {
         return this with {
-            Command = new StateChangedEventArgs<Init> {
+            Command = new StateChangedEventArgs {
                 Message = new Init(),
                 StateChangeType = StateChangeType.ForceReplaced,
                 Sender = this,
@@ -65,7 +65,7 @@ internal sealed class LiftedHistoryContainer : IDisposable {
         _sequence = 0;
         _histories = [
             new HistoryState() {
-                Command = new StateChangedEventArgs<Init> {
+                Command = new StateChangedEventArgs {
                     Message = new Init(),
                     StateChangeType = StateChangeType.ForceReplaced,
                     Sender = this,
@@ -87,7 +87,7 @@ internal sealed class LiftedHistoryContainer : IDisposable {
         await SyncWithPlugin();
     }
 
-    public async Task PushAsync(IStateChangedEventArgs<object, object> e, RootState rootState, string stackTrace) {
+    public async Task PushAsync(IStateChangedEventArgs e, RootState rootState, string stackTrace) {
         if (IsLocked) {
             await SyncWithPlugin();
             SetStatesToStore(CurrentHistory);
@@ -319,7 +319,7 @@ internal sealed class LiftedHistoryContainer : IDisposable {
                     StoreBagKey = action.Action.StoreName,
                     RootState = DeserializeStates(storeBag, computedStates[i].GetProperty("state")),
                     Id = id,
-                    Command = new StateChangedEventArgs<object>() {
+                    Command = new StateChangedEventArgs() {
                         Message = DeserializeCommand(action.Action.DeclaredType, action.Action.Payload),
                         Sender = null,
                         StateChangeType = StateChangeType.Restored,
@@ -345,7 +345,7 @@ internal sealed class LiftedHistoryContainer : IDisposable {
         _subscription = null;
     }
 
-    static Dictionary<string, object> DeserializeStates(Dictionary<string, IStore<object, object>> storeBag, JsonElement stateJson) {
+    static Dictionary<string, object> DeserializeStates(Dictionary<string, IStore> storeBag, JsonElement stateJson) {
         var rootState = new Dictionary<string, object>();
         foreach (var key in stateJson.EnumerateObject()) {
             var storeState = key.Value.Deserialize(storeBag[key.Name].GetStateType())

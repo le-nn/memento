@@ -12,7 +12,7 @@ namespace Memento.Blazor;
 public class ObserverComponent : ComponentBase, IDisposable {
     private bool _isDisposed;
 
-    private readonly ThrottledExecutor<IStateChangedEventArgs<object>> _stateHasChangedThrottler = new();
+    private readonly ThrottledExecutor<IStateChangedEventArgs> _stateHasChangedThrottler = new();
     private readonly ConcurrentBag<IDisposable> _disposables = [];
     private readonly ConcurrentBag<IWatcher> _watchers = [];
 

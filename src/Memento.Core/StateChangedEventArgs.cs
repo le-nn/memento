@@ -8,8 +8,12 @@ public enum StateChangeType {
 /// Represents the event arguments for a state change with a message.
 /// </summary>
 /// <typeparam name="TMessage">The type of the message.</typeparam>
-public interface IStateChangedEventArgs<out TMessage>
-    where TMessage : notnull {
+public interface IStateChangedEventArgs {
+    /// <summary>
+    /// Gets or sets the type of the state change.
+    /// </summary>
+    public StateChangeType StateChangeType { get; init; }
+
     /// <summary>
     /// Gets the timestamp of the state change.
     /// </summary>
@@ -18,7 +22,7 @@ public interface IStateChangedEventArgs<out TMessage>
     /// <summary>
     /// Gets the message associated with the state change.
     /// </summary>
-    TMessage? Message { get; }
+    object? Message { get; }
 
     /// <summary>
     /// Gets the sender of the state change.
@@ -30,15 +34,14 @@ public interface IStateChangedEventArgs<out TMessage>
 /// Represents the event arguments for a state change with a message.
 /// </summary>
 /// <typeparam name="TMessage">The type of the message.</typeparam>
-public record StateChangedEventArgs<TMessage> : IStateChangedEventArgs<TMessage>
-    where TMessage : notnull {
+public record StateChangedEventArgs : IStateChangedEventArgs {
     /// <summary>
     /// Gets or sets the type of the state change.
     /// </summary>
     public StateChangeType StateChangeType { get; init; }
 
     /// <inheritdoc/>
-    public required TMessage? Message { get; init; }
+    public required object? Message { get; init; }
 
     /// <inheritdoc/>
     public DateTime Timestamp { get; } = DateTime.UtcNow;
@@ -52,7 +55,7 @@ public record StateChangedEventArgs<TMessage> : IStateChangedEventArgs<TMessage>
 /// </summary>
 /// <typeparam name="TState">The type of the state.</typeparam>
 /// <typeparam name="TMessage">The type of the message.</typeparam>
-public interface IStateChangedEventArgs<out TState, out TMessage> : IStateChangedEventArgs<TMessage>
+public interface IStateChangedEventArgs<out TState, out TMessage> : IStateChangedEventArgs
     where TState : class
     where TMessage : notnull {
     /// <summary>
@@ -98,4 +101,7 @@ public record StateChangedEventArgs<TState, TMessage> : IStateChangedEventArgs<T
 
     /// <inheritdoc/>
     public object? Sender { get; init; }
+
+    /// <inheritdoc/>
+    object? IStateChangedEventArgs.Message => Message;
 }

@@ -12,6 +12,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Blazor\**" />
+      <EmbeddedResource Remove="Blazor\**" />
+      <None Remove="Blazor\**" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="FluentAssertions" Version="6.12.0" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
@@ -29,10 +35,6 @@
     <ItemGroup>
       <ProjectReference Include="..\..\src\Memento.Blazor\Memento.Blazor.csproj" />
       <ProjectReference Include="..\..\src\Memento.Core\Memento.Core.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Blazor\" />
     </ItemGroup>
 
 </Project>

@@ -18,7 +18,6 @@ builder.Services
     .AddBrowserReduxDevToolMiddleware(new() {
         StackTraceEnabled = true,
         OpenDevTool = true,
-
     })
     .ScanAssemblyAndAddStores(typeof(App).Assembly);
 
