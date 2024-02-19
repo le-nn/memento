@@ -49,12 +49,12 @@ You can do state history and time travel.
 
 ## Samples
 
-[C# with Console App](../samples/Memento.Sample.ConsoleApp)
+[C# with Console App](https://github.com/le-nn/memento/tree/main/samples/Memento.Sample.ConsoleApp)
 
-[Blazor App Shared](../samples/Memento.Sample.Blazor)
+[Blazor App Shared](https://github.com/le-nn/memento/tree/main/samples)
 
-[Blazor Wasm App](../samples/Memento.Sample.BlazorWasm)
+[Blazor Wasm App](https://github.com/le-nn/memento/tree/main/samples)
 
-[Blazor Server App](../samples/Memento.Sample.BlazorServer)
+[Blazor Server App](https://github.com/le-nn/memento/tree/main/samples)
 
 

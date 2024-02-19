@@ -29,7 +29,7 @@ public class FluxAsyncCounterStore : FluxStore<FluxAsyncCounterState, FluxAsyncC
 
     // State can change via Reducer and easy to observe state from command
     // Reducer generate new state from command and current state
-    static FluxAsyncCounterState Reducer(FluxAsyncCounterState state, FluxAsyncCounterCommands command) {
+    static FluxAsyncCounterState Reducer(FluxAsyncCounterState state, FluxAsyncCounterCommands? command) {
         return command switch {
             BeginLoading => state with {
                 IsLoading = true

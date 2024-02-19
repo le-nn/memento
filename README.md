@@ -40,6 +40,10 @@ If you have ReduxDevTool installed,
 DevTool will launch automatically.
 You can do state history and time travel.
 
+# Documentation
+
+https://le-nn.github.io/memento/docs/README.html
+
 ## React or TS/JS bindings
 
 Currently, moved to here
@@ -165,10 +169,6 @@ Blazor view in Razor
 }
 
 ```
-
-# Documentation
-
-[See](./docs/README.md)
 
 # License
 

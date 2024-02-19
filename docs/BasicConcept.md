@@ -578,4 +578,4 @@ Applying these methods makes application state management scalable and maintaina
 
 In the Next tutorial you will learn how to update the actual UI in Blazor !
 
-[See](./Blazor/README.md)
+[See](./Blazor.md)

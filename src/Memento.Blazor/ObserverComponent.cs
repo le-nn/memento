@@ -1,4 +1,5 @@
 using Memento.Core.Executors;
+using Memento.Core;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Concurrent;
 
@@ -6,7 +7,7 @@ namespace Memento.Blazor;
 
 /// <summary>
 /// The base class for components that observe state changes in a store.
-/// Injected stores that implement the <see cref="IStore"/> interface will all be subscribed to state change events
+/// Injected stores that implement the <see cref="IStateObservable{TMessage}"/> interface will all be subscribed to state change events
 /// and automatically call <see cref="ComponentBase.StateHasChanged"/>.
 /// </summary>
 public class ObserverComponent : ComponentBase, IDisposable {

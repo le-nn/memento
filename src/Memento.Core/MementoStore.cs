@@ -15,7 +15,7 @@ public abstract class MementoStore<TState, TMessage>(
     /// <param name="state">The current state.</param>
     /// <param name="message">The StateHasChanged command to apply.</param>
     /// <returns>The new state after applying the command.</returns>
-    static TState Reducer(TState state, TMessage message) {
+    static TState Reducer(TState state, TMessage? message) {
         return state;
     }
 

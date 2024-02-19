@@ -72,15 +72,6 @@ public abstract class AbstractStore<TState, TMessage>(
     }
 
     /// <summary>
-    /// Handles disposable resources of the store.
-    /// </summary>
-    /// <returns>An enumerable of disposable resources.</returns>
-    [Obsolete]
-    protected virtual IEnumerable<IDisposable> OnHandleDisposable() {
-        return [];
-    }
-
-    /// <summary>
     /// Subscribes to the store with the provided observer.
     /// </summary>
     /// <param name="observer">The observer to subscribe to the store.</param>
@@ -254,10 +245,6 @@ public abstract class AbstractStore<TState, TMessage>(
 
     async ValueTask IStore.InitializeAsync(StoreProvider provider) {
         _provider = provider;
-
-        foreach (var item in OnHandleDisposable()) {
-            _disposables.Add(item);
-        }
 
         try {
             await OnInitializedAsync();

@@ -51,7 +51,7 @@ public class ReduxDevToolMiddlewareHandler : MiddlewareHandler {
         });
     }
 
-    public override object? HandleStoreDispatch(object? state, object command, NextStoreMiddlewareCallback next) {
+    public override object? HandleStoreDispatch(object? state, object? command, NextStoreMiddlewareCallback next) {
         if (_liftedStore.IsJumping) {
             return next(null, command);
         }

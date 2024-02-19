@@ -59,11 +59,6 @@ public interface IStateChangedEventArgs<out TState, out TMessage> : IStateChange
     where TState : class
     where TMessage : notnull {
     /// <summary>
-    /// Gets the type of the state change.
-    /// </summary>
-    StateChangeType StateChangeType { get; }
-
-    /// <summary>
     /// Gets the last state before the change.
     /// </summary>
     TState? LastState { get; }
