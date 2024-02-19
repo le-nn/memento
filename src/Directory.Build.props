@@ -1,7 +1,6 @@
 <Project>
     <PropertyGroup>
         <TargetFrameworks>net8.0</TargetFrameworks>
-        <ArtifactsPath>$(MSBuildThisFileDirectory)../artifacts</ArtifactsPath>
     </PropertyGroup>
 
     <ItemGroup>
